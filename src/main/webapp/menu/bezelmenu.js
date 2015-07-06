@@ -237,7 +237,7 @@ function createJavascriptLoadContent(pageContent){
 }
 
 function loadContent(pageContent){
-	var contentIncludeDiv = document.getElementById("content-invlude-div");
+	var contentIncludeDiv = document.getElementById("content-include-div");
 	
 	$(contentIncludeDiv).empty();
 	
