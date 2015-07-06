@@ -1,0 +1,132 @@
+
+					<!-- end top general alert -->
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Model</li>
+									<li class="active">Manage Model</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Model</h2>
+								<em>Logical data model for report datasource(s)</em>
+							</div>
+							<div class="main-content">
+
+								<!-- ROW -->
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET TABLE -->
+										<div class="widget widget-table">
+											<div class="widget-header">
+												<h3><i class="fa fa-desktop"></i> Model(s)</h3>
+												<div class="btn-group widget-header-toolbar">
+													<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
+													<a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+													<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
+												</div>
+											</div>
+											<div class="widget-content">
+												<table id="model-table" class="table table-sorting table-striped table-hover datatable">
+												</table>
+											</div>
+										</div>
+										<!-- END WIDGET TABLE -->
+
+									</div>
+								</div>
+								<!-- END ROW -->
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+	
+					<script type="text/javascript">
+					
+						//retrive model list AJAX function
+						var modelListRequest = function(){
+							
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/models",
+								
+								success: function(response){
+									if(response){
+										var models = response.models;
+										
+										if(models){
+											
+											var index;
+											
+											var tableDataSet = [];
+											
+											for(index =0; index < models.length; index++){
+												//for each of model create elements
+												tableDataSet.push(createModelRow(models[index]));
+											}
+											
+											
+											$('#model-table').dataTable({
+												"data": tableDataSet,
+												"columns" : [
+													{"title":"Name"},
+													{"title":"Type"},
+													{"title":"Datasource"},
+													{"title":"Description"}
+												]
+											});
+										}
+									}
+								} 
+							});
+							
+						}
+						
+						function createModelRow(model){
+							
+							var rowDataSet = [];
+							
+							rowDataSet.push(model.name);
+							rowDataSet.push(getModelType(model));
+							rowDataSet.push(getDataSource(model));
+							rowDataSet.push(model.description);
+				
+							return rowDataSet;
+						}
+						
+						function getModelType(model){
+							var modelType = '-';
+				
+							if(model.approach){
+								if('JOIN_QUERY' == model.approach){
+									modelType = 'Joined Query';
+								}
+								else if ('SINGLE_TABLE' == model.approach){
+									modelType = 'Single Table';
+								}
+							}
+							
+							return modelType;
+						}
+						
+						function getDataSource(model){
+							
+							var dataSourceName = '-';
+							
+							if(model.datasource){
+								dataSourceName = model.datasource.name;
+							}
+							
+							return dataSourceName;
+						}
+						modelListRequest();
+					</script>

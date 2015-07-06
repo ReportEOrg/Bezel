@@ -1,0 +1,66 @@
+{
+	"menuItems":[
+		{
+			"id"       : "Dashboard",
+			"group"    : "Dashboard",
+			"name"     : "Dashboard",
+			"iconClass": "fa fa-dashboard fa-fw",
+			"href"     : "../dashboard/dashboard.html?group=Dashboard&target=Dashboard",
+			"pageContent" : "dashboard_content.html"
+		},
+		{
+			"id"       : "DataSource",
+			"group"    : "DataSource",
+			"name"     : "Data Source",
+			"iconClass": "fa fa-database fa-fw",
+			"href"     : "../datasource/datasource.html",
+			"pageContent" : "datasource_content.html"
+		},
+		{
+			"id"       : "Model",
+			"group"    : "Model",
+			"name"     : "Model",
+			"iconClass": "fa fa-table fa-fw",
+			"subMenuItems": [
+				{
+				    "id"  : "ManageModel",
+					"name": "Manage Model",
+					"href": "../model/model.html?group=Model&target=ManageModel",
+					"pageContent" : "model_content.html"
+				},
+				{
+					"id"  : "NewSimpleTableModel",
+					"name": "New Simple Table Model",
+					"href": "../model/model.html?group=Model&target=NewSimpleTableModel",
+					"pageContent" : "model_wizard_simple_table.html"
+				},
+				{
+					"id"  : "NewJoinedQueryModel",
+					"name": "New Joined Query Model",
+					"href": "../model/model.html?group=Model&target=NewJoinedQueryModel",
+					"pageContent" : "model_wizard_joined_query.html"
+				}			
+			]
+		},
+		{
+			"id": "ReportConnector",
+			"group" : "ReportConnector",
+			"name": "Report Connector",
+			"iconClass": "fa fa-clipboard fw",
+			"subMenuItems": [
+				{
+				    "id"  : "ManageReportConnector",
+					"name": "Manage Report Connector",
+					"href": "../reportconnector/reportconnector.html?group=ReportConnector&target=ManageReportConnector",
+					"pageContent" : "reportconnector_content.html"
+				}			
+			]
+		},
+		{
+			"id": "BrowseReport",
+			"group" : "BrowseReport",
+			"name": "Browse Report",
+			"iconClass": "fa fa-bar-chart fw"
+		}
+	]
+}

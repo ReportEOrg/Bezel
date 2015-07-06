@@ -1,0 +1,86 @@
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Dashboard</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Dashboard</h2>
+								<em>Usage Summary</em>
+							</div>
+							<div class="main-content">
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET NO HEADER -->
+										<div class="widget widget-hide-header">
+											<div class="widget-header hide">
+												<h3>Summary Info</h3>
+											</div>
+											<div class="widget-content">
+												<div class="row">
+													<div class="col-md-3">
+														<div class="easy-pie-chart green" data-percent="40">
+															<span class="percent">40</span>
+														</div>
+														<p class="text-center">Data Source</p>
+													</div>
+													<div class="col-md-3">
+														<div class="easy-pie-chart red" data-percent="10">
+															<span class="percent">10</span>
+														</div>
+														<p class="text-center">Model</p>
+													</div>
+													<div class="col-md-3">
+														<div class="easy-pie-chart yellow" data-percent="20">
+															<span class="percent">20</span>
+														</div>
+														<p class="text-center">Report Connector</p>
+													</div>
+													<div class="col-md-3">
+														<div class="easy-pie-chart red" data-percent="90">
+															<span class="percent">90</span>
+														</div>
+														<p class="text-center">Scheduled Report</p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- WIDGET NO HEADER -->
+									</div>
+								</div> 
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+					<script>
+					if( $('.easy-pie-chart').length > 0 ) {
+
+						var cOptions = {
+							animate: 3000,
+							trackColor: "#ccc",
+							scaleColor: "#ddd",
+							lineCap: "square",
+							lineWidth: 5,
+							barColor: "#ef1e25",
+							onStep: function(from, to, percent) {
+								$(this.el).find('.percent').text(Math.round(percent));
+							}
+						};
+
+						cOptions.barColor = "#3E9C1A"; // green
+						$('.easy-pie-chart.green').easyPieChart(cOptions);
+						cOptions.barColor = "#FFB800"; // yellow
+						$('.easy-pie-chart.yellow').easyPieChart(cOptions);
+						cOptions.barColor = "#E60404"; // red
+						$('.easy-pie-chart.red').easyPieChart(cOptions);
+					}
+					</script>
+						

@@ -1,0 +1,196 @@
+
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Model</li>
+									<li class="active">New Model</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>New Model</h2>
+								<em>Creating a new logical data model for report datasource</em>
+							</div>
+							<div class="main-content">
+								<!-- WIDGET WIZARD -->
+								<div class="widget">
+									<div class="widget-header">
+										<h3><i class="fa fa-table"></i> New Model Wizard</h3>
+									</div>
+									<div class="widget-content">
+										<div class="wizard-wrapper">
+											<div id="model-wizard" class="wizard">
+												<ul class="steps">
+													<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Model Name<span class="chevron"></span></li>
+													<li data-target="#step2"><span class="badge">2</span>Data Source<span class="chevron"></span></li>
+													<li data-target="#step3"><span class="badge">3</span>Model Type<span class="chevron"></span></li>
+													<li data-target="#step4"><span class="badge">4</span>Attribute Mapping<span class="chevron"></span></li>
+													<li data-target="#step5" class="last"><span class="badge">5</span>Create Model</li>
+												</ul>
+											</div>
+											<div class="step-content">
+												<!-- STEP 1 -->
+												<div class="step-pane active" id="step1">
+													<form id="form1" data-parsley-validate novalidate>
+														<p>Please provide the follow details:</p>
+														<div class="row">
+															<div class="col-md-3">
+																<div class="form-group">
+																	<label for="modelName">Name *</label>
+																	<input type="text" id="modelName" class="form-control" required>
+																</div>
+																<div class="form-group">
+																	<label for="modelDesc">Description</label>
+																	<input type="text" id="modelDesc" class="form-control">
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+												<!-- END STEP 1 -->
+												<!-- STEP 2 -->
+												<div class="step-pane" id="step2">
+													<form id="form2" data-parsley-validate novalidate>
+														<p>Please select data source for model</p>
+														<div class="row">
+															<div class="col-md-3">
+																<label for="datasource">Datasource *</label>
+																<select id="datasource" class="form-control"></select>
+															</div>
+														</div>
+													</form>
+												</div>
+												<!-- END STEP 2 -->
+												<!-- STEP 3 -->
+												<div class="step-pane" id="step3">
+													<form id="form3" data-parsley-validate novalidate>
+														<p>Please select type for model</p>
+														<div class="row">
+															<div class="col-md-3">
+																<label class="fancy-radio">
+																	<input type="radio" name="model-type" value="simple" required data-parsley-errors-container="#error-step3">
+																	<span><i></i>Simple Table</span>
+																</label>
+																<label class="fancy-radio">
+																	<input type="radio" name="model-type" value="join">
+																	<span><i></i>Joined Query</span>
+																</label>
+																<p id="error-step3"></p>
+															</div>
+														</div>
+													</form>
+												</div>
+												<!-- END STEP 3 -->
+												<!-- STEP 4 -->
+												<div class="step-pane" id="step4">
+													<form id="form4" data-parsley-validate novalidate>
+														<p>Please define attribute for model</p>
+														<div class="row">
+															<div class="col-md-3">
+																<label for="modelName">Attributes *</label>
+															</div>
+														</div>
+													</form>
+												</div>
+												<!-- END STEP 4 -->
+												<!-- STEP 5 -->
+												<div class="step-pane" id="step5">
+												
+												</div>
+												<!-- END STEP 5 -->
+											</div>
+											<!-- STEP ACTION -->
+											<div class="actions">
+												<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
+												<button type="button" class="btn btn-primary btn-next">Next <i class="fa fa-arrow-right"></i></button>
+											</div>
+											<!-- END STEP ACTION -->
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+	
+	<script type="text/javascript">
+		var datasources
+
+		var dataSourceListRequest = function(){
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/datasources",
+				
+				success: function(response){
+					if(response){
+						datasources = response.datasources;
+						
+						if(datasources){
+							$("#datasource").empty();
+							
+							var index;
+							for(index = 0; index<datasources.length; index++){
+								var datasource = datasources[index];
+								
+								$("#datasource").append($('<option></option>').val(datasource.id).html(datasource.name));
+								
+							}
+						}
+					}
+				}
+			});
+		}
+		
+		dataSourceListRequest();
+	
+		$(document).ready(function(){
+	
+			//model wizard function
+			$('#model-wizard').on('change', function(e, data) {
+				// validation
+				if( $('#form'+data.step).length > 0 ) {
+					var parsleyForm = $('#form'+data.step).parsley();
+					parsleyForm.validate();
+	
+					if( !parsleyForm.isValid() )
+						return false;
+				}
+	
+				// last step button
+				$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
+	
+				if(data.step === 4 && data.direction == 'next') {
+					$btnNext.text(' Create New Model')
+					.prepend('<i class="fa fa-check-circle"></i>')
+					.removeClass('btn-primary').addClass('btn-success');
+				}else{
+					$btnNext.text('Next ').
+					append('<i class="fa fa-arrow-right"></i>')
+					.removeClass('btn-success').addClass('btn-primary');
+				}
+	
+			}).on('finished', function(){
+				alert('New model has been created.');
+			});
+	
+			$('.wizard-wrapper .btn-next').click( function(){
+				$('#model-wizard').wizard('next');
+			});
+	
+			$('.wizard-wrapper .btn-prev').click( function(){
+				$('#model-wizard').wizard('previous');
+			});
+		});
+	
+	
+	</script>
+

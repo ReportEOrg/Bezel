@@ -4,7 +4,7 @@
 
 	<groupId>reportbay</groupId>
 	<version>0.0.1-SNAPSHOT</version>
-	<artifactId>reportbayjs</artifactId>
+	<artifactId>bezel</artifactId>
 	<packaging>war</packaging>
 	
 	<build>

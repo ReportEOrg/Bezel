@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<!--[if IE 9 ]><html class="ie ie9" lang="en" class="no-js"> <![endif]-->
+<!--[if !(IE)]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+
+<head>
+	<title>ReportBay - Bezel</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="description" content="ReportBay">
+	<meta name="author" content="ReportBay Dev Team">
+
+	<!-- CSS -->
+	<link href="../../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<link href="../../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="../../assets/css/main.css" rel="stylesheet" type="text/css">
+	<link href="../../assets/css/my-custom-styles.css" rel="stylesheet" type="text/css">
+	
+	<!-- added code to apply skin -->
+	<link href="../../assets/css/skins/teal.css" rel="stylesheet" type="text/css">
+	<!-- end added code to apply skin -->
+
+	<!--[if lte IE 9]>
+		<link href="assets/css/main-ie.css" rel="stylesheet" type="text/css"/>
+		<link href="assets/css/main-ie-part2.css" rel="stylesheet" type="text/css"/>
+	<![endif]-->
+
+	<!-- CSS for demo style switcher. you can remove this -->
+	<link href="./demo-style-switcher/assets/css/style-switcher.css" rel="stylesheet" type="text/css">
+
+	<!-- Fav and touch icons -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../../assets/ico/kingadmin-favicon144x144.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../../assets/ico/kingadmin-favicon114x114.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../../assets/ico/kingadmin-favicon72x72.png">
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="../../assets/ico/kingadmin-favicon57x57.png">
+	<!-- <link rel="shortcut icon" href="assets/ico/favicon.png"> -->
+	<!-- <link rel="shortcut icon" href="assets/ico/reportbay.gif"> -->
+	<link rel="shortcut icon" type="image/x-icon" href="../../assets/ico/reportbay2.ico">
+</head>
+
+<body class="dashboard">
+	<!-- WRAPPER -->
+	<div class="wrapper">
+		<!-- TOP BAR -->
+		<div class="top-bar">
+			<div class="container">
+				<div class="row">
+					<!-- logo -->
+					<div class="col-md-2 logo fa fa-clipboard" style="color:white;">
+						<a href="../dashboard/dashboard.html"><span style="font-size: medium; color: white;font-family: 'latolight'; font-weight: bolder;">ReportBay - Bezel</span></a>
+						<h1 class="sr-only">Report Bay - Bezel</h1>
+					</div>
+					<!-- end logo -->
+					<div class="col-md-10">
+						<div class="row">
+							<div class="col-md-3">
+								<!-- search box -->
+								<div id="tour-searchbox" class="input-group searchbox">
+									<input type="search" class="form-control" placeholder="enter keyword here...">
+									<span class="input-group-btn">
+										<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+									</span>
+								</div>
+								<!-- end search box -->
+							</div>
+							<div class="col-md-9">
+								<div class="top-bar-right">
+									<!-- responsive menu bar icon -->
+									<a href="#" class="hidden-md hidden-lg main-nav-toggle"><i class="fa fa-bars"></i></a>
+									<!-- end responsive menu bar icon -->
+									<div class="notifications">
+										<ul>
+											<!-- notification: inbox -->
+											<li class="notification-item inbox" id="notification-item-inbox">
+												
+											</li>
+											<!-- end notification: inbox -->
+											<!-- notification: general -->
+											<li class="notification-item general" id="notification-item-general">
+												
+											</li>
+											<!-- end notification: general -->
+										</ul>
+									</div>
+									<!-- logged user and the menu -->
+									<div class="logged-user" id="logged-user">
+
+									</div>
+									<!-- end logged user and the menu -->
+								</div>
+								<!-- /top-bar-right -->
+							</div>
+						</div>
+						<!-- /row -->
+					</div>
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- /top -->
+		<!-- BOTTOM: LEFT NAV AND RIGHT MAIN CONTENT -->
+		<div class="bottom">
+			<div class="container">
+				<div class="row">
+					<!-- left sidebar -->
+					<div class="col-md-2 left-sidebar minified">
+						<!-- main-nav -->
+						<nav class="main-nav">
+							<ul class="main-menu" id="main-menu">
+								
+							</ul>
+						</nav>
+						<!-- /main-nav -->
+						<div class="sidebar-minified js-toggle-minified">
+							<i class="fa fa-angle-left fa-angle-right"></i>
+						</div>
+						<!-- sidebar content -->
+						<div class="sidebar-content" id="sidebar-content">
+							
+						</div>
+						<!-- end sidebar content -->
+					</div>
+					<!-- end left sidebar -->
+					<!-- content-wrapper -->
+					<div id="content-invlude-div">
+					</div>
+					
+					<!-- /content-wrapper -->
+				</div>
+				<!-- /row -->
+			</div>
+			<!-- /container -->
+		</div>
+		<!-- END BOTTOM: LEFT NAV AND RIGHT MAIN CONTENT -->
+	</div>
+	<!-- /wrapper -->
+
+	<!-- FOOTER -->
+	<footer class="footer">
+		&copy; 2014-2015 The Develovers
+	</footer>
+	<!-- END FOOTER -->
+
+	<!-- STYLE SWITCHER -->
+	<div class="del-style-switcher">
+		<div class="del-switcher-toggle toggle-hide"></div>
+		<form>
+			<section class="del-section del-section-skin">
+				<h5 class="del-switcher-header">Choose Skins:</h5>
+				<ul>
+					<li><a href="#" title="Slate Gray" class="switch-skin slategray" data-skin="../../assets/css/skins/slategray.css">Slate Gray</a></li>
+					<li><a href="#" title="Dark Blue" class="switch-skin darkblue" data-skin="../../assets/css/skins/darkblue.css">Dark Blue</a></li>
+					<li><a href="#" title="Dark Brown" class="switch-skin darkbrown" data-skin="../../assets/css/skins/darkbrown.css">Dark Brown</a></li>
+					<li><a href="#" title="Light Green" class="switch-skin lightgreen" data-skin="../../assets/css/skins/lightgreen.css">Light Green</a></li>
+					<li><a href="#" title="Orange" class="switch-skin orange" data-skin="../../assets/css/skins/orange.css">Orange</a></li>
+					<li><a href="#" title="Red" class="switch-skin red" data-skin="../../assets/css/skins/red.css">Red</a></li>
+					<li><a href="#" title="Teal" class="switch-skin teal" data-skin="../../assets/css/skins/teal.css">Teal</a></li>
+					<li><a href="#" title="Yellow" class="switch-skin yellow" data-skin="../../assets/css/skins/yellow.css">Yellow</a></li>
+				</ul>
+				<button type="button" class="switch-skin-full fulldark" data-skin="../../assets/css/skins/fulldark.css">Full Dark</button>
+				<button type="button" class="switch-skin-full fullbright" data-skin="../../assets/css/skins/fullbright.css">Full Bright</button>
+			</section>
+			<label class="fancy-checkbox">
+				<input type="checkbox" id="fixed-top-nav"><span>Fixed Top Navigation</span>
+			</label>
+			<p><a href="#" title="Reset Style" class="del-reset-style">Reset Style</a></p>
+		</form>
+	</div>
+	<!-- END STYLE SWITCHER -->
+
+	<!-- Javascript -->
+	<script src="../../assets/js/jquery/jquery-2.1.0.min.js"></script>
+	<script src="../../assets/js/bootstrap/bootstrap.js"></script>
+	<script src="../../assets/js/plugins/modernizr/modernizr.js"></script>
+	<script src="../../assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+	<script src="../../menu/bezelmenu.js"></script>
+	<script> 
+		buildMenu('Model');
+	</script>
+	<script src="../bezel-common.js"></script>
+	<script src="../../assets/js/king-common.js"></script>
+	<script src="../../demo-style-switcher/assets/js/deliswitch.js"></script>
+	<script src="../../assets/js/plugins/stat/jquery.easypiechart.min.js"></script>
+	<script src="../../assets/js/plugins/raphael/raphael-2.1.0.min.js"></script>
+	<script src="../../assets/js/plugins/stat/flot/jquery.flot.min.js"></script>
+	<script src="../../assets/js/plugins/stat/flot/jquery.flot.resize.min.js"></script>
+	<script src="../../assets/js/plugins/stat/flot/jquery.flot.time.min.js"></script>
+	<script src="../../assets/js/plugins/stat/flot/jquery.flot.pie.min.js"></script>
+	<script src="../../assets/js/plugins/stat/flot/jquery.flot.tooltip.min.js"></script>
+	<script src="../../assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+	<script src="../../assets/js/plugins/datatable/jquery.dataTables.min.js"></script>
+	<script src="../../assets/js/plugins/datatable/dataTables.bootstrap.js"></script>
+	<script src="../../assets/js/plugins/jquery-mapael/jquery.mapael.js"></script>
+	<script src="../../assets/js/plugins/raphael/maps/usa_states.js"></script>
+	<script src="../../assets/js/king-chart-stat.js"></script>
+	<script src="../../assets/js/king-table.js"></script>
+	<script src="../../assets/js/king-components.js"></script>
+</body>
+
+</html>
