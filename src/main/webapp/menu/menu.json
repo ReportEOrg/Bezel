@@ -13,7 +13,7 @@
 			"group"    : "DataSource",
 			"name"     : "Data Source",
 			"iconClass": "fa fa-database fa-fw",
-			"href"     : "../datasource/datasource.html",
+			"href"     : "../datasource/datasource.html?group=DataSource&target=DataSource",
 			"pageContent" : "datasource_content.html"
 		},
 		{
