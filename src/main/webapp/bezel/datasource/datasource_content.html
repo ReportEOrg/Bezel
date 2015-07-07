@@ -1,0 +1,133 @@
+
+					<!-- end top general alert -->
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Data Source</li>
+									<li class="active">Manage Data Source</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Data Source</h2>
+								<em>Configuration on retrieval of report data</em>
+							</div>
+							<div class="main-content">
+
+								<!-- ROW -->
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET TABLE -->
+										<div class="widget widget-table">
+											<div class="widget-header">
+												<h3><i class="fa fa-desktop"></i> Data Source(s)</h3>
+												<div class="btn-group widget-header-toolbar">
+													<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
+													<a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+													<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
+												</div>
+											</div>
+											<div class="widget-content">
+												<table id="datasource-table" class="table table-sorting table-striped table-hover datatable">
+												</table>
+											</div>
+										</div>
+										<!-- END WIDGET TABLE -->
+
+									</div>
+								</div>
+								<!-- END ROW -->
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+	
+ 					<script type="text/javascript">
+					
+						//retrive datasource list AJAX function
+						var datasourceListRequest = function(){
+							
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/datasources",
+								
+								success: function(response){
+									if(response){
+										var datasources = response.datasources;
+										
+										if(datasources){
+											
+											var index;
+											
+											var tableDataSet = [];
+											
+											for(index =0; index < datasources.length; index++){
+												//for each of datasource create elements
+												tableDataSet.push(createDataSourceRow(datasources[index]));
+											}
+											
+											
+											$('#datasource-table').dataTable({
+												"data": tableDataSet,
+												"columns" : [
+													{"title":"Name"},
+													{"title":"Description"},
+													{"title":"DB Family"},
+													{"title":"DB Name"},
+													{"title":"Host Name"},
+													{"title":"Port"},
+													{"title":"Schema"}
+												]
+											});
+										}
+									}
+								} 
+							});
+							
+						}
+						
+						function createDataSourceRow(dataSource){
+							
+							var rowDataSet = [];
+							
+							rowDataSet.push(dataSource.name);
+							rowDataSet.push(dataSource.description);
+							rowDataSet.push(getDbFamily(dataSource.type));
+							rowDataSet.push(getDbName(dataSource.type));
+							rowDataSet.push(dataSource.hostname);
+							rowDataSet.push(dataSource.port);
+							rowDataSet.push(dataSource.schema);
+				
+							return rowDataSet;
+						}
+						
+						function getDbFamily(dbType){
+							var dbFamilyType = '-';
+				
+							if(dbType){
+								dbFamilyType = dbType.family;
+							}
+							
+							return dbFamilyType;
+						}
+						
+						function getDbName(dbType){
+							
+							var dataSourceName = '-';
+							
+							if(dbType){
+								dataSourceName = dbType.name;
+							}
+							
+							return dataSourceName;
+						}
+						datasourceListRequest();
+					</script>
