@@ -13,8 +13,15 @@
 			"group"    : "DataSource",
 			"name"     : "Data Source",
 			"iconClass": "fa fa-database fa-fw",
-			"href"     : "../datasource/datasource.html?group=DataSource&target=DataSource",
-			"pageContent" : "datasource_content.html"
+			"subMenuItems": [
+				{
+				    "id"  : "ManageDataSource",
+					"name": "Manage Data Source",
+					"href"     : "../datasource/datasource.html?group=DataSource&target=ManageDataSource",
+					"pageContent" : "datasource_content.html"
+				}	
+			]
+			
 		},
 		{
 			"id"       : "Model",
@@ -60,7 +67,9 @@
 			"id": "BrowseReport",
 			"group" : "BrowseReport",
 			"name": "Browse Report",
-			"iconClass": "fa fa-bar-chart fw"
+			"iconClass": "fa fa-bar-chart fw",
+			"href": "../report/report.html?group=BrowseReport&target=BrowseReport",
+			"pageContent" : "report_content.html"
 		}
 	]
 }

@@ -1,0 +1,132 @@
+
+					<!-- end top general alert -->
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Report</li>
+									<li class="active">Browse Report</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Browse Report</h2>
+								<em>View on demand or snap shot of report(s)</em>
+							</div>
+							<div class="main-content">
+
+								<!-- ROW -->
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET TABLE -->
+										<div class="widget widget-table">
+											<div class="widget-header">
+												<h3><i class="fa fa-desktop"></i> Report(s)</h3>
+												<div class="btn-group widget-header-toolbar">
+													<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
+													<a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+													<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
+												</div>
+											</div>
+											<div class="widget-content">
+												<table id="report-table" class="table table-sorting table-striped table-hover datatable">
+												</table>
+											</div>
+										</div>
+										<!-- END WIDGET TABLE -->
+
+									</div>
+								</div>
+								<!-- END ROW -->
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+	
+					<script type="text/javascript">
+					
+						//retrive report list AJAX function
+						var reportListRequest = function(){
+							
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/reports",
+								
+								success: function(response){
+									if(response){
+										var liteReports = response.liteReports;
+										
+										if(liteReports){
+											
+											var index;
+											
+											var tableDataSet = [];
+											
+											for(index =0; index < liteReports.length; index++){
+												//for each of report create elements
+												tableDataSet.push(createReportRow(liteReports[index]));
+											}
+											
+											
+											$('#report-table').dataTable({
+												"data": tableDataSet,
+												"columns" : [
+													{"title":"Name"},
+													{"title":"Template Type"},
+													{"title":"Creation Date"}
+												]
+											});
+										}
+									}
+								} 
+							});
+							
+						}
+						
+						function createReportRow(report){
+							
+							var rowDataSet = [];
+							
+							rowDataSet.push(report.reportName);
+							rowDataSet.push(getReportType(report));
+							rowDataSet.push(report.creationDate);
+				
+							return rowDataSet;
+						}
+						
+						function getReportType(report){
+							var reportType = '-';
+				
+							if(report.templateType){
+								if('A' == report.templateType){
+									reportType = 'Area Chart Report';
+								}
+								else if ('B' == report.templateType){
+									reportType = 'Bar Chart Report';
+								}
+								else if ('C' == report.templateType){
+									reportType = 'Column Chart Report';
+								}
+								else if ('L' == report.templateType){
+									reportType = 'Line Chart Report';
+								}
+								else if ('P' == report.templateType){
+									reportType = 'Pie Chart Report';
+								}
+								else if ('X' == report.templateType){
+									reportType = 'Cross Tab Report';
+								}
+							}
+							
+							return reportType;
+						}
+						
+						reportListRequest();
+					</script>
