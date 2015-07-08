@@ -35,6 +35,9 @@
 											<div class="widget-content">
 												<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
 												</div>
+												<div id="loading" style="text-align: center;">
+													<i class="fa fa-spinner fa-pulse fa-2x"></i>
+												</div>
 												<table id="report-connector-table" class="table table-sorting table-striped table-hover datatable">
 												</table>
 											</div>
@@ -81,6 +84,9 @@
 									}
 								},
 								complete: function(jqXHR, textStatus){
+									
+									$('#loading').hide();
+									
 									if("success" != textStatus){
 										var tableDataSet = [];
 										renderTable(tableDataSet);

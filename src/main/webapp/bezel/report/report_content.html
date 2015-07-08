@@ -35,7 +35,9 @@
 											<div class="widget-content">
 												<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
 												</div>
-											
+												<div id="loading" style="text-align: center;">
+													<i class="fa fa-spinner fa-pulse fa-2x"></i>
+												</div>
 												<table id="report-table" class="table table-sorting table-striped table-hover datatable">
 												</table>
 											</div>
@@ -82,6 +84,9 @@
 									}
 								},
 								complete: function(jqXHR, textStatus){
+									
+									$('#loading').hide();
+									
 									if("success" != textStatus){
 										var tableDataSet = [];
 										renderTable(tableDataSet);
@@ -98,7 +103,7 @@
 							
 							rowDataSet.push(report.reportName);
 							rowDataSet.push(getReportType(report));
-							rowDataSet.push(report.creationDate);
+							rowDataSet.push(getFormatDate(report.creationDate));
 				
 							return rowDataSet;
 						}
@@ -108,19 +113,19 @@
 				
 							if(report.templateType){
 								if('A' == report.templateType){
-									reportType = 'Area Chart Report';
+									reportType = '<i class="fa fa-area-chart"></i> Area Chart Report';
 								}
 								else if ('B' == report.templateType){
-									reportType = 'Bar Chart Report';
+									reportType = '<i class="fa fa-bar-chart"></i> Bar Chart Report';
 								}
 								else if ('C' == report.templateType){
-									reportType = 'Column Chart Report';
+									reportType = '<i class="fa fa-bar-chart fa-rotate-90"></i> Column Chart Report';
 								}
 								else if ('L' == report.templateType){
-									reportType = 'Line Chart Report';
+									reportType = '<i class="fa fa-line-chart"></i> Line Chart Report';
 								}
 								else if ('P' == report.templateType){
-									reportType = 'Pie Chart Report';
+									reportType = '<i class="fa fa-pie-chart"></i> Pie Chart Report';
 								}
 								else if ('X' == report.templateType){
 									reportType = 'Cross Tab Report';

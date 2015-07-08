@@ -46,3 +46,17 @@ function displayAjaxError(){
 	$('#ajaxErrorMsg').show();
 	
 }
+
+function getFormatDate(dateStr){
+	var formattedDate = '-';
+	
+	var dateInt = parseInt(dateStr);
+	
+	if(!isNaN(dateInt)){
+		var date = new Date(dateInt);
+		
+		formattedDate = date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate();
+	}
+	
+	return formattedDate;
+}
