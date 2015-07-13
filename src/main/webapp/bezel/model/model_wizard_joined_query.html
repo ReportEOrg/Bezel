@@ -13,104 +13,157 @@
 						<!-- main -->
 						<div class="content">
 							<div class="main-header">
-								<h2>New Model</h2>
-								<em>Creating a new logical data model for report datasource</em>
+								<h2>New Joined Query Model</h2>
+								<em>Creating a new logical data model for report datasource with joined query</em>
 							</div>
 							<div class="main-content">
 								<!-- WIDGET WIZARD -->
 								<div class="widget">
 									<div class="widget-header">
-										<h3><i class="fa fa-table"></i> New Model Wizard</h3>
+										<h3><i class="fa fa-table"></i> New Joined Query Model Wizard</h3>
 									</div>
 									<div class="widget-content">
 										<div class="wizard-wrapper">
+											<!--  WIZARD -->
 											<div id="model-wizard" class="wizard">
-												<ul class="steps">
-													<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Model Name<span class="chevron"></span></li>
-													<li data-target="#step2"><span class="badge">2</span>Data Source<span class="chevron"></span></li>
-													<li data-target="#step3"><span class="badge">3</span>Model Type<span class="chevron"></span></li>
-													<li data-target="#step4"><span class="badge">4</span>Attribute Mapping<span class="chevron"></span></li>
-													<li data-target="#step5" class="last"><span class="badge">5</span>Create Model</li>
-												</ul>
-											</div>
-											<div class="step-content">
-												<!-- STEP 1 -->
-												<div class="step-pane active" id="step1">
-													<form id="form1" data-parsley-validate novalidate>
-														<p>Please provide the follow details:</p>
-														<div class="row">
-															<div class="col-md-3">
-																<div class="form-group">
-																	<label for="modelName">Name *</label>
-																	<input type="text" id="modelName" class="form-control" required>
+												<!-- NAVIGATION -->
+												<div id="model-wizard-steps" style="overflow: hidden;">
+													<ul class="steps">
+														<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Model Name<span class="chevron"></span></li>
+														<li data-target="#step2"><span class="badge">2</span>Data Source<span class="chevron"></span></li>
+														<li data-target="#step3"><span class="badge">3</span>Joined Query<span class="chevron"></span></li>
+														<li data-target="#step4"><span class="badge">4</span>Attribute Mapping<span class="chevron"></span></li>
+														<li data-target="#step5" class="last"><span class="badge">5</span>Create Model</li>
+													</ul>
+												</div>
+												<!-- END NAVIGATION -->
+												<div class="step-content">
+													<!-- STEP 1 -->
+													<div class="step-pane active" id="step1">
+														<form id="form1" data-parsley-validate novalidate>
+															<p>Please provide the follow details:</p>
+															<div class="row">
+																<div class="col-md-10">
+																	<div class="form-group">
+																		<label for="modelName">Name *</label>
+																		<input type="text" id="modelName" style="width:50%;" maxlength="45" 
+																			   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#modelNameError">
+																		<div id="modelNameError" class="errorMessage"></div>
+																	</div>
+																	<div class="form-group">
+																		<label for="modelDesc">Description</label>
+																		<input type="text" id="modelDesc" class="form-control" data-parsley-errors-container="#modelDescError">
+																		<div id="modelDescError" class="errorMessage"></div>
+																	</div>
 																</div>
-																<div class="form-group">
-																	<label for="modelDesc">Description</label>
-																	<input type="text" id="modelDesc" class="form-control">
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 1 -->
+													<!-- STEP 2 -->
+													<div class="step-pane" id="step2">
+														<form id="form2" data-parsley-validate novalidate>
+															<p>Please select data source for model</p>
+															<div class="row">
+																<div class="col-md-3">
+																	<label for="datasource">Datasource *</label>
+																	<select id="datasource" class="form-control" required data-parsley-errors-container="#dataSourceError"></select>
+																	<div id="dataSourceError" class="errorMessage"></div>
 																</div>
 															</div>
-														</div>
-													</form>
-												</div>
-												<!-- END STEP 1 -->
-												<!-- STEP 2 -->
-												<div class="step-pane" id="step2">
-													<form id="form2" data-parsley-validate novalidate>
-														<p>Please select data source for model</p>
-														<div class="row">
-															<div class="col-md-3">
-																<label for="datasource">Datasource *</label>
-																<select id="datasource" class="form-control"></select>
+														</form>
+													</div>
+													<!-- END STEP 2 -->
+													<!-- STEP 3 -->
+													<div class="step-pane" id="step3">
+														<form id="form3" data-parsley-validate novalidate>
+															<p>Please provide the joined query</p>
+															<div class="row">
+																<div class="col-md-10">
+																	<textarea id="joined-query" class="form-control" row="6" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError"></textarea>
+																	<p class="help-block text-right js-textarea-help"><span class="text-muted"></span></p>
+																	<button type="button" id="validate-joined-query" class="btn btn-default">
+																		Validate Query
+																	</button>
+																	<div id="joinedQueryError" class="errorMessage"></div>
+																	<p></p>
+																	<div id="validate-query-result">
+																		<table id="preview-result-table" class="table table-sorting table-striped table-hover datatable" style="width:100%;"></table>
+																	</div>
+																</div>
 															</div>
-														</div>
-													</form>
-												</div>
-												<!-- END STEP 2 -->
-												<!-- STEP 3 -->
-												<div class="step-pane" id="step3">
-													<form id="form3" data-parsley-validate novalidate>
-														<p>Please select type for model</p>
-														<div class="row">
-															<div class="col-md-3">
-																<label class="fancy-radio">
-																	<input type="radio" name="model-type" value="simple" required data-parsley-errors-container="#error-step3">
-																	<span><i></i>Simple Table</span>
-																</label>
-																<label class="fancy-radio">
-																	<input type="radio" name="model-type" value="join">
-																	<span><i></i>Joined Query</span>
-																</label>
-																<p id="error-step3"></p>
+														</form>
+													</div>
+													<!-- END STEP 3 -->
+													<!-- STEP 4 -->
+													<div class="step-pane" id="step4">
+														<form id="form4" data-parsley-validate novalidate>
+															<p>Please define attribute(s) for model</p>
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<!-- <label for="modelAttributes"></label> -->
+																	<div>
+																		<table id="attrMapTable" class="table table-bordered table-striped">
+																		</table>
+																	</div>
+																	<!-- this is required for parsley validation -->
+																	<input type="text" id="checkAttribute" style="display: none;" data-parsley-errors-container="#noCheckError"/>
+																	<p id="noCheckError" class="errorMessage"></p>
+																</div>
 															</div>
-														</div>
-													</form>
-												</div>
-												<!-- END STEP 3 -->
-												<!-- STEP 4 -->
-												<div class="step-pane" id="step4">
-													<form id="form4" data-parsley-validate novalidate>
-														<p>Please define attribute for model</p>
-														<div class="row">
-															<div class="col-md-3">
-																<label for="modelName">Attributes *</label>
+														</form>
+													</div>
+													<!-- END STEP 4 -->
+													<!-- STEP 5 -->
+													<div class="step-pane" id="step5">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Description</span>
+																		<span id="finalModelDesc" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Data Source</span>
+																		<span id="finalDataSource" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Joined Query</span>
+																		<span id="finalQuery" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																	<p class="data-row">
+																		<table id="attrFinalTable" class="table table-bordered table-striped">
+																		</table>
+																	</p>
+																</div>
 															</div>
-														</div>
-													</form>
+														</form>
+													</div>
+													<!-- END STEP 5 -->
 												</div>
-												<!-- END STEP 4 -->
-												<!-- STEP 5 -->
-												<div class="step-pane" id="step5">
-												
+												<!-- STEP ACTION -->
+												<div class="actions">
+													<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
+													<button type="button" class="btn btn-primary btn-next" data-last="Create Model">Next <i class="fa fa-arrow-right"></i></button>
 												</div>
-												<!-- END STEP 5 -->
+												<!-- END STEP ACTION -->
 											</div>
-											<!-- STEP ACTION -->
-											<div class="actions">
-												<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
-												<button type="button" class="btn btn-primary btn-next">Next <i class="fa fa-arrow-right"></i></button>
-											</div>
-											<!-- END STEP ACTION -->
 										</div>
+										<!--  WIZARD -->
 									</div>
 								</div>
 								
@@ -120,11 +173,15 @@
 						<!-- /main -->
 					</div>
 					<!-- /content-wrapper -->
+				
+				
+
 	
 	<script type="text/javascript">
-		var datasources
 
-		var dataSourceListRequest = function(){
+		//AJAX function
+
+		var buildDataSourceOptions = function(){
 			//jquery ajax
 			$.ajax({
 				type: "GET",
@@ -132,7 +189,9 @@
 				
 				success: function(response){
 					if(response){
-						datasources = response.datasources;
+						var datasources = response.datasources;
+						
+						setBezelPageParam("datasources",datasources);
 						
 						if(datasources){
 							$("#datasource").empty();
@@ -148,49 +207,566 @@
 					}
 				}
 			});
+		};
+		
+		var verifyJoinQuery = function(){
+			
+			//prepare model var
+			var model = prepareModelForPreview();
+			
+			setBezelPageParam("model",model);
+			//clear preview result table
+			clearQueryResultPreviewTable();
+			
+
+			//jquery ajax - to derive model attributes
+			$.ajax({
+				type: "PUT",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/derivemodelattributes",
+				data: JSON.stringify(model),
+				contentType: "application/json",
+				crossDomain: true,
+				
+				success: function(response){
+					var attributeMaps = response.attributeBindings;
+					
+					setBezelPageParam("attributeMaps",attributeMaps);
+
+					//store returned formatted query						
+					model['query'] = response.query;
+
+				},
+				complete: function(jqXHR, textStatus){
+					
+					//if not success, restore the blocked
+					if("success" != textStatus){
+						console.log("fail derivemodelattributes");
+						var joinedQueryError = $("#joined-query").parsley();
+						//create custom parsley error message
+						window.ParsleyUI.addError(joinedQueryError,"joinedQueryError", "Unable to validate joined query");
+						
+						restoreBlockedItem();
+					}
+					//susccess, continue to generate preview
+					else{
+						console.log("success derivemodelattributes");
+						generateModelPreview();
+					}
+				}
+			});
+		};
+		
+		var generateModelPreview = function(){
+			
+			//jquery ajax - to derive model attributes
+			var model = getBezelPageParam("model");
+			
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/preview?maxRow=20",
+				data: JSON.stringify(model),
+				contentType: "application/json",
+				crossDomain: true,
+				
+				success: function(response){
+
+					console.log("success generateModelPreview");
+					var prvResultTable = $('#preview-result-table').DataTable({
+																				"destroy": true,
+																				searching : false,
+																				"sPaginationType" : "simple",
+																				"aLengthMenu" : [[5,10,15,-1],[5,10,15,"All"]],
+																				"data" : buildPreviewData(response.resultRowList, response.columnNameList),
+																				"columns" : buildPreviewTableColumnTitle(response.columnNameList)
+					});
+					
+					prvResultTable.draw();
+					$('#validate-query-result').show();
+
+				},
+				complete: function(jqXHR, textStatus){
+					
+					//if not success, restore the blocked
+					if("success" != textStatus){
+						
+					}
+					
+					//release blocked item
+					restoreBlockedItem();				
+				}
+			});
+		};
+		
+		var buildAttributeMap = function(){
+			
+			var model = getBezelPageParam("model");
+			
+			 $('#attrMapTable').empty();
+			//jquery ajax
+			$.ajax({
+				type: "PUT",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/derivemodelattributes",
+				data: JSON.stringify(model),
+				contentType: "application/json",
+				crossDomain: true,
+
+				success: function(response){
+					if(response){
+						var respAttributeMaps = response.attributeBindings;
+						
+						var tableDataSet = [];
+
+						var index;
+						
+						var attrTab = $('#attrMapTable').DataTable({
+							"destroy": true,
+							paging : false,
+							searching : false,
+							info:false,
+							"columns" : [
+											{"title":"Enable", data:null, render: "enable"},
+											{"title":"Table Field Name", data:null, render: "name"},
+											{"title":"Model Attribute Name", data:null, render: "aliasInput"}]
+						});
+						
+						//dynamically construct row
+						for(index = 0; index<respAttributeMaps.length; index++){
+							attrTab.row.add(new AttributeRow(index, respAttributeMaps[index].referencedColumn,respAttributeMaps[index].referencedColumn));
+						}
+						
+						attrTab.draw();
+						//*******************************************
+						/*	SWITCH INIT Rendering
+						/********************************************/
+						$('.switch-reportbay').bootstrapSwitch();
+					}
+				}
+			});
+		};
+		
+		var createModel = function(){
+			
+			var model = getBezelPageParam("model");
+			
+			updateModelSelectedAttributes(model);
+			
+			//jquery ajax
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/models",
+				data: JSON.stringify(model),
+				contentType: "application/json",
+				crossDomain: true,
+
+				success: function(response){
+					alert('New model has been created.');
+					window.location.assign("../model/model.html?group=Model&target=ManageModel")
+				},
+
+				error: function(jqXHR, textStatus, ex){
+					alert('Failed creation with error : '+textStatus+","+ex+","+jqXHR.responseText);
+				}
+			});
+		};
+		// END AJAX functions
+		function buildPreviewData(resultRowList, columnNameList){
+			var previewDataRows = [];
+			var rowResult;
+			var result;
+			
+			if(resultRowList && columnNameList &&
+			   $.isArray(resultRowList) && $.isArray(columnNameList)){
+				
+				for(var rowIdx=0; rowIdx<resultRowList.length; rowIdx++){
+					rowResult = resultRowList[rowIdx];
+					
+					if(rowResult){
+						var dataRow = [];
+						for(var colIdx=0; colIdx< columnNameList.length; colIdx++){
+							result = rowResult[columnNameList[colIdx]];
+							
+							if(result){
+								dataRow.push(result);
+							}
+							else{
+								dataRow.push('-');
+							}
+						}
+						
+						previewDataRows.push(dataRow);
+					}
+					
+				}
+			}
+			
+			console.log(previewDataRows);
+			return previewDataRows;
 		}
 		
-		dataSourceListRequest();
-	
+		function buildPreviewTableColumnTitle(columnNameList){
+			
+			var columnTitles = [];
+			
+			if(columnNameList && $.isArray(columnNameList)){
+				for(var idx=0; idx<columnNameList.length; idx++){
+					columnTitles.push(createTitle(columnNameList[idx]));
+				}
+			}
+			console.log(columnTitles);
+			return columnTitles;
+		}
+		
+		function createTitle(titleStr){
+			var title ={};
+			
+			title["title"]=titleStr;
+			
+			return title;
+		}
+		
+		function disableForValidation(){
+			
+			disableWizardStep();
+
+			$('#validate-joined-query').attr('disabled','disabled');
+			$('#joined-query').attr('disabled','disabled');
+		}
+		
+		function disableWizardStep(){
+			var $steps = $('#model-wizard').find('.steps li');
+			$steps.removeClass('active').removeClass('complete');
+			$steps.find('span.badge').removeClass('badge-info').removeClass('badge-success');
+			
+			$('.wizard-wrapper .btn-next').attr('disabled','disabled');
+			$('.wizard-wrapper .btn-prev').attr('disabled','disabled');
+		}
+		
+		function restoreBlockedItem(){
+			console.log("restoreBlockedItem");
+			
+			$('#validate-joined-query').removeAttr('disabled');
+			toggleNextForJoinQueryStep();
+			$('.wizard-wrapper .btn-prev').removeAttr('disabled');
+			$('#joined-query').removeAttr('disabled');
+			
+			//change wording
+			$('#validate-joined-query').html('Validate Query');
+			
+			
+			var currentStep = 3;
+			
+			var $wizard = $('#model-wizard');
+			// set class for all previous steps
+			var prevSelector = '.steps li:lt(' + (currentStep - 1) + ')';
+			var $prevSteps = $wizard.find(prevSelector);
+			$prevSteps.addClass('complete');
+			$prevSteps.find('span.badge').addClass('badge-success');
+			
+			// set class for current step
+			var currentSelector = '.steps li:eq(' + (currentStep - 1) + ')';
+			var $currentStep =  $wizard.find(currentSelector);
+			$currentStep.addClass('active');
+			$currentStep.find('span.badge').addClass('badge-info');
+		}
+		
+		function getDatasource(){
+			
+			var refDatasource;
+			var datasourceId = getBezelPageParam("datasourceId");
+			var datasources = getBezelPageParam("datasources");
+
+			if(datasourceId && datasources){
+				for(index = 0; index<datasources.length; index++){
+					var tempDatasource = datasources[index];
+					
+					if(tempDatasource.id == datasourceId){
+						refDatasource = tempDatasource;
+						break;
+					}
+				}
+			}
+			
+			return refDatasource;
+		}
+		
+		function prepareModelForPreview(){
+			var model = {};
+			model['id'] = '0';
+			model['name']=$("#modelName").val();
+			model['description']=$("#modelDesc").val();
+			model['datasource'] = getDatasource();
+			model['attributeBindings'] = new Array();
+			var modelQuery = {'id':0, 'value':'','joinQuery':$('#joined-query').val()};
+			model['query']=modelQuery;
+			model['approach']='JOIN_QUERY';
+			
+			console.log("model "+model);
+			
+			return model;
+		}
+		
+		function clearQueryResultPreviewTable(){
+			var prvTable = document.getElementById("preview-result-table");
+
+			$(prvTable).empty();
+			
+			$('#validate-query-result').hide();
+		}
+		
+		function toggleNextForJoinQueryStep(){
+			
+			var model = getBezelPageParam("model");
+			
+			if(model && model.query && model.query.value){
+				$('.wizard-wrapper .btn-next').removeAttr('disabled');
+			}
+			else{
+				$('.wizard-wrapper .btn-next').attr('disabled','disabled');
+			}
+		}
+		
+		function invalidateModelQuery(){
+			var model = getBezelPageParam("model");
+
+			if(model && model.query && model.query.value){
+				model.query.value = undefined;
+			}
+			
+			toggleNextForJoinQueryStep();
+		}
+		
+		function AttributeRow(idx, name, alias){
+			this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' checked data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
+			this._name = name;
+			this._alias_input = "<input type='text' id='alias_"+idx+"' value='"+alias+"' class='form-control' data-parsley-errors-container='#alias_"+idx+"_error'></input><div id='alias_"+idx+"_error' class='errorMessage'></div>";
+			this._alias = alias;
+			
+			this.enable = function(){
+				return this._enable;
+			};
+			this.name = function(){
+				return this._name;
+			};
+			this.alias = function(){
+				return this._alias;
+			};
+			this.aliasInput = function(){
+				return this._alias_input;
+			} 
+		}
+		
+		//attribute validation
+		function validateAttribute(){
+			var checkCount = 0;
+			var aliasExist = true;
+			var attributeMaps = getBezelPageParam("attributeMaps");
+			
+			//clear all error message
+			$("#form4").parsley().reset();
+			
+			//loop through the attribute row(s)
+			for(index = 0; index<attributeMaps.length; index++){
+				
+				//if enabled
+				if($("#attr_"+index).is(':checked')){
+					checkCount++;
+					
+					//if alias field is empty for enabled row
+					if($("#alias_"+index).val()==''){
+						aliasExist = false;
+						var failedAliasInput = $("#alias_"+index).parsley();
+
+						//create custom parsley error message for affected field
+						window.ParsleyUI.addError(failedAliasInput,"incompleteError"+index, "This field is required");
+					}
+				};
+			}
+			
+			//no attribute row enabled
+			if(checkCount==0){
+				
+				var checkError = $("#checkAttribute").parsley();
+				//create custom parsley error message
+				window.ParsleyUI.addError(checkError,"noCheckError", "At least one attribute must be enabled");
+			}
+			//at least 1 row enabled and all alias input value exist
+			if(checkCount>0 && aliasExist){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		
+		function updateConfirmationDetail(){
+			
+			clearConfirmationDetail();
+			
+			var attributeMaps = getBezelPageParam("attributeMaps");
+
+			$("#finalModelName").append($("#modelName").val());
+			$("#finalModelDesc").append($("#modelDesc").val());
+			$("#finalDataSource").append($("#datasource").find(":selected").text());
+			$("#finalQuery").append($("#joined-query").val());
+			
+			var attrTab = $('#attrFinalTable').DataTable({
+				"destroy": true,
+				paging : false,
+				searching : false,
+				ordering: false,
+				info:false,
+				"columns" : [
+								{"title":"Table Field Name", data:null, render: "name"},
+								{"title":"Model Attribute Name", data:null, render: "alias"}]
+			});
+			
+			for(index = 0; index<attributeMaps.length; index++){
+				
+				if($("#attr_"+index).is(':checked')){
+					attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,$("#alias_"+index).val()));
+				};
+			}
+			
+			attrTab.draw();
+		}
+		
+		function clearConfirmationDetail(){
+			$("#finalModelName").empty();
+			$("#finalModelDesc").empty();
+			$("#finalDataSource").empty();
+			$("#finalQuery").empty();
+			
+			$("#attrFinalTable").empty();
+		}
+		
+		function updateModelSelectedAttributes(model){
+			//clear attribute array
+			model['attributeBindings'].length=0;
+			
+			var attributeMaps = getBezelPageParam("attributeMaps");
+			var newOrder = 1;
+			
+			for(index = 0; index<attributeMaps.length; index++){
+				
+				if($("#attr_"+index).is(':checked')){
+					var attrMap = attributeMaps[index];
+					attrMap.alias = $("#alias_"+index).val();
+					attrMap.order = newOrder;
+
+					newOrder ++;
+
+					model['attributeBindings'].push(attrMap);
+				}
+			}
+		}
+		
+		/* end function definition */
+		
+
 		$(document).ready(function(){
+			
+			//clear page context before start
+			initBezelParamMap();
 	
 			//model wizard function
 			$('#model-wizard').on('change', function(e, data) {
-				// validation
-				if( $('#form'+data.step).length > 0 ) {
-					var parsleyForm = $('#form'+data.step).parsley();
-					parsleyForm.validate();
-	
-					if( !parsleyForm.isValid() )
-						return false;
-				}
-	
-				// last step button
-				$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
-	
-				if(data.step === 4 && data.direction == 'next') {
-					$btnNext.text(' Create New Model')
-					.prepend('<i class="fa fa-check-circle"></i>')
-					.removeClass('btn-primary').addClass('btn-success');
-				}else{
-					$btnNext.text('Next ').
-					append('<i class="fa fa-arrow-right"></i>')
-					.removeClass('btn-success').addClass('btn-primary');
+				
+				//if changes from step button
+				if(data && data.step){
+					// validation
+					if( $('#form'+data.step).length > 0 ) {
+						var parsleyForm = $('#form'+data.step).parsley();
+						parsleyForm.validate();
+		
+						if( !parsleyForm.isValid() )
+							return false;
+					}
+		
+					// last step button
+					$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
+					
+					var datasources = getBezelPageParam("datasources");
+					var model = getBezelPageParam("model");
+
+					if(data.step === 1 && data.direction == 'next' && !datasources){
+						buildDataSourceOptions();
+					}
+					else if(data.step === 2 && data.direction == 'next'){
+						//obtain selected datasource id
+						var datasourceId = $("#datasource").find(":selected").val();
+						
+						setBezelPageParam("datasourceId",datasourceId);
+						//update next button according to whether query validated
+						toggleNextForJoinQueryStep();
+					}
+					else if(data.step === 3 && data.direction == 'next') {
+
+						buildAttributeMap();
+					}
+					else if(data.step === 4 && data.direction == 'next') {
+						
+						//if failed attr validation
+						if(!validateAttribute())
+							return false;
+						
+						updateConfirmationDetail();
+					}
 				}
 	
 			}).on('finished', function(){
-				alert('New model has been created.');
+				disableForValidation();
+				createModel();
+			}).on('stepclick', function(e, data){
+				if(data){
+					if(data.step < 3){
+						$('.wizard-wrapper .btn-next').removeAttr('disabled');
+					}
+				}
 			});
-	
-			$('.wizard-wrapper .btn-next').click( function(){
-				$('#model-wizard').wizard('next');
+
+			
+			$('#joined-query').keyup(function() {
+				var joinedQueryTextArea = $('#joined-query');
+				
+				//handle updating remaining character
+				var textLength = joinedQueryTextArea.val().length;
+				
+				var maxLengthStr = joinedQueryTextArea.attr("maxlength");
+				
+				if(maxLengthStr && !isNaN(maxLengthStr)){
+					var maxLength = parseInt(maxLengthStr);
+					
+					$('.js-textarea-help span').html((maxLength-textLength) + ' characters remaining');
+				}
+				
+				//clear validating query result table and hide 
+				clearQueryResultPreviewTable();
+				
+				//invalidate model query
+				invalidateModelQuery();
 			});
-	
-			$('.wizard-wrapper .btn-prev').click( function(){
-				$('#model-wizard').wizard('previous');
+			
+			//validate button click event handler
+			$('#validate-joined-query').click(function(){
+				
+				//perform validation on join query step (3) form
+				var parsleyForm = $('#form3').parsley();
+				parsleyForm.reset();
+				parsleyForm.validate();
+
+				if( !parsleyForm.isValid() )
+					return false;
+
+				var btn = $(this);
+				
+				//change wording
+				$(btn).html('<i class="fa fa-spinner fa-pulse"></i>Validating Query ...');
+				disableForValidation();
+				
+				verifyJoinQuery();
+				
 			});
 		});
-	
-	
+		
 	</script>
 
