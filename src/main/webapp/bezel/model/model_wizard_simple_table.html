@@ -23,127 +23,139 @@
 									</div>
 									<div class="widget-content">
 										<div class="wizard-wrapper">
+											<!-- WIZARD -->
 											<div id="model-wizard" class="wizard">
-												<ul class="steps">
-													<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Model Name<span class="chevron"></span></li>
-													<li data-target="#step2"><span class="badge">2</span>Data Source<span class="chevron"></span></li>
-													<li data-target="#step3"><span class="badge">3</span>Table<span class="chevron"></span></li>
-													<li data-target="#step4"><span class="badge">4</span>Attribute Mapping<span class="chevron"></span></li>
-													<li data-target="#step5" class="last"><span class="badge">5</span>Create Model</li>
-												</ul>
-											</div>
-											<div class="step-content">
-												<!-- STEP 1 Model Name -->
-												<div class="step-pane active" id="step1">
-													<form id="form1" data-parsley-validate novalidate>
-														<p>Please provide the follow details:</p>
-														<div class="row">
-															<div class="col-md-10">
-																<div class="form-group">
-																	<label for="modelName">Name *</label>
-																	<input type="text" id="modelName" style="width:50%;" maxlength="45" class="form-control" data-parsley-length="[5,45]" required>
+												<!-- NAVIGATION -->
+												<div id="model-wizard-steps" style="overflow: hidden;">
+													<ul class="steps">
+														<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Model Name<span class="chevron"></span></li>
+														<li data-target="#step2"><span class="badge">2</span>Data Source<span class="chevron"></span></li>
+														<li data-target="#step3"><span class="badge">3</span>Table<span class="chevron"></span></li>
+														<li data-target="#step4"><span class="badge">4</span>Attribute Mapping<span class="chevron"></span></li>
+														<li data-target="#step5" class="last"><span class="badge">5</span>Create Model</li>
+													</ul>
+												</div>
+												<div class="step-content">
+													<!-- STEP 1 Model Name -->
+													<div class="step-pane active" id="step1">
+														<form id="form1" data-parsley-validate novalidate>
+															<p>Please provide the follow details:</p>
+															<div class="row">
+																<div class="col-md-10">
+																	<div class="form-group">
+																		<label for="modelName">Name *</label>
+																		<input type="text" id="modelName" style="width:50%;" maxlength="45" 
+																			   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#modelNameError">
+																		<div id="modelNameError" class="errorMessage"></div>
+																	</div>
+																	<div class="form-group">
+																		<label for="modelDesc">Description</label>
+																		<input type="text" id="modelDesc" class="form-control" data-parsley-errors-container="#modelDescError">
+																		<div id="modelDescError" class="errorMessage"></div>
+																	</div>
 																</div>
-																<div class="form-group">
-																	<label for="modelDesc">Description</label>
-																	<input type="text" id="modelDesc" class="form-control">
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 1 -->
+													<!-- STEP 2 Datasource -->
+													<div class="step-pane" id="step2">
+														<form id="form2" data-parsley-validate novalidate>
+															<p>Please select data source for model</p>
+															<div class="row">
+																<div class="col-md-3">
+																	<label for="datasource">Datasource *</label>
+																	<select id="datasource" class="form-control" onchange="resetTableOption()" 
+																	        required data-parsley-errors-container="#dataSourceError"></select>
+																	<div id="dataSourceError" class="errorMessage"></div>
 																</div>
 															</div>
-														</div>
-													</form>
-												</div>
-												<!-- END STEP 1 -->
-												<!-- STEP 2 Datasource -->
-												<div class="step-pane" id="step2">
-													<form id="form2" data-parsley-validate novalidate>
-														<p>Please select data source for model</p>
-														<div class="row">
-															<div class="col-md-3">
-																<label for="datasource">Datasource *</label>
-																<select id="datasource" class="form-control" onchange="resetTableOption()" required></select>
-															</div>
-														</div>
-													</form>
-												</div>
-												<!-- END STEP 2 -->
-												<!-- STEP 3 Table -->
-												<div class="step-pane" id="step3">
-													<form id="form3" data-parsley-validate novalidate>
-														<p>Please select table for model</p>
-														<div class="row">
-															<div class="col-md-3">
-																<label for="modeltable">Table *</label>
-																<select id="modeltable" class="form-control" onchange="resetAttributeMap()" required></select>
-															</div>
-														</div>
-													</form>
-												</div>
-												<!-- END STEP 3 -->
-												<!-- STEP 4 Attribute -->
-												<div class="step-pane" id="step4">
-													<form id="form4" data-parsley-validate novalidate>
-														<p>Please define attribute(s) for model</p>
-														<div class="row">
-															<div class="col-md-6 widget-content">
-																<!-- <label for="modelAttributes"></label> -->
-																<div>
-																	<table id="attrMapTable" class="table table-bordered table-striped">
-																	</table>
+														</form>
+													</div>
+													<!-- END STEP 2 -->
+													<!-- STEP 3 Table -->
+													<div class="step-pane" id="step3">
+														<form id="form3" data-parsley-validate novalidate>
+															<p>Please select table for model</p>
+															<div class="row">
+																<div class="col-md-3">
+																	<label for="modeltable">Table *</label>
+																	<select id="modeltable" class="form-control" onchange="resetAttributeMap()" 
+																	        required data-parsley-errors-container="#modelTableError"></select>
+																	<div id="modelTableError" class="errorMessage"></div>
 																</div>
-																<!-- this is required for parsley validation -->
-																<input type="text" id="checkAttribute" style="display: none;" data-parsley-errors-container="#noCheckError"/>
-																<p id="noCheckError"></p>
 															</div>
-														</div>
-													</form>
+														</form>
+													</div>
+													<!-- END STEP 3 -->
+													<!-- STEP 4 Attribute -->
+													<div class="step-pane" id="step4">
+														<form id="form4" data-parsley-validate novalidate>
+															<p>Please define attribute(s) for model</p>
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<!-- <label for="modelAttributes"></label> -->
+																	<div>
+																		<table id="attrMapTable" class="table table-bordered table-striped">
+																		</table>
+																	</div>
+																	<!-- this is required for parsley validation -->
+																	<input type="text" id="checkAttribute" style="display: none;" data-parsley-errors-container="#noCheckError"/>
+																	<p id="noCheckError" class="errorMessage"></p>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 4 -->
+													<!-- STEP 5 Confirmation -->
+													<div class="step-pane" id="step5">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Description</span>
+																		<span id="finalModelDesc" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Data Source</span>
+																		<span id="finalDataSource" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Table</span>
+																		<span id="finalTable" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																	<p class="data-row">
+																		<table id="attrFinalTable" class="table table-bordered table-striped">
+																		</table>
+																	</p>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 5 -->
 												</div>
-												<!-- END STEP 4 -->
-												<!-- STEP 5 Confirmation -->
-												<div class="step-pane" id="step5">
-													<form id="form5">
-														<div class="row">
-															<div class="col-md-6 widget-content">
-																<h4>
-																	<i class="fa fa-square"></i>
-																	Basic Information
-																</h4>
-																<p class="data-row">
-																	<span class="data-name">Name</span>
-																	<span id="finalModelName" class="data-value"></span>
-																</p>
-																<p class="data-row">
-																	<span class="data-name">Description</span>
-																	<span id="finalModelDesc" class="data-value"></span>
-																</p>
-																<p class="data-row">
-																	<span class="data-name">Data Source</span>
-																	<span id="finalDataSource" class="data-value"></span>
-																</p>
-																<p class="data-row">
-																	<span class="data-name">Table</span>
-																	<span id="finalTable" class="data-value"></span>
-																</p>
-															</div>
-															<div class="col-md-6 widget-content">												
-																<h4>
-																	<i class="fa fa-square"></i>
-																	Attribute(s) Information
-																</h4>
-																<p class="data-row">
-																	<table id="attrFinalTable" class="table table-bordered table-striped">
-																	</table>
-																</p>
-															</div>
-														</div>
-													</form>
+												<!-- STEP ACTION -->
+												<div class="actions">
+													<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
+													<button type="button" class="btn btn-primary btn-next" data-last="Create Model">Next <i class="fa fa-arrow-right"></i></button>
 												</div>
-												<!-- END STEP 5 -->
+												<!-- END STEP ACTION -->
 											</div>
-											<!-- STEP ACTION -->
-											<div class="actions">
-												<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
-												<button type="button" class="btn btn-primary btn-next">Next <i class="fa fa-arrow-right"></i></button>
-											</div>
-											<!-- END STEP ACTION -->
+											<!-- END WIZARD -->
 										</div>
 									</div>
 								</div>
@@ -157,13 +169,8 @@
 				
 	
 	<script type="text/javascript">
-		var datasourceId;
-		var tableIdx;
-		var model;
+
 		//AJAX functions
-		var datasources
-		var tables;
-		var attributeMaps;
 
 		var buildDataSourceOptions = function(){
 			//jquery ajax
@@ -173,7 +180,9 @@
 				
 				success: function(response){
 					if(response){
-						datasources = response.datasources;
+						var datasources = response.datasources;
+						
+						setBezelPageParam("datasources",datasources);
 						
 						if(datasources){
 							$("#datasource").empty();
@@ -189,9 +198,9 @@
 					}
 				}
 			});
-		}
+		};
 		
-		var buildTableOptions = function(){
+		var buildTableOptions = function(datasourceId){
 			//jquery ajax
 			$.ajax({
 				type: "GET",
@@ -199,7 +208,9 @@
 				
 				success: function(response){
 					if(response){
-						tables = response.tables;
+						var tables = response.tables;
+						
+						setBezelPageParam("tables",tables);
 						
 						if(tables){
 							$("#modeltable").empty();
@@ -215,9 +226,9 @@
 					}
 				}
 			});
-		} 
+		};
 		
-		var buildAttributeMap = function(){
+		var buildAttributeMap = function(model){
 			//jquery ajax
 			$.ajax({
 				type: "PUT",
@@ -228,7 +239,9 @@
 
 				success: function(response){
 					if(response){
-						attributeMaps = response.attributeBindings;
+						var attributeMaps = response.attributeBindings;
+						
+						setBezelPageParam("attributeMaps",attributeMaps);
 						
 						var tableDataSet = [];
 
@@ -258,11 +271,13 @@
 					}
 				}
 			});
-		}
+		};
 		
 		var createModel = function(){
 			
-			updateModelSelectedAttributes();
+			var model = getBezelPageParam("model");
+			
+			updateModelSelectedAttributes(model);
 			
 			//jquery ajax
 			$.ajax({
@@ -274,53 +289,59 @@
 
 				success: function(response){
 					alert('New model has been created.');
-					window.location.assign("../model/model.html")
+					window.location.assign("../model/model.html?group=Model&target=ManageModel")
 				},
 
 				error: function(jqXHR, textStatus, ex){
 					alert('Failed creation with error : '+textStatus+","+ex+","+jqXHR.responseText);
 				}
 			});
-		}
+		};
 		//End AJAX functions
 		
 		//reset table option on database change
 		function resetTableOption(){
-			tables = undefined;
+			setBezelPageParam("tables",undefined);
 		}
+
 		//reset attribute map on table change
 		function resetAttributeMap(){
-			attributeMaps = undefined;
+			setBezelPageParam("attributeMaps", undefined);
 		}
 		
 		
-		function constructAttributeMap(){
+		function constructAttributeMap(tableIdx, tables){
+			
 			var table = tables[tableIdx];
 			
 			if(table){
 				//prepare REST request body
-				model = {};
+				var model = {};
 				model['id'] = '0';
 				model['name']=$("#modelName").val();
-				model['description']=$("#modelDesc").val();
+				model['description']=$("#stModelDesc").val();
 				model['datasource'] = getDatasource();
 				model['attributeBindings'] = new Array();
-				var modelQuery = {'id':0, 'value':'','joinQuery':''};
-				model['query']=modelQuery;
+				var stModelQuery = {'id':0, 'value':'','joinQuery':''};
+				model['query']=stModelQuery;
 				model['table']=table.name;
 				model['approach']='SINGLE_TABLE';
 				
+				setBezelPageParam("model", model);
+				
 				//REST call
-				buildAttributeMap();
+				buildAttributeMap(model);
 			}
 		}
 		
 		
 		
 		function AttributeRow(idx, name, alias){
-			this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' checked class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'>";
+			this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' checked data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
 			this._name = name;
-			this._alias_input = "<input type='text' id='alias_"+idx+"' value='"+alias+"' class='form-control'></input>";
+			this._alias_input = "<input type='text' id='alias_"+idx+"' value='"+alias+"' class='form-control' data-parsley-errors-container='#alias_"+idx+"_error'>"+
+			                    "</input><div id='alias_"+idx+"_error' class='errorMessage'></div>";
+			
 			this._alias = alias;
 			
 			this.enable = function(){
@@ -340,6 +361,8 @@
 		function getDatasource(){
 			
 			var refDatasource;
+			var datasourceId = getBezelPageParam("datasourceId");
+			var datasources = getBezelPageParam("datasources");
 			
 			if(datasourceId && datasources){
 				for(index = 0; index<datasources.length; index++){
@@ -359,12 +382,13 @@
 		function validateAttribute(){
 			var checkCount = 0;
 			var aliasExist = true;
-			
+			var attributeMaps = getBezelPageParam("attributeMaps");
+
 			//clear all error message
 			$("#form4").parsley().reset();
 			
 			//loop through the attribute row(s)
-			for(index = 0; index<attributeMaps.length; index++){
+			for(index = 0; index < attributeMaps.length; index++){
 				
 				//if enabled
 				if($("#attr_"+index).is(':checked')){
@@ -401,6 +425,9 @@
 			
 			clearConfirmationDetail();
 
+			var tableIdx = getBezelPageParam("tableIdx");
+			var tables = getBezelPageParam("tables");
+
 			$("#finalModelName").append($("#modelName").val());
 			$("#finalModelDesc").append($("#modelDesc").val());
 			$("#finalDataSource").append($("#datasource").find(":selected").text());
@@ -416,6 +443,8 @@
 								{"title":"Table Field Name", data:null, render: "name"},
 								{"title":"Model Attribute Name", data:null, render: "alias"}]
 			});
+			
+			var attributeMaps = getBezelPageParam("attributeMaps");
 			
 			for(index = 0; index<attributeMaps.length; index++){
 				
@@ -436,9 +465,11 @@
 			$("#attrFinalTable").empty();
 		}
 		
-		function updateModelSelectedAttributes(){
+		function updateModelSelectedAttributes(model){
 			//clear attribute array
 			model['attributeBindings'].length=0;
+			
+			var attributeMaps = getBezelPageParam("attributeMaps");
 			
 			var newOrder = 1;
 			for(index = 0; index<attributeMaps.length; index++){
@@ -455,72 +486,83 @@
 			}
 		}
 		
+		function disableWizardStep(){
+			var $steps = $('#model-wizard').find('.steps li');
+			$steps.removeClass('active').removeClass('complete');
+			$steps.find('span.badge').removeClass('badge-info').removeClass('badge-success');
+			
+			$('.wizard-wrapper .btn-next').attr('disabled','disabled');
+			$('.wizard-wrapper .btn-prev').attr('disabled','disabled');
+		}
 		
 		
 		$(document).ready(function(){
-	
+			
+			//clear page context before start
+			initBezelParamMap();
+			
 			//model wizard function
 			$('#model-wizard').on('change', function(e, data) {
-				// validation
-				if( $('#form'+data.step).length > 0 ) {
-					var parsleyForm = $('#form'+data.step).parsley();
-					parsleyForm.validate();
-	
-					if( !parsleyForm.isValid() )
-						return false;
-				}
-	
-				// last step button
-				$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
-	
-				if(data.step == 1 && data.direction == 'next' && !datasources){
-					buildDataSourceOptions();
-				}
-				else if(data.step == 2 && data.direction == 'next' && !attributeMaps) {
-					//obtain selected datasource id
-					datasourceId = $("#datasource").find(":selected").val();
-					
-					if(datasourceId){
-						buildTableOptions();
+				
+				//if changes from step button
+				if(data && data.step){
+					// validation
+					if( $('#form'+data.step).length > 0 ) {
+						var parsleyForm = $('#form'+data.step).parsley();
+						parsleyForm.validate();
+		
+						if( !parsleyForm.isValid() )
+							return false;
 					}
-				}
-				else if(data.step == 3 && data.direction == 'next' && tables) {
-					//obtain selected table index
-					tableIdx = $("#modeltable").find(":selected").val();
+		
+					// last step button
+					$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
 					
-					if(tableIdx){
-						$("#attrMapTable").empty();
-						constructAttributeMap();
+					var datasources = getBezelPageParam("datasources")
+					var tables = getBezelPageParam("tables");
+					var attributeMaps = getBezelPageParam("attributeMaps");
+		
+					if(data.step === 1 && data.direction == 'next' && !datasources){
+						buildDataSourceOptions();
 					}
-				}
-				else if(data.step == 4 && data.direction == 'next') {
-					
-					//if failed attr validation
-					if(!validateAttribute())
-						return false;
-					
-					updateConfirmationDetail();
-
-					$btnNext.text(' Create New Model')
-					.prepend('<i class="fa fa-check-circle"></i>')
-					.removeClass('btn-primary').addClass('btn-success');
-				}else{
-					$btnNext.text('Next ').
-					append('<i class="fa fa-arrow-right"></i>')
-					.removeClass('btn-success').addClass('btn-primary');
+					else if(data.step === 2 && data.direction == 'next' && !tables) {
+						//obtain selected datasource id
+						var datasourceId = $("#datasource").find(":selected").val();
+						
+						setBezelPageParam("datasourceId",datasourceId);
+						
+						if(datasourceId){
+							buildTableOptions(datasourceId);
+						}
+					}
+					else if(data.step === 3 && data.direction == 'next' && !attributeMaps) {
+						//obtain selected table index
+						var tableIdx = $("#modeltable").find(":selected").val();
+						
+						console.log("tableIdx "+tableIdx);
+						
+						setBezelPageParam("tableIdx",tableIdx);
+						
+						if(tableIdx){
+							$("#attrMapTable").empty();
+							constructAttributeMap(tableIdx, tables);
+						}
+					}
+					else if(data.step === 4 && data.direction == 'next') {
+						
+						//if failed attr validation
+						if(!validateAttribute())
+							return false;
+						
+						updateConfirmationDetail();
+					}
 				}
 	
 			}).on('finished', function(){
+				disableWizardStep();
 				createModel();
 			});
 	
-			$('.wizard-wrapper .btn-next').click( function(){
-				$('#model-wizard').wizard('next');
-			});
-	
-			$('.wizard-wrapper .btn-prev').click( function(){
-				$('#model-wizard').wizard('previous');
-			});
 		});
 	
 	

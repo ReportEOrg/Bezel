@@ -1,0 +1,20 @@
+.errorMessage ul {
+	width: auto;
+}
+
+.errorMessage ul li {
+	color: #DB3833;
+	font-size: 0.9em;
+	margin-top: 3px;
+	list-style-image: none;
+	list-style-type: none;
+	margin-left: 0px;
+	display: inline-block;
+	vertical-align: middle;
+	white-space: nowrap;
+	line-height: 1.42857;
+	background: transparent;
+	padding: 5px 0px 5px 0px;
+	padding-left: 0px !important;
+	height: auto;
+}

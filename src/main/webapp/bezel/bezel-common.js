@@ -60,3 +60,29 @@ function getFormatDate(dateStr){
 	
 	return formattedDate;
 }
+
+/** wrapper function for "page context" variable(s) **/
+var bezelParamMap = new Map();
+
+function initBezelParamMap(){
+	
+	if(!bezelParamMap){
+		bezelParamMap = new Map();
+	}
+	else{
+		//Note: min. browser FF 19 Chrome 38 IE 11 Safari 7.1
+		bezelParamMap.clear();
+	}
+}
+
+function setBezelPageParam(key, value){
+	
+	if(!bezelParamMap){
+		bezelParamMap = new Map();
+	}
+	bezelParamMap.set(key, value);
+}
+
+function getBezelPageParam(key){
+	return bezelParamMap.get(key);
+}
