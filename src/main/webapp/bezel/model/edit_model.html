@@ -68,6 +68,7 @@
 																<div id="modelTableError" class="errorMessage"></div>
 															</div>
 															<div class="form-group" id="joinedQueryField">
+																<label for="joined-query">Joined Query *</label>
 																<textarea id="joined-query" class="form-control" row="6" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError" style="resize:none;"></textarea>
 																<p class="help-block text-right js-textarea-help"><span class="text-muted"></span></p>
 																<button type="button" id="validate-joined-query" class="btn btn-default">
@@ -95,6 +96,10 @@
 															</div>
 														</fieldset>
 													</form>
+												</div>
+												
+												<div>
+													<button type='button' class='widget widget-header' style="float:right;" onclick="javascript:loadContent('model_content.html')"> Back </button>
 												</div>
 											</div>
 										</div>
@@ -278,9 +283,22 @@
 															{"title":"Model Attribute Name", data:null, render: "aliasInput"}]
 										});
 										
+										
+										var selectAttributes = getModelSelectedAttributes(model.attributeBindings);
 										//dynamically construct row
 										for(index = 0; index<attributeMaps.length; index++){
-											attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,attributeMaps[index].referencedColumn));
+											
+											var selAttrIndex = selectAttributes.indexOf(attributeMaps[index].referencedColumn);
+											var alias;
+											var checked = "";
+											if(selAttrIndex>-1){
+												alias = model.attributeBindings[selAttrIndex].alias;
+												checked = "checked";
+											}
+											else{
+												alias = attributeMaps[index].referencedColumn;
+											}
+											attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,alias, checked));
 										}
 										
 										attrTab.draw();
@@ -293,8 +311,8 @@
 							});
 						};
 						
-						function AttributeRow(idx, name, alias){
-							this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' checked data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
+						function AttributeRow(idx, name, alias, checked){
+							this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' "+checked+" data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
 							this._name = name;
 							this._alias_input = "<input type='text' id='alias_"+idx+"' value='"+alias+"' class='form-control' data-parsley-errors-container='#alias_"+idx+"_error'>"+
 							                    "</input><div id='alias_"+idx+"_error' class='errorMessage'></div>";
@@ -315,6 +333,20 @@
 							} 
 						}
 						
+						function getModelSelectedAttributes(modelAttrBindings){
+							
+							var selectedBindings = [];
+							
+							if(modelAttrBindings && $.isArray(modelAttrBindings)){
+								for(var index=0; index < modelAttrBindings.length; index++){
+									selectedBindings.push(modelAttrBindings[index].referencedColumn);
+								}
+							}
+							
+							
+							return selectedBindings;
+						}
+
 					
 						$(document).ready(function(){
 
