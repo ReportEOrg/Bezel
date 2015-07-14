@@ -18,3 +18,9 @@
 	padding-left: 0px !important;
 	height: auto;
 }
+
+.modelActionButton{
+	padding: 0px!important; 
+	margin-bottom: 0px!important;
+	height: 20px!important;
+}

@@ -1,0 +1,217 @@
+
+					<!-- end top general alert -->
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Model</li>
+									<li class="active"><a href="javascript:loadContent('model_content.html');">Manage Model</a></li>
+									<li class="active">View Model</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Model</h2>
+								<em>Logical data model for report datasource(s)</em>
+							</div>
+							<div class="main-content">
+
+								<!-- ROW -->
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET TABLE -->
+										<div class="widget widget-table">
+											<div class="widget-header">
+												<h3><i class="fa fa-eye"></i> View Model</h3>
+												<div class="btn-group widget-header-toolbar">
+													<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
+													<!-- <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a> -->
+													<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
+												</div>
+											</div>
+											<div class="widget-content">
+												<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
+												</div>
+												<div id="loading" style="text-align: center;">
+													<i class="fa fa-spinner fa-pulse fa-2x"></i>
+												</div>
+												<div id="model-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Description</span>
+																		<span id="finalModelDesc" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Data Source</span>
+																		<span id="finalDataSource" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span id="finalTableLabel" class="data-name" ></span>
+																		<span id="finalTable" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																	<p class="data-row">
+																		<table id="attrFinalTable" class="table table-bordered table-striped">
+																		</table>
+																	</p>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- END WIDGET TABLE -->
+
+									</div>
+								</div>
+								<!-- END ROW -->
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+						
+						
+						
+					</div>
+					<!-- /content-wrapper -->
+	
+					<script type="text/javascript">
+						var viewModelById = function(modelId){
+							
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+								
+								success: function(response){
+									if(response){
+										var model = response;
+										
+										setBezelPageParam("model", model);
+										
+										if(model){
+											
+											updateViewModelDetail(model);
+											
+											$("#model-view-detail").show();
+										}
+									}
+								},
+								complete: function(jqXHR, textStatus){
+									
+									$('#loading').hide();
+									
+									if("success" != textStatus){
+										displayAjaxError();
+									}
+								}
+							});
+						}
+						
+						function updateViewModelDetail(model){
+							
+							$("#finalModelName").append(model.name);
+							$("#finalModelDesc").append(model.description);
+							$("#finalDataSource").append(getDatasourceName(model.datasource));
+							
+							if("SINGLE_TABLE" == model.approach){
+								$("#finalTableLabel").append("Table");
+								$("#finalTable").append(model.table);
+							}
+							else if("JOIN_QUERY" == model.approach){
+								$("#finalTableLabel").append("Joined Query");
+								$("#finalTable").append(getJoinedQuery(model.query));
+							}
+							
+							var attrTab = $('#attrFinalTable').DataTable({
+								"destroy": true,
+								paging : false,
+								searching : false,
+								ordering: false,
+								info:false,
+								"columns" : [
+												{"title":"Table Field Name", data:null, render: "name"},
+												{"title":"Model Attribute Name", data:null, render: "alias"}]
+							});
+							
+							var attributeMaps = model.attributeBindings;
+
+							if(attributeMaps){
+								for(index = 0; index<attributeMaps.length; index++){
+									attrTab.row.add(new AttributeRow(attributeMaps[index].referencedColumn,attributeMaps[index].alias));
+								}
+								
+								attrTab.draw();
+							}
+						}
+						
+						function AttributeRow(name, alias){
+							this._name = name;
+							this._alias = alias;
+							
+							this.name = function(){
+								return this._name;
+							};
+							this.alias = function(){
+								return this._alias;
+							};
+						}
+						
+						function getDatasourceName(datasource){
+							var name="-";
+							
+							if(datasource){
+								name = datasource.name;
+							}
+							
+							return name;
+						}
+						
+						function getJoinedQuery(modelQuery){
+							var query = "-";
+							
+							if(modelQuery){
+								query = modelQuery.joinQuery;								
+							}
+							
+							return query;
+						}
+						
+					
+						$(document).ready(function(){
+
+							var model = getBezelPageParam("model");
+							//clear page context before start
+							initBezelParamMap();
+							
+							if(model){
+								var title = $(".widget-header h3").html();
+								
+								$(".widget-header h3").html((title+" - "+model.name));
+								
+								viewModelById(model.id);
+							}
+
+						});
+					</script>

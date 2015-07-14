@@ -51,6 +51,9 @@
 							<!-- /main-content -->
 						</div>
 						<!-- /main -->
+						
+						
+						
 					</div>
 					<!-- /content-wrapper -->
 	
@@ -58,7 +61,7 @@
 					
 						//retrive model list AJAX function
 						var modelListRequest = function(){
-							
+							$('#model-table').empty();
 							//jquery ajax
 							$.ajax({
 								type: "GET",
@@ -68,6 +71,8 @@
 									if(response){
 										var models = response.models;
 										
+										setBezelPageParam("models", models);
+										
 										if(models){
 											
 											var index;
@@ -76,10 +81,32 @@
 											
 											for(index =0; index < models.length; index++){
 												//for each of model create elements
-												tableDataSet.push(createModelRow(models[index]));
+												tableDataSet.push(createModelRow(models[index], index));
 											}
 											
 											renderTable(tableDataSet);
+											
+											$("#model-table").find('button').on('click', function(){
+												var action = $(this).data('action');
+												var reference = $(this).data('reference');
+												
+												var refIdx = parseInt(reference);
+												var model = getModelByIndex(refIdx);
+												
+												switch (action){
+													case "view":
+														setBezelPageParam("model", model);
+														loadContent("view_model.html");
+														break;
+													case "edit":
+														setBezelPageParam("model", model);
+														loadContent("edit_model.html");
+														break;
+													case "delete":
+														confirm("Are you sure you want to delete this model?");
+														break;
+												}
+											});
 											
 										}
 									}
@@ -98,7 +125,7 @@
 							
 						}
 						
-						function createModelRow(model){
+						function createModelRow(model, index){
 							
 							var rowDataSet = [];
 							
@@ -106,10 +133,13 @@
 							rowDataSet.push(getModelType(model));
 							rowDataSet.push(getDataSource(model));
 							rowDataSet.push(model.description);
+							rowDataSet.push("<button type='button' class='widget widget-header modelActionButton' data-action='view' data-reference='"+index+"'><i class='fa fa-eye' style='margin-left: 5px;'></i></button> "+
+											"<button type='button' class='widget widget-header modelActionButton' data-action='edit' data-reference='"+index+"'><i class='fa fa-pencil' style='margin-left: 5px;'></i></button> "+
+											"<button type='button' class='widget widget-header modelActionButton' data-action='delete' data-reference='"+index+"'><i class='fa fa-trash' style='margin-left: 5px;'></i></button> ")
 				
 							return rowDataSet;
 						}
-						
+
 						function getModelType(model){
 							var modelType = '-';
 				
@@ -136,17 +166,39 @@
 							return dataSourceName;
 						}
 						
+						function getModelByIndex(index){
+							
+							var model = undefined;
+							
+							if(index && !isNaN(index)){
+								var models = getBezelPageParam("models")
+								
+								model = models[index];
+							}
+							
+							return model;
+						}
+						
 						function renderTable(tableDataSet){
 							$('#model-table').dataTable({
+								"destroy": true,
 								"data": tableDataSet,
 								"columns" : [
-									{"title":"Name"},
-									{"title":"Type"},
-									{"title":"Datasource"},
-									{"title":"Description"}
+									{"title":"Name","width":"20%"},
+									{"title":"Type","width":"10%"},
+									{"title":"Datasource","width":"15%"},
+									{"title":"Description"},
+									{"title":"Action","orderable":false, "width":"10%"}
 								]
 							});
 						}
 						
-						modelListRequest();
+
+						$(document).ready(function(){
+							
+							//clear page context before start
+							initBezelParamMap();
+							
+							modelListRequest();							
+						});
 					</script>

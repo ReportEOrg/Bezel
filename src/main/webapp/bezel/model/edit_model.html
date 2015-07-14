@@ -1,0 +1,335 @@
+
+					<!-- end top general alert -->
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Model</li>
+									<li class="active"><a href="javascript:loadContent('model_content.html');">Manage Model</a></li>
+									<li class="active">Edit Model</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Model</h2>
+								<em>Logical data model for report datasource(s)</em>
+							</div>
+							<div class="main-content">
+
+								<!-- ROW -->
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET TABLE -->
+										<div class="widget widget-table">
+											<div class="widget-header">
+												<h3><i class="fa fa-pencil"></i> Edit Model</h3>
+												<div class="btn-group widget-header-toolbar">
+													<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
+													<!-- <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a> -->
+													<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
+												</div>
+											</div>
+											<div class="widget-content">
+												<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
+												</div>
+												<div id="loading" style="text-align: center;">
+													<i class="fa fa-spinner fa-pulse fa-2x"></i>
+												</div>
+												<div id="model-edit-detail" style="display: none;">
+													<form role="form">
+														<!-- General Info -->
+														<fieldset>
+															<legend>Model General Information</legend>
+															<div class="form-group">
+																<label for="modelName">Name *</label>
+																<input type="text" id="modelName" style="width:50%;" maxlength="45" 
+																	   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#modelNameError">
+																<div id="modelNameError" class="errorMessage"></div>
+															</div>
+															<div class="form-group">
+																<label for="modelDesc">Description</label>
+																<input type="text" id="modelDesc" class="form-control" data-parsley-errors-container="#modelDescError">
+																<div id="modelDescError" class="errorMessage"></div>
+															</div>
+															<div class="form-group">
+																<label for="datasource">Datasource *</label>
+																<select id="datasource" class="form-control" onchange="resetTableOption()" 
+																        required data-parsley-errors-container="#dataSourceError"></select>
+																<div id="dataSourceError" class="errorMessage"></div>
+															</div>
+															<div class="form-group" id="tableField">
+																<label for="modeltable">Table *</label>
+																<select id="modeltable" class="form-control" onchange="resetAttributeMap()" 
+																        required data-parsley-errors-container="#modelTableError"></select>
+																<div id="modelTableError" class="errorMessage"></div>
+															</div>
+															<div class="form-group" id="joinedQueryField">
+																<textarea id="joined-query" class="form-control" row="6" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError" style="resize:none;"></textarea>
+																<p class="help-block text-right js-textarea-help"><span class="text-muted"></span></p>
+																<button type="button" id="validate-joined-query" class="btn btn-default">
+																	Validate Query
+																</button>
+																<div id="joinedQueryError" class="errorMessage"></div>
+																<p></p>
+																<div id="validate-query-result">
+																	<table id="preview-result-table" class="table table-sorting table-striped table-hover datatable" style="width:100%;"></table>
+																</div>
+															</div>
+														</fieldset>
+														<!-- End General Info -->
+														<fieldset>
+															<legend>Attribute Mapping</legend>
+															<div class="form-group">
+																<!-- <label for="modelAttributes"></label> -->
+																<div>
+																	<table id="attrMapTable" class="table table-bordered table-striped">
+																	</table>
+																</div>
+																<!-- this is required for parsley validation -->
+																<input type="text" id="checkAttribute" style="display: none;" data-parsley-errors-container="#noCheckError"/>
+																<p id="noCheckError" class="errorMessage"></p>
+															</div>
+														</fieldset>
+													</form>
+												</div>
+											</div>
+										</div>
+										<!-- END WIDGET TABLE -->
+
+									</div>
+								</div>
+								<!-- END ROW -->
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+						
+						
+						
+					</div>
+					<!-- /content-wrapper -->
+	
+					<script type="text/javascript">
+						var viewModelById = function(modelId){
+							
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+								
+								success: function(response){
+									if(response){
+										var model = response;
+										
+										setBezelPageParam("model", model);
+										
+										if(model){
+											
+											populateModelDetail(model);
+											
+											$("#model-edit-detail").show();
+										}
+									}
+								},
+								complete: function(jqXHR, textStatus){
+									
+									$('#loading').hide();
+									
+									if("success" != textStatus){
+										displayAjaxError();
+									}
+								}
+							});
+						}
+						
+						function populateModelDetail(model){
+							$("#modelName").val(model.name);
+							$("#modelDesc").val(model.description);
+							
+							buildDataSourceOptions();
+							
+							$("#datasource").val(model.datasource.id);
+							
+							if("SINGLE_TABLE" == model.approach){
+								buildTableOptions(model.datasource.id, model.table);
+								$("#joinedQueryField").hide();
+							}
+							else if("JOIN_QUERY" == model.approach){
+								
+								$("#joined-query").val(model.query.joinQuery);
+								$("#tableField").hide();
+							}
+							
+							buildAttributeMap(model);
+						}
+						
+						
+						function getDatasourceName(datasource){
+							var name="-";
+							
+							if(datasource){
+								name = datasource.name;
+							}
+							
+							return name;
+						}
+						
+						function getJoinedQuery(modelQuery){
+							var query = "-";
+							
+							if(modelQuery){
+								query = modelQuery.joinQuery;								
+							}
+							
+							return query;
+						}
+						
+						var buildDataSourceOptions = function(){
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/datasources",
+								
+								success: function(response){
+									if(response){
+										var datasources = response.datasources;
+										
+										setBezelPageParam("datasources",datasources);
+										
+										if(datasources){
+											$("#datasource").empty();
+											
+											var index;
+											for(index = 0; index<datasources.length; index++){
+												var datasource = datasources[index];
+												
+												$("#datasource").append($('<option></option>').val(datasource.id).html(datasource.name));
+												
+											}
+										}
+									}
+								}
+							});
+						};
+						
+						var buildTableOptions = function(datasourceId, tableName){
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/datasources/"+datasourceId+"/tables",
+								
+								success: function(response){
+									if(response){
+										var tables = response.tables;
+										
+										setBezelPageParam("tables",tables);
+										
+										if(tables){
+											$("#modeltable").empty();
+											
+											var index;
+											for(index = 0; index<tables.length; index++){
+												var table = tables[index];
+												
+												$("#modeltable").append($('<option></option>').val(index).html(table.name));
+												
+												if(tableName == table.name){
+													$("#modeltable").val(index);
+												}
+												
+											}
+										}
+									}
+								}
+							});
+						};
+						
+						var buildAttributeMap = function(model){
+							//jquery ajax
+							$.ajax({
+								type: "PUT",
+								url: getRestServerUrl()+"/reportbay-rest/api/models/derivemodelattributes",
+								data: JSON.stringify(model),
+								contentType: "application/json",
+								crossDomain: true,
+
+								success: function(response){
+									if(response){
+										var attributeMaps = response.attributeBindings;
+										
+										setBezelPageParam("attributeMaps",attributeMaps);
+										
+										var tableDataSet = [];
+
+										var index;
+										
+										var attrTab = $('#attrMapTable').DataTable({
+											"destroy": true,
+											paging : false,
+											searching : false,
+											info:false,
+											"columns" : [
+															{"title":"Enable", data:null, render: "enable"},
+															{"title":"Table Field Name", data:null, render: "name"},
+															{"title":"Model Attribute Name", data:null, render: "aliasInput"}]
+										});
+										
+										//dynamically construct row
+										for(index = 0; index<attributeMaps.length; index++){
+											attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,attributeMaps[index].referencedColumn));
+										}
+										
+										attrTab.draw();
+										//*******************************************
+										/*	SWITCH INIT Rendering
+										/********************************************/
+										$('.switch-reportbay').bootstrapSwitch();
+									}
+								}
+							});
+						};
+						
+						function AttributeRow(idx, name, alias){
+							this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' checked data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
+							this._name = name;
+							this._alias_input = "<input type='text' id='alias_"+idx+"' value='"+alias+"' class='form-control' data-parsley-errors-container='#alias_"+idx+"_error'>"+
+							                    "</input><div id='alias_"+idx+"_error' class='errorMessage'></div>";
+							
+							this._alias = alias;
+							
+							this.enable = function(){
+								return this._enable;
+							};
+							this.name = function(){
+								return this._name;
+							};
+							this.alias = function(){
+								return this._alias;
+							};
+							this.aliasInput = function(){
+								return this._alias_input;
+							} 
+						}
+						
+					
+						$(document).ready(function(){
+
+							var model = getBezelPageParam("model");
+							
+							//clear page context before start
+							initBezelParamMap();
+							
+							if(model){
+								var title = $(".widget-header h3").html();
+								
+								$(".widget-header h3").html((title+" - "+model.name));
+								
+								viewModelById(model.id);
+							}
+
+						});
+					</script>
