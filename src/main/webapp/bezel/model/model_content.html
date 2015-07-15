@@ -93,6 +93,8 @@
 												var refIdx = parseInt(reference);
 												var model = getModelByIndex(refIdx);
 												
+												console.log("action: "+action+" reference: "+reference+" model: "+model);
+												
 												switch (action){
 													case "view":
 														setBezelPageParam("model", model);
@@ -170,7 +172,7 @@
 							
 							var model = undefined;
 							
-							if(index && !isNaN(index)){
+							if(!isNaN(index)){
 								var models = getBezelPageParam("models")
 								
 								model = models[index];
