@@ -195,6 +195,7 @@
 						
 						if(datasources){
 							$("#datasource").empty();
+							$("#datasource").append($('<option></option>'));
 							
 							var index;
 							for(index = 0; index<datasources.length; index++){
@@ -674,7 +675,7 @@
 				//if changes from step button
 				if(data && data.step){
 					// validation
-					if( $('#form'+data.step).length > 0 ) {
+					if( $('#form'+data.step).length > 0 && data.direction == 'next') {
 						var parsleyForm = $('#form'+data.step).parsley();
 						parsleyForm.validate();
 		
@@ -699,9 +700,14 @@
 						//update next button according to whether query validated
 						toggleNextForJoinQueryStep();
 					}
-					else if(data.step === 3 && data.direction == 'next') {
+					else if(data.step === 3 ) {
 
-						buildAttributeMap();
+						if(data.direction == 'next'){
+							buildAttributeMap();
+						}
+						else if(data.direction == 'previous'){
+							$('.wizard-wrapper .btn-next').removeAttr('disabled');
+						}
 					}
 					else if(data.step === 4 && data.direction == 'next') {
 						
