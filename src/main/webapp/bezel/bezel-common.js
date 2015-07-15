@@ -25,9 +25,9 @@ function getRestServerUrl(){
 	return "http://localhost:8080";
 }
 
-function displayAjaxError(){
+function displayAjaxError(errorMessage){
 	var spanElement = document.createElement("span");
-	$(spanElement).text("Failed to retrieve data from remote server");
+	$(spanElement).text(errorMessage);
 	$('#ajaxErrorMsg').append(spanElement);
 	
 	var buttonElement = document.createElement("button");
