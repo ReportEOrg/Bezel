@@ -1,4 +1,4 @@
-
+					<div id="screen-filler" style="display:none;"></div>
 					<!-- end top general alert -->
 					<!-- content-wrapper -->
 					<div class="col-md-10 content-wrapper expanded">
@@ -85,31 +85,6 @@
 											}
 											
 											renderTable(tableDataSet);
-											
-											$("#model-table").find('button').on('click', function(){
-												var action = $(this).data('action');
-												var reference = $(this).data('reference');
-												
-												var refIdx = parseInt(reference);
-												var model = getModelByIndex(refIdx);
-												
-												console.log("action: "+action+" reference: "+reference+" model: "+model);
-												
-												switch (action){
-													case "view":
-														setBezelPageParam("model", model);
-														loadContent("view_model.html");
-														break;
-													case "edit":
-														setBezelPageParam("model", model);
-														loadContent("edit_model.html");
-														break;
-													case "delete":
-														confirm("Are you sure you want to delete this model?");
-														break;
-												}
-											});
-											
 										}
 									}
 								},
@@ -124,7 +99,68 @@
 									}
 								}
 							});
-							
+						}
+						
+						function registerButtonEventHandler(){
+							console.log("registerButtonEventHandler");
+
+							//for each of button element found
+							jQuery.each($("#model-table").find('button'), 
+										  function(index, item){
+									var ev = $._data(item, 'events');
+									
+									if(ev && ev.click){
+										console.log('has click event handler');
+									}
+									//not yet have click event handler, create clcik event handler
+									else{
+										$(item).on('click', function(){
+											var action = $(this).data('action');
+											var reference = $(this).data('reference');
+											
+											var refIdx = parseInt(reference);
+											var model = getModelByIndex(refIdx);
+											
+											console.log("action: "+action+" reference: "+reference+" model: "+model);
+											
+											switch (action){
+												case "view":
+													setBezelPageParam("model", model);
+													loadContent("view_model.html");
+													break;
+												case "edit":
+													setBezelPageParam("model", model);
+													loadContent("edit_model.html");
+													break;
+												case "delete":
+													if(confirm("Are you sure you want to delete this model?")){
+														$("#screen-filler").fadeIn("slow");
+														deleteModel(model.id);
+													}
+													break;
+											}
+										});
+									}
+								});
+						}
+						
+						var deleteModel = function(modelId){
+							//jquery ajax
+							$.ajax({
+								type: "DELETE",
+								url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+								crossDomain: true,
+
+								success: function(response){
+									alert('Model has been deleted.');
+									loadContent("model_content.html");
+								},
+								complete: function(jqXHR, textStatus){
+									if("success" != textStatus){
+										displayAjaxError("Failed to delete model changes to remote server");
+									}
+								}
+							});
 						}
 						
 						function createModelRow(model, index){
@@ -182,7 +218,8 @@
 						}
 						
 						function renderTable(tableDataSet){
-							$('#model-table').dataTable({
+							$('#model-table').on('draw.dt', function(){registerButtonEventHandler();})
+							 				 .dataTable({
 								"destroy": true,
 								"data": tableDataSet,
 								"columns" : [

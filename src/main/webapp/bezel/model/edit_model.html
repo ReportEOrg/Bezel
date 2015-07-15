@@ -438,7 +438,7 @@
 
 								success: function(response){
 									alert('Model change has been updated.');
-									window.location.assign("../model/model.html?group=Model&target=ManageModel");
+									loadContent("model_content.html");
 								},
 								complete: function(jqXHR, textStatus){
 									if("success" != textStatus){
