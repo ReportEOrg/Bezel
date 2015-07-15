@@ -40,7 +40,7 @@
 													<i class="fa fa-spinner fa-pulse fa-2x"></i>
 												</div>
 												<div id="model-edit-detail" style="display: none;">
-													<form role="form">
+													<form role="form" id="modelDetailForm">
 														<!-- General Info -->
 														<fieldset>
 															<legend>Model General Information</legend>
@@ -57,21 +57,21 @@
 															</div>
 															<div class="form-group">
 																<label for="datasource">Datasource *</label>
-																<select id="datasource" class="form-control" onchange="resetTableOption()" 
+																<select id="datasource" class="form-control" onchange="handleDataSourceChanges()" 
 																        required data-parsley-errors-container="#dataSourceError"></select>
 																<div id="dataSourceError" class="errorMessage"></div>
 															</div>
 															<div class="form-group" id="tableField">
 																<label for="modeltable">Table *</label>
-																<select id="modeltable" class="form-control" onchange="resetAttributeMap()" 
+																<select id="modeltable" class="form-control" onchange="handleTableChanges()" 
 																        required data-parsley-errors-container="#modelTableError"></select>
 																<div id="modelTableError" class="errorMessage"></div>
 															</div>
 															<div class="form-group" id="joinedQueryField">
 																<label for="joined-query">Joined Query *</label>
-																<textarea id="joined-query" class="form-control" row="6" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError" style="resize:none;"></textarea>
+																<textarea id="joined-query" class="form-control" row="6" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError" style="resize:none;" onkeyup="javascript:updateValidateButton();"></textarea>
 																<p class="help-block text-right js-textarea-help"><span class="text-muted"></span></p>
-																<button type="button" id="validate-joined-query" class="btn btn-default">
+																<button type="button" id="validate-joined-query" class="btn btn-default" disabled="disabled" onclick="javascript:validateJoinedQuery()">
 																	Validate Query
 																</button>
 																<div id="joinedQueryError" class="errorMessage"></div>
@@ -82,6 +82,9 @@
 															</div>
 														</fieldset>
 														<!-- End General Info -->
+													</form>
+													<form id="attributeMapForm">
+														<!-- Attribute Mapping -->
 														<fieldset>
 															<legend>Attribute Mapping</legend>
 															<div class="form-group">
@@ -95,11 +98,13 @@
 																<p id="noCheckError" class="errorMessage"></p>
 															</div>
 														</fieldset>
+														<!-- End Attribute Mapping -->
 													</form>
 												</div>
 												
-												<div>
-													<button type='button' class='widget widget-header' style="float:right;" onclick="javascript:loadContent('model_content.html')"> Back </button>
+												<div style="float:right;" >
+													<button type='button' id="backButton" class='btn widget widget-header' onclick="javascript:loadContent('model_content.html')"> Back </button>
+													<button type='button' id="updateButton" class='btn widget widget-header' onclick="javascript:updateModel()"> Update </button>
 												</div>
 											</div>
 										</div>
@@ -117,7 +122,7 @@
 						
 					</div>
 					<!-- /content-wrapper -->
-	
+					<script src="../../assets/js/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
 					<script type="text/javascript">
 						var viewModelById = function(modelId){
 							
@@ -127,6 +132,7 @@
 								url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
 								
 								success: function(response){
+									console.log("get Model success");
 									if(response){
 										var model = response;
 										
@@ -145,7 +151,7 @@
 									$('#loading').hide();
 									
 									if("success" != textStatus){
-										displayAjaxError();
+										displayAjaxError("Failed to retrieve data from remote server");
 									}
 								}
 							});
@@ -155,23 +161,20 @@
 							$("#modelName").val(model.name);
 							$("#modelDesc").val(model.description);
 							
-							buildDataSourceOptions();
-							
-							$("#datasource").val(model.datasource.id);
+							buildDataSourceOptions(model.datasource.id);
 							
 							if("SINGLE_TABLE" == model.approach){
 								buildTableOptions(model.datasource.id, model.table);
-								$("#joinedQueryField").hide();
+								$("#joinedQueryField").empty();
 							}
 							else if("JOIN_QUERY" == model.approach){
 								
 								$("#joined-query").val(model.query.joinQuery);
-								$("#tableField").hide();
+								$("#tableField").empty();
 							}
 							
 							buildAttributeMap(model);
 						}
-						
 						
 						function getDatasourceName(datasource){
 							var name="-";
@@ -193,7 +196,96 @@
 							return query;
 						}
 						
-						var buildDataSourceOptions = function(){
+						var verifyJoinQuery = function(){
+							
+							//prepare model var
+							var model = getBezelPageParam('model');
+							model.query.joinQuery = $("#joined-query").val();
+							//clear preview result table
+							clearQueryResultPreviewTable();
+							
+							//jquery ajax - to derive model attributes
+							$.ajax({
+								type: "PUT",
+								url: getRestServerUrl()+"/reportbay-rest/api/models/derivemodelattributes",
+								data: JSON.stringify(model),
+								contentType: "application/json",
+								crossDomain: true,
+								
+								success: function(response){
+									var attributeMaps = response.attributeBindings;
+									
+									setBezelPageParam("attributeMaps",attributeMaps);
+
+									//store returned formatted query						
+									model['query'] = response.query;
+									
+									//redraw attribute map UI
+									renderAttributeMapTable(model, attributeMaps, true);
+
+								},
+								complete: function(jqXHR, textStatus){
+									
+									//if not success, restore the blocked
+									if("success" != textStatus){
+										console.log("fail derivemodelattributes");
+										var joinedQueryError = $("#joined-query").parsley();
+										//create custom parsley error message
+										window.ParsleyUI.addError(joinedQueryError,"joinedQueryError", "Unable to validate joined query");
+										
+										restoreBlockedItem();
+									}
+									//susccess, continue to generate preview
+									else{
+										console.log("success derivemodelattributes");
+										generateModelPreview();
+									}
+								}
+							});
+						};
+						
+						var generateModelPreview = function(){
+							
+							//jquery ajax - to derive model attributes
+							var model = getBezelPageParam("model");
+							
+							$.ajax({
+								type: "POST",
+								url: getRestServerUrl()+"/reportbay-rest/api/models/preview?maxRow=20",
+								data: JSON.stringify(model),
+								contentType: "application/json",
+								crossDomain: true,
+								
+								success: function(response){
+
+									console.log("success generateModelPreview");
+									var prvResultTable = $('#preview-result-table').DataTable({
+																								"destroy": true,
+																								searching : false,
+																								"sPaginationType" : "simple",
+																								"aLengthMenu" : [[5,10,15,-1],[5,10,15,"All"]],
+																								"data" : buildPreviewData(response.resultRowList, response.columnNameList),
+																								"columns" : buildPreviewTableColumnTitle(response.columnNameList)
+									});
+									
+									prvResultTable.draw();
+									$('#validate-query-result').show();
+
+								},
+								complete: function(jqXHR, textStatus){
+									
+									//if not success, restore the blocked
+									if("success" != textStatus){
+										
+									}
+									
+									//release blocked item
+									restoreBlockedItem();				
+								}
+							});
+						};
+						
+						var buildDataSourceOptions = function(datasourceId){
 							//jquery ajax
 							$.ajax({
 								type: "GET",
@@ -207,7 +299,7 @@
 										
 										if(datasources){
 											$("#datasource").empty();
-											
+											$("#datasource").append($('<option></option>'));
 											var index;
 											for(index = 0; index<datasources.length; index++){
 												var datasource = datasources[index];
@@ -217,6 +309,9 @@
 											}
 										}
 									}
+								},
+								complete: function(){
+									$("#datasource").val(datasourceId);
 								}
 							});
 						};
@@ -235,6 +330,7 @@
 										
 										if(tables){
 											$("#modeltable").empty();
+											$("#modeltable").append($('<option></option>'));
 											
 											var index;
 											for(index = 0; index<tables.length; index++){
@@ -253,7 +349,7 @@
 							});
 						};
 						
-						var buildAttributeMap = function(model){
+						var buildAttributeMap = function(model, defaultCheck){
 							//jquery ajax
 							$.ajax({
 								type: "PUT",
@@ -268,48 +364,91 @@
 										
 										setBezelPageParam("attributeMaps",attributeMaps);
 										
-										var tableDataSet = [];
-
-										var index;
-										
-										var attrTab = $('#attrMapTable').DataTable({
-											"destroy": true,
-											paging : false,
-											searching : false,
-											info:false,
-											"columns" : [
-															{"title":"Enable", data:null, render: "enable"},
-															{"title":"Table Field Name", data:null, render: "name"},
-															{"title":"Model Attribute Name", data:null, render: "aliasInput"}]
-										});
-										
-										
-										var selectAttributes = getModelSelectedAttributes(model.attributeBindings);
-										//dynamically construct row
-										for(index = 0; index<attributeMaps.length; index++){
-											
-											var selAttrIndex = selectAttributes.indexOf(attributeMaps[index].referencedColumn);
-											var alias;
-											var checked = "";
-											if(selAttrIndex>-1){
-												alias = model.attributeBindings[selAttrIndex].alias;
-												checked = "checked";
-											}
-											else{
-												alias = attributeMaps[index].referencedColumn;
-											}
-											attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,alias, checked));
-										}
-										
-										attrTab.draw();
-										//*******************************************
-										/*	SWITCH INIT Rendering
-										/********************************************/
-										$('.switch-reportbay').bootstrapSwitch();
+										//redraw attribute map UI
+										renderAttributeMapTable(model, attributeMaps, defaultCheck);
 									}
 								}
 							});
 						};
+						
+						function renderAttributeMapTable(model, attributeMaps, defaultCheck){
+							var tableDataSet = [];
+
+							var index;
+							
+							var attrTab = $('#attrMapTable').DataTable({
+								"destroy": true,
+								paging : false,
+								searching : false,
+								info:false,
+								"columns" : [
+												{"title":"Enable", data:null, render: "enable"},
+												{"title":"Table Field Name", data:null, render: "name"},
+												{"title":"Model Attribute Name", data:null, render: "aliasInput"}]
+							});
+							
+							
+							var selectAttributes = getModelSelectedAttributes(model.attributeBindings);
+							//dynamically construct row
+							for(index = 0; index<attributeMaps.length; index++){
+								
+								var alias;
+								var checked = "";
+								
+								if(defaultCheck){
+									checked = "checked";
+									alias = attributeMaps[index].referencedColumn;
+								}
+								//base on model existing mapping
+								else{
+									var selAttrIndex = selectAttributes.indexOf(attributeMaps[index].referencedColumn);
+
+									//if matched then checked
+									if(selAttrIndex>-1){
+										alias = model.attributeBindings[selAttrIndex].alias;
+										checked = "checked";
+									}
+									else{
+										alias = attributeMaps[index].referencedColumn;
+									}
+								}
+								
+								attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,alias, checked));
+							}
+							
+							attrTab.draw();
+							//*******************************************
+							/*	SWITCH INIT Rendering
+							/********************************************/
+							$('.switch-reportbay').bootstrapSwitch();
+						}
+						
+						var updateModelChanges = function(){
+							
+							var model = getBezelPageParam("model");
+							updateModelFields(model);
+							
+							//jquery ajax
+							$.ajax({
+								type: "PUT",
+								url: getRestServerUrl()+"/reportbay-rest/api/models",
+								data: JSON.stringify(model),
+								contentType: "application/json",
+								crossDomain: true,
+
+								success: function(response){
+									alert('Model change has been updated.');
+									window.location.assign("../model/model.html?group=Model&target=ManageModel");
+								},
+								complete: function(jqXHR, textStatus){
+									if("success" != textStatus){
+										displayAjaxError("Failed to update model changes to remote server");
+									}
+								}
+							});
+						}
+						
+						/*** END AJAX function ***/
 						
 						function AttributeRow(idx, name, alias, checked){
 							this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' "+checked+" data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
@@ -343,17 +482,310 @@
 								}
 							}
 							
-							
 							return selectedBindings;
 						}
+						
+						function handleDataSourceChanges(){
+							var model = getBezelPageParam("model");
+							
+							//obtain selected datasource id
+							var datasourceId = $("#datasource").find(":selected").val();
+							
+							//if valid datasource selected, update model's datasource
+							if(datasourceId && datasourceId !=''){
+								updateModelDataSource(model, datasourceId);
+							}
+							
+							if("SINGLE_TABLE" == model.approach){
+								
+								//if valid datasource selected
+								if(datasourceId && datasourceId !=''){
+									//rebuild table drop down
+									buildTableOptions(datasourceId);
+								}
+								else{
+									$("#modeltable").empty();
+								}
+							}
+							else  if("JOIN_QUERY" == model.approach){
+								//clear joined query
+								$("#joined-query").val('');
+								clearQueryResultPreviewTable();
+							}
+							
+							clearAttributeMap();
+							model.attributeBindings =[];
+						}
+						
+						function clearAttributeMap(){
+							$('#attrMapTable').empty();
+						}
+						
+						function handleTableChanges(){
+							//obtain selected table index
+							var tableIdx = $("#modeltable").find(":selected").val();
+							
+							console.log("table selected :"+tableIdx);
+							
+							clearAttributeMap();
+							
+							//if valid table selected
+							if(tableIdx && tableIdx !=''){
+								var tables = getBezelPageParam("tables");
+								var model = getBezelPageParam("model");
+								
+								model.table = tables[tableIdx].name;
+								model.attributeBindings =[];
+								
+								buildAttributeMap(model, true);
+							}
+						}
+						
+						function updateModel(){
+							
+							//if failed validation
+							if(validateGeneralInfo() && validateAttributeMap()){
+								
+								blockItems();
+								updateModelChanges();
+							}
+							else{
+								return false;
+							}
+							
+						}
+						
+						function validateGeneralInfo(){
+							console.log("General info validation");
+							//standard form validation
+							var parsleyForm = $('#modelDetailForm').parsley();
+							
+							//clear all error message
+							parsleyForm.reset();
+							//start validate
+							parsleyForm.validate();
+			
+							if( !parsleyForm.isValid() ){
+								console.log("failed parsleyForm validation");
+								return false;
+							}
+							else{
+								console.log("passed parsleyForm validation");
+								return true;
+							}
+						}
+						
+						//attribute validation
+						function validateAttributeMap(){
+							
+							console.log("attribute validation");
 
-					
+							var checkCount = 0;
+							var aliasExist = true;
+							var attributeMaps = getBezelPageParam("attributeMaps");
+							
+							$('#attributeMapForm').parsley().reset();
+							
+							//loop through the attribute row(s)
+							for(index = 0; index<attributeMaps.length; index++){
+								
+								//if enabled
+								if($("#attr_"+index).is(':checked')){
+									checkCount++;
+									
+									//if alias field is empty for enabled row
+									if($("#alias_"+index).val()==''){
+										aliasExist = false;
+										var failedAliasInput = $("#alias_"+index).parsley();
+
+										//create custom parsley error message for affected field
+										window.ParsleyUI.addError(failedAliasInput,"incompleteError"+index, "This field is required");
+									}
+								};
+							}
+							
+							//no attribute row enabled
+							if(checkCount==0){
+								
+								var checkError = $("#checkAttribute").parsley();
+								//create custom parsley error message
+								window.ParsleyUI.addError(checkError,"noCheckError", "At least one attribute must be enabled");
+							}
+							//at least 1 row enabled and all alias input value exist
+							if(checkCount>0 && aliasExist){
+								return true;
+							}
+							else{
+								console.log("failed attribute validation");
+								return false;
+							}
+						}
+						
+						function validateJoinedQuery(){
+							var joinQueryField = $("#joined-query").parsley();
+							joinQueryField.validate();
+							
+							if(!joinQueryField.isValid()){
+								return false;
+							}
+							
+							//change wording
+							$("#validate-joined-query").html('<i class="fa fa-spinner fa-pulse"></i>Validating Query ...');
+							blockItems();
+							
+							verifyJoinQuery();
+						}
+
+						function blockItems(){
+							$('button').attr('disabled','disabled');
+							$('input').attr('disabled','disabled');
+							$('select').attr('disabled','disabled');
+							$('textarea').attr('disabled','disabled');
+						}
+						
+						function restoreBlockedItem(){
+							$('button').removeAttr('disabled');
+							$('input').removeAttr('disabled');
+							$('select').removeAttr('disabled');
+							$('textarea').removeAttr('disabled');
+							
+							//change wording
+							$('#validate-joined-query').html('Validate Query');
+							$('#validate-joined-query').attr('disabled','disabled')
+						}
+
+						/** enable validate Query button if attribute map is cleared **/
+						function updateValidateButton(){
+							var attrMapTabChild = $('#attrMapTable input');
+							
+							if(attrMapTabChild.length == 0){
+								$("#validate-joined-query").removeAttr('disabled');
+							}
+						}
+						
+						function updateModelDataSource(model, datasourceId){
+							model.datasource = getDatasource(datasourceId);
+						}
+						
+						function getDatasource(datasourceId){
+							
+							var refDatasource;
+							var datasources = getBezelPageParam("datasources");
+
+							if(datasourceId && datasources){
+								for(index = 0; index<datasources.length; index++){
+									var tempDatasource = datasources[index];
+									
+									if(tempDatasource.id == datasourceId){
+										refDatasource = tempDatasource;
+										break;
+									}
+								}
+							}
+							
+							return refDatasource;
+						}
+						
+						function clearQueryResultPreviewTable(){
+							var prvTable = document.getElementById("preview-result-table");
+
+							$(prvTable).empty();
+							
+							$('#validate-query-result').hide();
+						}
+						
+						function buildPreviewData(resultRowList, columnNameList){
+							var previewDataRows = [];
+							var rowResult;
+							var result;
+							
+							if(resultRowList && columnNameList &&
+							   $.isArray(resultRowList) && $.isArray(columnNameList)){
+								
+								for(var rowIdx=0; rowIdx<resultRowList.length; rowIdx++){
+									rowResult = resultRowList[rowIdx];
+									
+									if(rowResult){
+										var dataRow = [];
+										for(var colIdx=0; colIdx< columnNameList.length; colIdx++){
+											result = rowResult[columnNameList[colIdx]];
+											
+											if(result){
+												dataRow.push(result);
+											}
+											else{
+												dataRow.push('-');
+											}
+										}
+										
+										previewDataRows.push(dataRow);
+									}
+									
+								}
+							}
+							
+							console.log(previewDataRows);
+							return previewDataRows;
+						}
+						
+						function buildPreviewTableColumnTitle(columnNameList){
+							
+							var columnTitles = [];
+							
+							if(columnNameList && $.isArray(columnNameList)){
+								for(var idx=0; idx<columnNameList.length; idx++){
+									columnTitles.push(createTitle(columnNameList[idx]));
+								}
+							}
+							console.log(columnTitles);
+							return columnTitles;
+						}
+						
+						function createTitle(titleStr){
+							var title ={};
+							
+							title["title"]=titleStr;
+							
+							return title;
+						}
+						
+						function updateModelFields(model){
+							model.name = $("#modelName").val();
+							model.description = $("#modelDesc").val();
+							updateModelSelectedAttributes(model);
+						}
+						
+						function updateModelSelectedAttributes(model){
+							//clear attribute array
+							model['attributeBindings'].length=0;
+							
+							var attributeMaps = getBezelPageParam("attributeMaps");
+							var newOrder = 1;
+							
+							for(index = 0; index<attributeMaps.length; index++){
+								
+								if($("#attr_"+index).is(':checked')){
+									var attrMap = attributeMaps[index];
+									attrMap.alias = $("#alias_"+index).val();
+									attrMap.order = newOrder;
+
+									newOrder ++;
+
+									model['attributeBindings'].push(attrMap);
+								}
+							}
+						}
+
+						/***** initialization *****/
 						$(document).ready(function(){
 
 							var model = getBezelPageParam("model");
 							
 							//clear page context before start
 							initBezelParamMap();
+							
+							//put back for current page usage
+							setBezelPageParam("model",model);
 							
 							if(model){
 								var title = $(".widget-header h3").html();
