@@ -18,7 +18,7 @@ textarea {
 				<li><i class="fa fa-home"></i><a href="#">Home</a></li>
 				<li class="active">Data Source</li>
 				<li class="active"><a href="javascript:loadContent('datasource_content.html');">Manage Data Source</a></li>
-				<li class="active">View Data Source</li>
+				<li class="active">Edit Data Source</li>
 			</ul>
 		</div>
 	</div>
@@ -97,7 +97,7 @@ textarea {
 									<div class="col-md-6">
 										<div class="form-horizontal">
 											<div class="form-group">
-												<label for="hostName" class="col-sm-2 control-label">Host</label>
+												<label for="dataSourceHostName" class="col-sm-2 control-label">Host</label>
 												<div class="col-sm-9">
 													<input type="text" class="form-control" id="dataSourceHostName" placeholder="Host Name" required 
 														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceHostNameError">
@@ -105,7 +105,7 @@ textarea {
 												</div>
 											</div>
 											<div class="form-group">
-												<label for="portNumber" class="col-sm-2 control-label">Port</label>
+												<label for="dataSourcePortNumber" class="col-sm-2 control-label">Port</label>
 												<div class="col-sm-6">
 													<input type="text" class="form-control" id="dataSourcePortNumber" placeholder="Port Number" required 
 														data-parsley-range="[1,65535]" data-parsley-errors-container="#dataSourcePortNumberError">
@@ -117,15 +117,15 @@ textarea {
 									<div class="col-md-6">
 										<div class="form-horizontal">
 											<div class="form-group">
-												<label for="userName" class="col-sm-3 control-label">User Name</label>
+												<label for="dataSourceUsername" class="col-sm-3 control-label">User Name</label>
 												<div class="col-sm-8">
-													<input type="text" class="form-control" id="dataSourceUserName" placeholder="User Name" required 
-														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceUserNameError">
-													<div id="#dataSourceUserNameError" class="errorMessage"></div>
+													<input type="text" class="form-control" id="dataSourceUsername" placeholder="Username" required 
+														data-parsley-length="[4,45]" data-parsley-errors-container="#dataSourceUsernameError">
+													<div id="#dataSourceUsernameError" class="errorMessage"></div>
 												</div>
 											</div>
 											<div class="form-group">
-												<label for="password" class="col-sm-3 control-label">Password</label>
+												<label for="dataSourcePassword" class="col-sm-3 control-label">Password</label>
 												<div class="col-sm-8">
 													<input type="password" class="form-control" id="dataSourcePassword" placeholder="Password"
 														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourcePasswordError">
@@ -135,11 +135,11 @@ textarea {
 										</div>
 									</div>
 								</fieldset>
-								<div style="float:right;margin-right:10px;">
-									<button id="submitDataSourceChangesBtn" class="widget widget-header">Submit</button>
-									<button type='button' class='widget widget-header' onclick="javascript:loadContent('datasource_content.html')"> Back </button>
-								</div>
 							</form>
+							<div style="float:right;margin-right:10px;">
+								<button type="button" class="widget widget-header" onclick="javascript:editDataSource()" id="submitBtn">Submit</button>
+								<button type="button" class="widget widget-header" onclick="javascript:loadContent('datasource_content.html')" id="backBtn"> Back </button>
+							</div>
 							<!-- /edit data source contents -->
 						</div>
 						<!-- /widget-content -->
@@ -157,68 +157,130 @@ textarea {
 
 <script type="text/javascript">
 
-$(document).ready(function(){
-	
-	var datasource = getBezelPageParam("datasource");
-	//clear page context before start
-	initBezelParamMap();
-	
-	if (datasource) {
-		
-		$.ajax({
-			type: "GET",
-			url: getRestServerUrl()+"/reportbay-rest/api/databasetypes",
-			success: function(data) {
-				
-				if (data) {
-					
-					for (var x = 0; x < data.types.length; x++) {
-						if (data.types[x].id == datasource.type.id) {
-							$("<option value='" + data.types[x].id + "' selected>" + data.types[x].name + "</option>").appendTo('#selectDataSourceDBType');							
-						} else {
-							$("<option value='" + data.types[x].id + "'>" + data.types[x].name + "</option>").appendTo('#selectDataSourceDBType');
-						}
+var getDatabaseTypes = function(){
+	$.ajax({
+		type: "GET",
+		url: getRestServerUrl()+"/reportbay-rest/api/databasetypes",
+		success: function(response) {
+			if (response) {
+				var datasource = getBezelPageParam("datasource");
+				var databasetypes = response.types;
+				setBezelPageParam("databasetypes", databasetypes);
+				for (var x = 0; x < databasetypes.length; x++) {
+					if (databasetypes[x].id == datasource.type.id) {
+						$("<option value='" + x + "' selected>" + databasetypes[x].name + "</option>").appendTo('#selectDataSourceDBType');							
+					} else {
+						$("<option value='" + x + "'>" + databasetypes[x].name + "</option>").appendTo('#selectDataSourceDBType');
 					}
-					
-					if ($('#selectDataSourceDBType').children().length > 0) {
-						// create kingsadmin multi select for db type
-						$('#selectDataSourceDBType').multiselect({
-							buttonClass: 'btn btn-default btn-sm'
-						});
-						
-						var title = $(".widget-header h3").html();
-						$(".widget-header h3").html((title + " - " + datasource.name));
-						
-						$('#dataSourceName').val(datasource.name);
-						$('#dataSourceDescription').val(datasource.description);
-						$('#dataSourceSchemaName').val(datasource.schema);
-						$('#dataSourceHostName').val(datasource.hostname);
-						$('#dataSourcePortNumber').val(datasource.port);
-						$('#dataSourceUserName').val(datasource.username);
-						$('#dataSourcePassword').val(datasource.password);
-						
-						$("#edit-datasource").show();
-					}
-					
 				}
+				if ($('#selectDataSourceDBType').children().length > 0) {
+					// create kingsadmin multi select for db type
+					$('#selectDataSourceDBType').multiselect({
+						buttonClass: 'btn btn-default btn-sm'
+					});
+					// fill up remaining data source form fields
+					populateDataSource(datasource);
+					$("#edit-datasource").show();
+				}
+			}
+		},
+		complete: function(jqXHR, textStatus){
+			$('#loading').hide();
+			if ("success" != textStatus) {
+				displayAjaxError("Failed to retrieve data from remote server.");
+				$("#submitBtn").hide();
+			}
+		}
+	});
+}
+
+function getDatabaseTypeByIndex(index) {
+	var databasetypes = getBezelPageParam("databasetypes");
+	return databasetypes[index];
+}
+
+function populateDataSource(datasource) {
+	$('#dataSourceName').val(datasource.name);
+	$('#dataSourceDescription').val(datasource.description);
+	$('#dataSourceSchemaName').val(datasource.schema);
+	$('#dataSourceHostName').val(datasource.hostname);
+	$('#dataSourcePortNumber').val(datasource.port);
+	$('#dataSourceUsername').val(datasource.username);
+	$('#dataSourcePassword').val(datasource.password);
+}
+
+function updateDataSourceData(datasource) {
+	datasource.name = $("#dataSourceName").val();
+	datasource.description = $("#dataSourceDescription").val();
+	datasource.schema = $("#dataSourceSchemaName").val();
+	datasource.hostname = $("#dataSourceHostName").val();
+	datasource.port = $("#dataSourcePortNumber").val();
+	datasource.username = $("#dataSourceUsername").val();
+	datasource.password = $("#dataSourcePassword").val();
+	// database type
+	var selectedDbTypeIdx = $('#selectDataSourceDBType').find('option:selected').val();
+	var databasetype = getDatabaseTypeByIndex(selectedDbTypeIdx);
+	datasource.type = databasetype;
+}
+
+function editDataSource() {
+	var parsleyForm = $('#edit-datasource').parsley();
+	parsleyForm.validate();
+	if (!parsleyForm.isValid()) {
+		return false;
+	} else {
+		var datasource = getBezelPageParam("datasource");
+		updateDataSourceData(datasource);
+		// display loading icon and hide edit form and buttons
+		$("#edit-datasource").hide();
+		$("#submitBtn").hide();
+		$("#backBtn").hide();
+		$("#loading").show();
+		// jquery ajax - to submit data source changes
+		$.ajax({
+			type: "PUT",
+			url: getRestServerUrl()+"/reportbay-rest/api/datasources",
+			data: JSON.stringify(datasource),
+			contentType: "application/json",
+			crossDomain: true,
+			success: function(response){
+				displaySuccessNotification(datasource.name);
+				loadContent('datasource_content.html');
 			},
 			complete: function(jqXHR, textStatus){
-				$('#loading').hide();
-				if ("success" != textStatus) {
-					displayAjaxError();
+				$("#loading").hide();
+				if("success" != textStatus){
+					displayAjaxError("Failed to update data source changes to remote server.");
+					$("#backBtn").show();
 				}
 			}
 		});
+		
 	}
+}
+
+function displaySuccessNotification(datasourceName) {
+	$.gritter.add({
+		title: 'Edit Data Source',
+		text: 'Successfully modified Data Source [' + datasourceName + '].',
+	});
+}
+
+$(document).ready(function(){
 	
-	$('#submitDataSourceChangesBtn').click(function (e) {
-		var parsleyForm = $('#edit-datasource').parsley();
-		parsleyForm.validate();
-		if (!parsleyForm.isValid()) {
-			return false;
-		}
-		// TODO ajax call edit
-   	});
+	// retrieve datasource details from listing page
+	var datasource = getBezelPageParam("datasource");
+	// clear page context before start
+	initBezelParamMap();
+	// set datasource details for edit usage
+	setBezelPageParam("datasource", datasource);
+	
+	if (datasource) {
+		var title = $(".widget-header h3").html();
+		$(".widget-header h3").html((title + " - " + datasource.name));
+		// retrieve list of database types
+		getDatabaseTypes();
+	}
 	
 });
 </script>
