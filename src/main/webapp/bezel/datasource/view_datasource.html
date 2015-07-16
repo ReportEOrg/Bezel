@@ -1,0 +1,169 @@
+<style type="text/css">
+fieldset {
+	margin-bottom: 20px!important;
+}
+legend {
+ 	font: normal 16px/150% Arial, Helvetica, sans-serif;
+ 	cursor: auto;
+}
+#dataSourceName, #dataSourceDescription, #dataSourceSchemaName, 
+#dataSourceDBTypeName, #dataSourceDBTypeFamily, #dataSourceDBTypeURL, #dataSourceDBTypeDriver, 
+#dataSourceHostName, #dataSourcePortNumber, #dataSourceUserName, #dataSourcePassword {
+	cursor: text;
+}
+.control-label {
+	font-weight: bold;
+	padding-top: 0px!important;
+	color: #4D4D4D!important;
+}
+</style>
+
+<!-- data source all content -->
+<div class="col-md-10 content-wrapper expanded">
+	<div class="row">
+		<div class="col-md-4 ">
+			<ul class="breadcrumb">
+				<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+				<li class="active">Data Source</li>
+				<li class="active"><a href="javascript:loadContent('datasource_content.html');">Manage Data Source</a></li>
+				<li class="active">View Data Source</li>
+			</ul>
+		</div>
+	</div>
+	<!-- content -->
+	<div class="content">
+		<div class="main-header">
+			<h2>Data Source</h2>
+			<em>Configuration on retrieval of report data</em>
+		</div>
+		<div class="main-content">
+			<!-- ROW -->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- WIDGET TABLE -->
+					<div class="widget widget-table">
+						<div class="widget-header">
+							<h3><i class="fa fa-eye"></i> View Data Source</h3>
+							<div class="btn-group widget-header-toolbar">
+							</div>
+						</div>
+						<div class="widget-content">
+							<fieldset>
+								<legend><i class="fa fa-exclamation-circle"></i> Basic Information</legend>
+								<div class="col-md-6">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="col-sm-2 control-label">Name</label>
+											<label class="col-sm-9" id="dataSourceName"></label>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">Description</label>
+											<label class="col-sm-9" id="dataSourceDescription"></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="col-sm-3 control-label">Schema Name</label>
+											<label class="col-sm-7 control-value" id="dataSourceSchemaName"></label>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend><i class="fa fa-database"></i> Database Type</legend>
+									<div class="col-md-6">
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label class="col-sm-2 control-label">Name</label>
+												<label class="col-sm-9" id="dataSourceDBTypeName"></label>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">Family</label>
+												<label class="col-sm-9" id="dataSourceDBTypeFamily"></label>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label class="col-sm-3 control-label">URL Pattern</label>
+												<label class="col-sm-8" id="dataSourceDBTypeURL"></label>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-3 control-label">Driver Name</label>
+												<label class="col-sm-8" id="dataSourceDBTypeDriver"></label>
+											</div>
+										</div>
+									</div>
+							</fieldset>
+							<fieldset style="margin-bottom:10px!important;">
+								<legend><i class="fa fa-plug"></i> Connectivity</legend>
+								<div class="col-md-6">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="col-sm-2 control-label">Host</label>
+											<label class="col-sm-9" id="dataSourceHostName"></label>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-2 control-label">Port</label>
+											<label class="col-sm-9" id="dataSourcePortNumber"></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="col-sm-3 control-label">User Name</label>
+											<label class="col-sm-7" id="dataSourceUserName"></label>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label">Password</label>
+											<label class="col-sm-7" id="dataSourcePassword"></label>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div>
+								<button type='button' class='widget widget-header' style="float:right;margin-right:10px;" onclick="javascript:loadContent('datasource_content.html')"> Back </button>
+							</div>
+						</div>
+						<!-- /widget-content -->
+					</div>
+					<!-- END WIDGET TABLE -->
+				</div>
+			</div>
+			<!-- /ROW -->
+		</div>
+		<!-- /main-content -->
+	</div>
+	<!-- /content -->
+</div>
+<!-- /data source all content -->
+
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	var datasource = getBezelPageParam("datasource");
+	//clear page context before start
+	initBezelParamMap();
+	
+	if (datasource) {
+		var title = $(".widget-header h3").html();
+		$(".widget-header h3").html((title + " - " + datasource.name));
+		$('#dataSourceName').text(datasource.name);
+		$('#dataSourceDescription').text(datasource.description);
+		$('#dataSourceSchemaName').text(datasource.schema);
+		$('#dataSourceDBTypeName').text(datasource.type.name);
+		$('#dataSourceDBTypeFamily').text(datasource.type.family);
+		$('#dataSourceDBTypeURL').text(datasource.type.urlPattern);
+		$('#dataSourceDBTypeDriver').text(datasource.type.driverName);
+		$('#dataSourceHostName').text(datasource.hostname);
+		$('#dataSourcePortNumber').text(datasource.port);
+		$('#dataSourceUserName').text(datasource.username);
+		$('#dataSourcePassword').text(datasource.password);
+	}
+	
+});
+</script>

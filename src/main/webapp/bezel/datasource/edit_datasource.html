@@ -1,0 +1,224 @@
+<style type="text/css">
+fieldset {
+	margin-bottom: 20px!important;
+}
+legend {
+ 	font: normal 16px/150% Arial, Helvetica, sans-serif;
+}
+textarea {
+	resize:none;
+}
+</style>
+
+<!-- data source all content -->
+<div class="col-md-10 content-wrapper expanded">
+	<div class="row">
+		<div class="col-md-4 ">
+			<ul class="breadcrumb">
+				<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+				<li class="active">Data Source</li>
+				<li class="active"><a href="javascript:loadContent('datasource_content.html');">Manage Data Source</a></li>
+				<li class="active">View Data Source</li>
+			</ul>
+		</div>
+	</div>
+	<!-- content -->
+	<div class="content">
+		<div class="main-header">
+			<h2>Data Source</h2>
+			<em>Configuration on retrieval of report data</em>
+		</div>
+		<div class="main-content">
+			<!-- ROW -->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- WIDGET TABLE -->
+					<div class="widget widget-table">
+						<div class="widget-header">
+							<h3><i class="fa fa-eye"></i> Edit Data Source</h3>
+							<div class="btn-group widget-header-toolbar">
+							</div>
+						</div>
+						<div class="widget-content">
+							<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;"></div>
+							<div id="loading" style="text-align: center;">
+								<i class="fa fa-spinner fa-pulse fa-2x"></i>
+							</div>
+							<!-- edit data source contents -->
+							<form id="edit-datasource" method="post" style="display: none;" data-parsley-validate novalidate>
+								<fieldset>
+									<legend><i class="fa fa-exclamation-circle"></i> Basic Information</legend>
+									<div class="col-md-6">
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label for="dataSourceName" class="col-sm-2 control-label">Name</label>
+												<div class="col-sm-9">
+													<input type="text" id="dataSourceName" class="form-control" maxlength="45" required 
+														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceNameError">
+													<div id="#dataSourceNameError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="dataSourceDescription" class="col-sm-2 control-label">Description</label>
+												<div class="col-sm-9">
+													<textarea class="form-control" id="dataSourceDescription" rows="2" cols="1" placeholder="Description"></textarea>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label for="dataSourceSchemaName" class="col-sm-3 control-label">Schema Name</label>
+												<div class="col-sm-8">
+													<input type="text" class="form-control" id="dataSourceSchemaName" placeholder="Schema Name" required 
+														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceSchemaNameError">
+													<div id="#dataSourceSchemaNameError" class="errorMessage"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+								<fieldset>
+									<legend><i class="fa fa-database"></i> Database Type</legend>
+										<div class="col-md-6">
+											<div class="form-horizontal">
+												<div class="form-group">
+													<label for="selectDataSourceDBType" class="col-sm-2 control-label">Select Type</label>
+													<div class="col-sm-8">
+														<select id="selectDataSourceDBType" name="selectDataSourceDBType" class="multiselect"></select>
+													</div>
+												</div>
+											</div>
+										</div>
+								</fieldset>
+								<fieldset>
+									<legend><i class="fa fa-plug"></i> Connectivity</legend>
+									<div class="col-md-6">
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label for="hostName" class="col-sm-2 control-label">Host</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" id="dataSourceHostName" placeholder="Host Name" required 
+														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceHostNameError">
+													<div id="#dataSourceHostNameError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="portNumber" class="col-sm-2 control-label">Port</label>
+												<div class="col-sm-6">
+													<input type="text" class="form-control" id="dataSourcePortNumber" placeholder="Port Number" required 
+														data-parsley-range="[1,65535]" data-parsley-errors-container="#dataSourcePortNumberError">
+													<div id="#dataSourcePortNumberError" class="errorMessage"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label for="userName" class="col-sm-3 control-label">User Name</label>
+												<div class="col-sm-8">
+													<input type="text" class="form-control" id="dataSourceUserName" placeholder="User Name" required 
+														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceUserNameError">
+													<div id="#dataSourceUserNameError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="password" class="col-sm-3 control-label">Password</label>
+												<div class="col-sm-8">
+													<input type="password" class="form-control" id="dataSourcePassword" placeholder="Password"
+														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourcePasswordError">
+													<div id="#dataSourcePasswordError" class="errorMessage"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+								<div style="float:right;margin-right:10px;">
+									<button id="submitDataSourceChangesBtn" class="widget widget-header">Submit</button>
+									<button type='button' class='widget widget-header' onclick="javascript:loadContent('datasource_content.html')"> Back </button>
+								</div>
+							</form>
+							<!-- /edit data source contents -->
+						</div>
+						<!-- /widget-content -->
+					</div>
+					<!-- END WIDGET TABLE -->
+				</div>
+			</div>
+			<!-- /ROW -->
+		</div>
+		<!-- /main-content -->
+	</div>
+	<!-- /content -->
+</div>
+<!-- /data source all content -->
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+	var datasource = getBezelPageParam("datasource");
+	//clear page context before start
+	initBezelParamMap();
+	
+	if (datasource) {
+		
+		$.ajax({
+			type: "GET",
+			url: getRestServerUrl()+"/reportbay-rest/api/databasetypes",
+			success: function(data) {
+				
+				if (data) {
+					
+					for (var x = 0; x < data.types.length; x++) {
+						if (data.types[x].id == datasource.type.id) {
+							$("<option value='" + data.types[x].id + "' selected>" + data.types[x].name + "</option>").appendTo('#selectDataSourceDBType');							
+						} else {
+							$("<option value='" + data.types[x].id + "'>" + data.types[x].name + "</option>").appendTo('#selectDataSourceDBType');
+						}
+					}
+					
+					if ($('#selectDataSourceDBType').children().length > 0) {
+						// create kingsadmin multi select for db type
+						$('#selectDataSourceDBType').multiselect({
+							buttonClass: 'btn btn-default btn-sm'
+						});
+						
+						var title = $(".widget-header h3").html();
+						$(".widget-header h3").html((title + " - " + datasource.name));
+						
+						$('#dataSourceName').val(datasource.name);
+						$('#dataSourceDescription').val(datasource.description);
+						$('#dataSourceSchemaName').val(datasource.schema);
+						$('#dataSourceHostName').val(datasource.hostname);
+						$('#dataSourcePortNumber').val(datasource.port);
+						$('#dataSourceUserName').val(datasource.username);
+						$('#dataSourcePassword').val(datasource.password);
+						
+						$("#edit-datasource").show();
+					}
+					
+				}
+			},
+			complete: function(jqXHR, textStatus){
+				$('#loading').hide();
+				if ("success" != textStatus) {
+					displayAjaxError();
+				}
+			}
+		});
+	}
+	
+	$('#submitDataSourceChangesBtn').click(function (e) {
+		var parsleyForm = $('#edit-datasource').parsley();
+		parsleyForm.validate();
+		if (!parsleyForm.isValid()) {
+			return false;
+		}
+		// TODO ajax call edit
+   	});
+	
+});
+</script>

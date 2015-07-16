@@ -17,8 +17,14 @@
 				{
 				    "id"  : "ManageDataSource",
 					"name": "Manage Data Source",
-					"href"     : "../datasource/datasource.html?group=DataSource&target=ManageDataSource",
+					"href": "../datasource/datasource.html?group=DataSource&target=ManageDataSource",
 					"pageContent" : "datasource_content.html"
+				},
+				{
+					"id"  : "NewDataSource",
+					"name": "New Data Source",
+					"href": "../datasource/datasource.html?group=DataSource&target=NewDataSource",
+					"pageContent" : "datasource_wizard.html"
 				}	
 			]
 			

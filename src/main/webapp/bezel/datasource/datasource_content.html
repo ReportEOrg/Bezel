@@ -1,151 +1,196 @@
+<!-- content-wrapper -->
+<div class="col-md-10 content-wrapper expanded">
+	<div class="row">
+		<div class="col-md-4 ">
+			<ul class="breadcrumb">
+				<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+				<li class="active">Data Source</li>
+				<li class="active">Manage Data Source</li>
+			</ul>
+		</div>
+	</div>
+	<!-- main -->
+	<div class="content">
+		<div class="main-header">
+			<h2>Data Source</h2>
+			<em>Configuration on retrieval of report data</em>
+		</div>
+		<div class="main-content">
 
-					<!-- end top general alert -->
-					<!-- content-wrapper -->
-					<div class="col-md-10 content-wrapper expanded">
-						<div class="row">
-							<div class="col-md-4 ">
-								<ul class="breadcrumb">
-									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
-									<li class="active">Data Source</li>
-									<li class="active">Manage Data Source</li>
-								</ul>
+			<!-- ROW -->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- WIDGET TABLE -->
+					<div class="widget widget-table">
+						<div class="widget-header">
+							<h3><i class="fa fa-desktop"></i> Data Source(s)</h3>
+							<div class="btn-group widget-header-toolbar">
+								<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
+								<!-- <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+								<a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
 							</div>
 						</div>
-						<!-- main -->
-						<div class="content">
-							<div class="main-header">
-								<h2>Data Source</h2>
-								<em>Configuration on retrieval of report data</em>
+						<div class="widget-content">
+							<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
 							</div>
-							<div class="main-content">
-
-								<!-- ROW -->
-								<div class="row">
-									<div class="col-md-12">
-										<!-- WIDGET TABLE -->
-										<div class="widget widget-table">
-											<div class="widget-header">
-												<h3><i class="fa fa-desktop"></i> Data Source(s)</h3>
-												<div class="btn-group widget-header-toolbar">
-													<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
-													<a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
-													<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
-												</div>
-											</div>
-											<div class="widget-content">
-												<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
-												</div>
-												<div id="loading" style="text-align: center;">
-													<i class="fa fa-spinner fa-pulse fa-2x"></i>
-												</div>
-												<table id="datasource-table" class="table table-sorting table-striped table-hover datatable">
-												</table>
-											</div>
-										</div>
-										<!-- END WIDGET TABLE -->
-
-									</div>
-								</div>
-								<!-- END ROW -->
+							<div id="loading" style="text-align: center;">
+								<i class="fa fa-spinner fa-pulse fa-2x"></i>
 							</div>
-							<!-- /main-content -->
+							<table id="datasource-table" class="table table-sorting table-striped table-hover datatable">
+							</table>
 						</div>
-						<!-- /main -->
 					</div>
-					<!-- /content-wrapper -->
+					<!-- END WIDGET TABLE -->
+
+				</div>
+			</div>
+			<!-- END ROW -->
+		</div>
+		<!-- /main-content -->
+	</div>
+	<!-- /main -->
+</div>
+<!-- /content-wrapper -->
+
+<!-- /delete data source dialog -->
+<div class="modal fade" id="delete-datasource-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width:450px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Delete Data Source</h4>
+			</div>
+			<div class="modal-body">
+				<p></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmDeleteDataSourceBtn"><i class="fa fa-check-circle"></i> Yes</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> No</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /delete data source dialog -->
 	
- 					<script type="text/javascript">
-					
-						//retrive datasource list AJAX function
-						var datasourceListRequest = function(){
-							
-							//jquery ajax
-							$.ajax({
-								type: "GET",
-								url: getRestServerUrl()+"/reportbay-rest/api/datasources",
-								
-								success: function(response){
-									if(response){
-										var datasources = response.datasources;
-										
-										if(datasources){
-											
-											var index;
-											
-											var tableDataSet = [];
-											
-											for(index =0; index < datasources.length; index++){
-												//for each of datasource create elements
-												tableDataSet.push(createDataSourceRow(datasources[index]));
-											}
-											
-											renderTable(tableDataSet);
-										}
-									}
-								},
-								complete: function(jqXHR, textStatus){
-									
-									$('#loading').hide();
-									
-									if("success" != textStatus){
-										var tableDataSet = [];
-										renderTable(tableDataSet);
-										displayAjaxError("Failed to retrieve data from remote server");
-									}
-								}
-							});
-							
+<script type="text/javascript">
+//retrive datasource list AJAX function
+var datasourceListRequest = function(){
+	$('#datasource-table').empty();
+	//jquery ajax
+	$.ajax({
+		type: "GET",
+		url: getRestServerUrl()+"/reportbay-rest/api/datasources",
+		success: function(response) {
+			if (response) {
+				var datasources = response.datasources;
+				setBezelPageParam("datasources", datasources);
+				if (datasources) {
+					var index;
+					var tableDataSet = [];
+					for (index = 0; index < datasources.length; index++) {
+						//for each of datasource create elements
+						tableDataSet.push(createDataSourceRow(datasources[index], index));
+					}
+					renderTable(tableDataSet);
+					$("#datasource-table").find('button').on('click', function(){
+						var action = $(this).data('action');
+						var reference = $(this).data('reference');
+						var refIdx = parseInt(reference);
+						var datasource = getDataSourceByIndex(refIdx);
+						setBezelPageParam("datasource", datasource);
+						switch (action) {
+							case "view":
+								loadContent("view_datasource.html");
+								break;
+							case "edit":
+								loadContent("edit_datasource.html");
+								break;
+							case "delete":
+								$(".modal-body p").html("Are you sure you want to delete <span style='font-weight:bold;'>" + datasource.name + "</span>?");
+								break;
 						}
-						
-						function createDataSourceRow(dataSource){
-							
-							var rowDataSet = [];
-							
-							rowDataSet.push(dataSource.name);
-							rowDataSet.push(dataSource.description);
-							rowDataSet.push(getDbFamily(dataSource.type));
-							rowDataSet.push(getDbName(dataSource.type));
-							rowDataSet.push(dataSource.hostname);
-							rowDataSet.push(dataSource.port);
-							rowDataSet.push(dataSource.schema);
-				
-							return rowDataSet;
-						}
-						
-						function getDbFamily(dbType){
-							var dbFamilyType = '-';
-				
-							if(dbType){
-								dbFamilyType = dbType.family;
-							}
-							
-							return dbFamilyType;
-						}
-						
-						function getDbName(dbType){
-							
-							var dataSourceName = '-';
-							
-							if(dbType){
-								dataSourceName = dbType.name;
-							}
-							
-							return dataSourceName;
-						}
-						
-						function renderTable(tableDataSet){
-							$('#datasource-table').dataTable({
-								"data": tableDataSet,
-								"columns" : [
-									{"title":"Name"},
-									{"title":"Description"},
-									{"title":"DB Family"},
-									{"title":"DB Name"},
-									{"title":"Host Name"},
-									{"title":"Port"},
-									{"title":"Schema"}
-								]
-							});
-						}
-						datasourceListRequest();
-					</script>
+					});
+				}
+			}
+		},
+		complete: function(jqXHR, textStatus){
+			$('#loading').hide();
+			if("success" != textStatus){
+				var tableDataSet = [];
+				renderTable(tableDataSet);
+				displayAjaxError();
+				displayAjaxError("Failed to retrieve data from remote server");
+			}
+		}
+	});
+	
+}
+
+function createDataSourceRow(dataSource, index) {
+	var rowDataSet = [];
+	rowDataSet.push(dataSource.name);
+	rowDataSet.push(dataSource.description);
+	rowDataSet.push(getDbFamily(dataSource.type));
+	rowDataSet.push(getDbName(dataSource.type));
+	rowDataSet.push(dataSource.hostname);
+	rowDataSet.push(dataSource.port);
+	rowDataSet.push(dataSource.schema);
+	rowDataSet.push("<button type='button' title='View Data Source' class='widget main-header' data-action='view' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-eye' style='margin-left: 5px;'></i></em></button> "+
+					"<button type='button' title='Edit Data Source' class='widget main-header' data-action='edit' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-pencil' style='margin-left: 5px;'></i></em></button> "+
+					"<button type='button' title='Delete Data Source' class='widget main-header' data-action='delete' data-reference='"+index+"' style='border:none;' data-toggle='modal' data-target='#delete-datasource-dialog'><em><i class='fa fa-trash' style='margin-left: 5px;'></i></em></button> ")
+	return rowDataSet;
+}
+
+function getDbFamily(dbType) {
+	var dbFamilyType = '-';
+	if(dbType){
+		dbFamilyType = dbType.family;
+	}
+	return dbFamilyType;
+}
+
+function getDbName(dbType) {
+	var dataSourceName = '-';
+	if(dbType){
+		dataSourceName = dbType.name;
+	}
+	return dataSourceName;
+}
+
+function getDataSourceByIndex(index) {
+	var datasources = getBezelPageParam("datasources")
+	return datasources[index];
+}
+
+function renderTable(tableDataSet) {
+	$('#datasource-table').dataTable({
+		"data": tableDataSet,
+		"columns" : [
+			{"title":"Name"},
+			{"title":"Description"},
+			{"title":"DB Family"},
+			{"title":"DB Name"},
+			{"title":"Host Name"},
+			{"title":"Port"},
+			{"title":"Schema"},
+			{"title":"Action","orderable":false, "width":"10%"}
+		]
+	});
+}
+
+$(document).ready(function(){
+	
+	initBezelParamMap();
+	datasourceListRequest();
+	
+	$('#confirmDeleteDataSourceBtn').click(function (e) {
+		var datasource = getBezelPageParam("datasource");
+		console.log(datasource);
+		
+		loadContent('datasource_content.html');
+		
+   	});
+   	
+	
+});
+</script>
