@@ -92,24 +92,7 @@ var datasourceListRequest = function(){
 						tableDataSet.push(createDataSourceRow(datasources[index], index));
 					}
 					renderTable(tableDataSet);
-					$("#datasource-table").find('button').on('click', function(){
-						var action = $(this).data('action');
-						var reference = $(this).data('reference');
-						var refIdx = parseInt(reference);
-						var datasource = getDataSourceByIndex(refIdx);
-						setBezelPageParam("datasource", datasource);
-						switch (action) {
-							case "view":
-								loadContent("view_datasource.html");
-								break;
-							case "edit":
-								loadContent("edit_datasource.html");
-								break;
-							case "delete":
-								$(".modal-body p").html("Are you sure you want to delete <span style='font-weight:bold;'>" + datasource.name + "</span>?");
-								break;
-						}
-					});
+					
 				}
 			}
 		},
@@ -161,8 +144,40 @@ function getDataSourceByIndex(index) {
 	return datasources[index];
 }
 
+function registerButtonEventHandler() {
+	jQuery.each($("#datasource-table").find('button'), 
+		function(index, item) {
+			var ev = $._data(item, 'events');
+			if(ev && ev.click) {
+				console.log('has click event handler');
+			} else {
+			// create click event handler
+			$(item).on('click', function() {
+				var action = $(this).data('action');
+				var reference = $(this).data('reference');
+				var refIdx = parseInt(reference);
+				var datasource = getDataSourceByIndex(refIdx);
+				console.log("action: "+action+" reference: "+reference+" datasource: "+datasource);
+				setBezelPageParam("datasource", datasource);
+				switch (action) {
+					case "view":
+						loadContent("view_datasource.html");
+						break;
+					case "edit":
+						loadContent("edit_datasource.html");
+						break;
+					case "delete":
+						$(".modal-body p").html("Are you sure you want to delete <span style='font-weight:bold;'>" + datasource.name + "</span>?");
+						break;
+				}
+			});
+		}
+	});
+}
+
 function renderTable(tableDataSet) {
-	$('#datasource-table').dataTable({
+	$('#datasource-table').on('draw.dt', 
+			function(){registerButtonEventHandler();}).dataTable({
 		"data": tableDataSet,
 		"columns" : [
 			{"title":"Name"},
