@@ -1,0 +1,214 @@
+<style type="text/css">
+
+</style>
+
+<!-- content-wrapper -->
+<div class="col-md-10 content-wrapper expanded">
+	<div class="row">
+		<div class="col-md-4 ">
+			<ul class="breadcrumb">
+				<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+				<li class="active">Data Source</li>
+				<li class="active">New Data Source</li>
+			</ul>
+		</div>
+	</div>
+	<div class="content">
+		<div class="main-header">
+			<h2>New Data Source</h2>
+			<em>Creating a new report data source</em>
+		</div>
+		<div class="main-content">
+			<div class="widget">
+				<div class="widget-header">
+					<h3><i class="fa fa-database"></i> New Data Source</h3>
+				</div>
+				<div class="widget-content">
+					<div class="wizard-wrapper">
+						<!-- DATASOURCE WIZARD [START] -->
+						<div id="datasource-wizard" class="wizard">
+							<!-- WIZARD STEPS HEADERS [START] -->
+							<div id="datasource-wizard-steps" style="overflow: hidden;">
+								<ul class="steps">
+									<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Data Source Name<span class="chevron"></span></li>
+									<li data-target="#step2"><span class="badge">2</span>Database Type<span class="chevron"></span></li>
+									<li data-target="#step3"><span class="badge">3</span>Connectivity<span class="chevron"></span></li>
+									<li data-target="#step4" class="last"><span class="badge">4</span>Confirmation</li>
+								</ul>
+							</div>
+							<!-- WIZARD STEPS HEADERS [END] -->
+							<!-- STEPS CONTENTS [START] -->
+							<div class="step-content" style="margin-bottom:5px;">
+								<!-- STEP 1 Data Source Name -->
+								<div class="step-pane active" id="step1">
+									<form id="form1" data-parsley-validate novalidate>
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label for="dataSourceName" class="col-sm-2 control-label">Name *</label>
+												<div class="col-sm-9">
+													<input type="text" id="dataSourceName" style="width:50%;" placeholder="Name" class="form-control" 
+														data-parsley-length="[5,45]" required data-parsley-errors-container="#dataSourceNameError">
+													<div id="dataSourceNameError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="dataSourceDescription" class="col-sm-2 control-label">Description</label>
+												<div class="col-sm-9">
+													<textarea class="form-control" id="dataSourceDescription" style="width:70%;" rows="2" cols="1" placeholder="Description"></textarea>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<!-- STEP 2 Data Base Type -->
+								<div class="step-pane" id="step2">
+									<form id="form2" data-parsley-validate novalidate>
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label for="dataSourceSchemaName" class="col-sm-2 control-label">Schema Name *</label>
+												<div class="col-sm-5">
+													<input type="text" id="dataSourceSchemaName" maxlength="45" style="width:45%;" placeholder="Schema" 
+														   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#dataSourceSchemaNameError">
+													<div id="dataSourceSchemaNameError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="dataSourceDBType" class="col-sm-2 control-label">Database Type *</label>
+												<div class="col-sm-5">
+													<select id="dataSourceDBType" name="dataSourceDBType" style="width:45%;" required 
+														class="multiselect" data-parsley-errors-container="#dataSourceDBTypeError"></select>
+													<div id="dataSourceDBTypeError" class="errorMessage"></div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<!-- STEP 3 Connectivity -->
+								<div class="step-pane" id="step3">
+									<form id="form3" data-parsley-validate novalidate>
+										<div class="form-horizontal">
+											<div class="form-group">
+												<label for="dataSourceHostName" class="col-sm-2 control-label">Host</label>
+												<div class="col-sm-5">
+													<input type="text" class="form-control" id="dataSourceHostName" style="width:55%;" placeholder="Host Name" required 
+														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceHostNameError">
+													<div id="dataSourceHostNameError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="dataSourcePortNumber" class="col-sm-2 control-label">Port</label>
+												<div class="col-sm-5">
+													<input type="text" class="form-control" id="dataSourcePortNumber" style="width:30%;" placeholder="Port Number" required 
+														data-parsley-range="[1,65535]" data-parsley-type="number" data-parsley-errors-container="#dataSourcePortNumberError">
+													<div id="dataSourcePortNumberError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="dataSourceUsername" class="col-sm-2 control-label">User Name</label>
+												<div class="col-sm-5">
+													<input type="text" class="form-control" id="dataSourceUsername" style="width:45%;" placeholder="Username" required 
+														data-parsley-length="[4,45]" data-parsley-errors-container="#dataSourceUsernameError">
+													<div id="dataSourceUsernameError" class="errorMessage"></div>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="dataSourcePassword" class="col-sm-2 control-label">Password</label>
+												<div class="col-sm-5">
+													<input type="password" class="form-control" id="dataSourcePassword" style="width:45%;" placeholder="Password" required 
+														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourcePasswordError">
+													<div id="dataSourcePasswordError" class="errorMessage"></div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<!-- STEP 4 Confirmation -->
+								<div class="step-pane" id="step4">
+									<form id="form4">
+										
+									</form>
+								</div>
+								<!-- STEP ACTION [START] -->
+								<div class="actions" style="margin-top:50px;">
+									<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
+									<button type="button" class="btn btn-primary btn-next" data-last="Create Data Source  ">Next <i class="fa fa-arrow-right"></i></button>
+								</div>
+								<!-- STEP ACTION [END] -->
+							</div>
+							<!-- STEPS CONTENTS [END] -->
+						</div>
+						<!-- DATASOURCE WIZARD [END] -->
+					</div> 
+					<!-- /widget-wrapper -->
+				</div> 
+				<!-- /widget-content -->
+			</div> 
+			<!-- /widget -->
+		</div> 
+		<!-- /main-content -->
+	</div> 
+	<!-- /content -->
+</div> 
+<!-- /content-wrapper -->
+
+
+<script type="text/javascript">
+
+var getDatabaseTypes = function(){
+	$.ajax({
+		type: "GET",
+		url: getRestServerUrl()+"/reportbay-rest/api/databasetypes",
+		success: function(response) {
+			if (response) {
+				var databasetypes = response.types;
+				setBezelPageParam("databasetypes", databasetypes);
+				for (var x = 0; x < databasetypes.length; x++) {
+					$("<option value='" + x + "'>" + databasetypes[x].name + "</option>").appendTo('#dataSourceDBType');
+				}
+			}
+		},
+		complete: function(jqXHR, textStatus){
+// 			$('#dataSourceDBType').multiselect({
+// 				buttonClass: 'btn btn-default btn-sm',
+// 			});
+			$("#dataSourceDBType").select2();
+		}
+	});
+}
+
+$(document).ready(function() {
+
+	//clear page context before start
+	initBezelParamMap();
+	
+	$('#datasource-wizard').on('change', function(e, data) {
+		
+		if (data && data.step) {
+			// validation
+			if( $('#form'+data.step).length > 0 && data.direction == 'next') {
+				var parsleyForm = $('#form'+data.step).parsley();
+				parsleyForm.validate();
+				if( !parsleyForm.isValid() )
+					return false;
+			}
+			// last step button
+			$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
+			
+			// stored values
+			var databasetypes = getBezelPageParam("databasetypes");
+			
+			// display database types and retrieve on first call
+			if (data.step === 1 && data.direction == 'next' && !databasetypes){
+				getDatabaseTypes();
+			}
+			
+		}
+
+	}).on('finished', function(){
+		alert('data source created');
+	});
+	
+});
+
+
+</script>
