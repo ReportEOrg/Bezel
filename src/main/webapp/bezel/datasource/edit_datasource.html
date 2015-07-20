@@ -42,7 +42,7 @@ textarea {
 						<div class="widget-content">
 							<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;"></div>
 							<div id="loading" style="text-align: center;">
-								<i class="fa fa-spinner fa-pulse fa-2x"></i>
+								<i class="fa fa-spinner fa-pulse fa-2x" style="display: none;"></i>
 							</div>
 							<!-- edit data source contents -->
 							<form id="edit-datasource" method="post" style="display: none;" data-parsley-validate novalidate>
@@ -85,8 +85,10 @@ textarea {
 											<div class="form-horizontal">
 												<div class="form-group">
 													<label for="selectDataSourceDBType" class="col-sm-2 control-label">Select Type</label>
-													<div class="col-sm-8">
-														<select id="selectDataSourceDBType" name="selectDataSourceDBType" class="multiselect"></select>
+													<div class="col-sm-9">
+														<select id="selectDataSourceDBType" name="selectDataSourceDBType" required 
+															class="multiselect" data-parsley-error-container="#dataSourceDBTypeError"></select>
+														<div id="#dataSourceDBTypeError" class="errorMessage"></div>
 													</div>
 												</div>
 											</div>
@@ -127,7 +129,7 @@ textarea {
 											<div class="form-group">
 												<label for="dataSourcePassword" class="col-sm-3 control-label">Password</label>
 												<div class="col-sm-8">
-													<input type="password" class="form-control" id="dataSourcePassword" placeholder="Password"
+													<input type="password" class="form-control" id="dataSourcePassword" placeholder="Password" required 
 														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourcePasswordError">
 													<div id="#dataSourcePasswordError" class="errorMessage"></div>
 												</div>
@@ -158,45 +160,42 @@ textarea {
 <script type="text/javascript">
 
 var getDatabaseTypes = function(){
+	var databasetypes = undefined;
+	var datasource = getBezelPageParam("datasource");
 	$.ajax({
 		type: "GET",
 		url: getRestServerUrl()+"/reportbay-rest/api/databasetypes",
 		success: function(response) {
 			if (response) {
-				var datasource = getBezelPageParam("datasource");
-				var databasetypes = response.types;
-				setBezelPageParam("databasetypes", databasetypes);
+				databasetypes = response.types;
 				for (var x = 0; x < databasetypes.length; x++) {
-					if (databasetypes[x].id == datasource.type.id) {
+					if (databasetypes[x].id === datasource.type.id) {
 						$("<option value='" + x + "' selected>" + databasetypes[x].name + "</option>").appendTo('#selectDataSourceDBType');							
 					} else {
 						$("<option value='" + x + "'>" + databasetypes[x].name + "</option>").appendTo('#selectDataSourceDBType');
 					}
 				}
-				if ($('#selectDataSourceDBType').children().length > 0) {
-					// create kingsadmin multi select for db type
-					$('#selectDataSourceDBType').multiselect({
-						buttonClass: 'btn btn-default btn-sm'
-					});
-					// fill up remaining data source form fields
-					populateDataSource(datasource);
-					$("#edit-datasource").show();
-				}
 			}
 		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log(errorThrown);
+			$("<option value='0'>" + datasource.type.name + "</option>").appendTo('#selectDataSourceDBType');
+			displayAjaxError("Failed to load other database types from server.");
+			databasetypes = new Array();
+			databasetypes.push(datasource.type);
+		},
 		complete: function(jqXHR, textStatus){
-			$('#loading').hide();
-			if ("success" != textStatus) {
-				displayAjaxError("Failed to retrieve data from remote server.");
-				$("#submitBtn").hide();
-			}
+			setBezelPageParam("databasetypes", databasetypes);
+			$('#selectDataSourceDBType').multiselect({
+				buttonClass: 'btn btn-default btn-sm',
+			});
 		}
 	});
 }
 
 function getDatabaseTypeByIndex(index) {
 	var databasetypes = getBezelPageParam("databasetypes");
-	return databasetypes[index];
+	return databasetypes[index];	
 }
 
 function populateDataSource(datasource) {
@@ -249,7 +248,8 @@ function editDataSource() {
 			},
 			complete: function(jqXHR, textStatus){
 				$("#loading").hide();
-				if("success" != textStatus){
+				if("success" != textStatus) {
+					$('#ajaxErrorMsg').empty();
 					displayAjaxError("Failed to update data source changes to remote server.");
 					$("#backBtn").show();
 				}
@@ -280,6 +280,10 @@ $(document).ready(function(){
 		$(".widget-header h3").html((title + " - " + datasource.name));
 		// retrieve list of database types
 		getDatabaseTypes();
+		// fill up remaining data source form fields
+		populateDataSource(datasource);
+		// display form
+		$("#edit-datasource").show();
 	}
 	
 });
