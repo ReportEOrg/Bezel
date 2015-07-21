@@ -1,5 +1,12 @@
 <style type="text/css">
-
+.table {
+	width: 60%;
+}
+.table tr td:first-child {
+	font-weight: bold;
+	color: #4D4D4D!important;
+	width: 200px;
+}
 </style>
 
 <!-- content-wrapper -->
@@ -67,8 +74,8 @@
 											<div class="form-group">
 												<label for="dataSourceSchemaName" class="col-sm-2 control-label">Schema Name *</label>
 												<div class="col-sm-5">
-													<input type="text" id="dataSourceSchemaName" maxlength="45" style="width:45%;" placeholder="Schema" 
-														   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#dataSourceSchemaNameError">
+<!-- 													<input type="text" id="dataSourceSchemaName" maxlength="45" style="width:45%;" placeholder="Schema"  -->
+<!-- 														   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#dataSourceSchemaNameError"> -->
 													<div id="dataSourceSchemaNameError" class="errorMessage"></div>
 												</div>
 											</div>
@@ -90,24 +97,24 @@
 											<div class="form-group">
 												<label for="dataSourceHostName" class="col-sm-2 control-label">Host</label>
 												<div class="col-sm-5">
-													<input type="text" class="form-control" id="dataSourceHostName" style="width:55%;" placeholder="Host Name" required 
-														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceHostNameError">
+<!-- 													<input type="text" class="form-control" id="dataSourceHostName" style="width:55%;" placeholder="Host Name" required  -->
+<!-- 														data-parsley-length="[5,45]" data-parsley-errors-container="#dataSourceHostNameError"> -->
 													<div id="dataSourceHostNameError" class="errorMessage"></div>
 												</div>
 											</div>
 											<div class="form-group">
 												<label for="dataSourcePortNumber" class="col-sm-2 control-label">Port</label>
 												<div class="col-sm-5">
-													<input type="text" class="form-control" id="dataSourcePortNumber" style="width:30%;" placeholder="Port Number" required 
-														data-parsley-range="[1,65535]" data-parsley-type="number" data-parsley-errors-container="#dataSourcePortNumberError">
+<!-- 													<input type="text" class="form-control" id="dataSourcePortNumber" style="width:30%;" placeholder="Port Number" required  -->
+<!-- 														data-parsley-range="[1,65535]" data-parsley-type="number" data-parsley-errors-container="#dataSourcePortNumberError"> -->
 													<div id="dataSourcePortNumberError" class="errorMessage"></div>
 												</div>
 											</div>
 											<div class="form-group">
 												<label for="dataSourceUsername" class="col-sm-2 control-label">User Name</label>
 												<div class="col-sm-5">
-													<input type="text" class="form-control" id="dataSourceUsername" style="width:45%;" placeholder="Username" required 
-														data-parsley-length="[4,45]" data-parsley-errors-container="#dataSourceUsernameError">
+<!-- 													<input type="text" class="form-control" id="dataSourceUsername" style="width:45%;" placeholder="Username" required  -->
+<!-- 														data-parsley-length="[4,45]" data-parsley-errors-container="#dataSourceUsernameError"> -->
 													<div id="dataSourceUsernameError" class="errorMessage"></div>
 												</div>
 											</div>
@@ -119,13 +126,31 @@
 													<div id="dataSourcePasswordError" class="errorMessage"></div>
 												</div>
 											</div>
+											<div class="form-group">
+												<label for="dataSourcePasswordConfirm" class="col-sm-2 control-label">Confirm Password</label>
+												<div class="col-sm-5">
+													<input type="password" class="form-control" id="dataSourcePasswordConfirm" style="width:45%;" placeholder="Re-enter Password" required 
+														data-parsley-equalto="#dataSourcePassword" data-parsley-errors-container="#dataSourcePasswordConfirmError">
+													<div id="dataSourcePasswordConfirmError" class="errorMessage"></div>
+												</div>
+											</div>
 										</div>
 									</form>
 								</div>
 								<!-- STEP 4 Confirmation -->
 								<div class="step-pane" id="step4">
 									<form id="form4">
-										
+										<table class="table table-bordered table-striped">
+											<tbody>
+												<tr><td>Data Source Name</td><td id="confirm_dsName"></td></tr>
+												<tr><td>Description</td><td id="confirm_dsDesc"></td></tr>
+												<tr><td>Schema Name</td><td id="confirm_dsSchema"></td></tr>
+												<tr><td>Database Type</td><td id="confirm_dsDBType"></td></tr>
+												<tr><td>Host</td><td id="confirm_dsHost"></td></tr>
+												<tr><td>Port</td><td id="confirm_dsPort"></td></tr>
+												<tr><td>User Name</td><td id="confirm_dsUsername"></td></tr>
+											</tbody>
+										</table>
 									</form>
 								</div>
 								<!-- STEP ACTION [START] -->
@@ -154,7 +179,7 @@
 
 <script type="text/javascript">
 
-var getDatabaseTypes = function(){
+var getDatabaseTypes = function() {
 	$.ajax({
 		type: "GET",
 		url: getRestServerUrl()+"/reportbay-rest/api/databasetypes",
@@ -168,12 +193,54 @@ var getDatabaseTypes = function(){
 			}
 		},
 		complete: function(jqXHR, textStatus){
-// 			$('#dataSourceDBType').multiselect({
-// 				buttonClass: 'btn btn-default btn-sm',
-// 			});
 			$("#dataSourceDBType").select2();
 		}
 	});
+}
+
+function disableWizardStep() {
+	var $steps = $('#datasource-wizard').find('.steps li');
+	$steps.removeClass('active').removeClass('complete');
+	$steps.find('span.badge').removeClass('badge-info').removeClass('badge-success');
+	
+	$('.wizard-wrapper .btn-next').attr('disabled','disabled');
+	$('.wizard-wrapper .btn-prev').attr('disabled','disabled');
+}
+
+function createDataSourceObject() {
+	var datasource = {};
+	datasource['id'] = '0';
+	datasource['name'] = $("#dataSourceName").val();
+	datasource['description'] = $("#dataSourceDescription").val();
+// 	$('#confirm_dsDBType').html($('#selectDataSourceDBType').find('option:selected').val());
+// 	var dbType = {'id':0, 'value':'','joinQuery':''};
+// 	datasource['type'] = dbType;
+	datasource['hostname'] = $("#dataSourceHostName").val();
+	datasource['port'] = $("#dataSourcePortNumber").val();
+	datasource['schema'] = $("#dataSourceSchemaName").val();
+	datasource['username'] = $("#dataSourceUsername").val();
+	datasource['password'] = $("#dataSourcePassword").val();
+// 	datasource['url']='SINGLE_TABLE';
+	return datasource;
+}
+
+function newDataSource() {
+	var datasource = createDataSourceObject();
+	console.log(JSON.stringify(datasource));
+// 	$.ajax({
+// 		type: "POST",
+// 		url: getRestServerUrl()+"/reportbay-rest/api/datasources",
+// 		data: JSON.stringify(datasource),
+// 		contentType: "application/json",
+// 		crossDomain: true,
+// 		success: function(response) {
+			displaySuccessNotification(datasource.name, 'New Data Source', 'created');
+// 			loadContent('datasource_content.html');
+// 		},
+// 		error: function(jqXHR, textStatus, ex) {
+			// todo: add alert for error
+// 		}
+// 	});
 }
 
 $(document).ready(function() {
@@ -200,12 +267,21 @@ $(document).ready(function() {
 			// display database types and retrieve on first call
 			if (data.step === 1 && data.direction == 'next' && !databasetypes){
 				getDatabaseTypes();
+			} else if (data.step === 3 && data.direction == 'next') {
+				$('#confirm_dsName').html($("#dataSourceName").val());
+				$('#confirm_dsDesc').html($("#dataSourceDescription").val());
+				$('#confirm_dsSchema').html($("#dataSourceSchemaName").val());
+				$('#confirm_dsDBType').html($('#dataSourceDBType').find('option:selected').text());
+				$('#confirm_dsHost').html($("#dataSourceHostName").val());
+				$('#confirm_dsPort').html($("#dataSourcePortNumber").val());
+				$('#confirm_dsUsername').html($("#dataSourceUsername").val());
 			}
 			
 		}
 
-	}).on('finished', function(){
-		alert('data source created');
+	}).on('finished', function() {
+		disableWizardStep();
+		newDataSource();
 	});
 	
 });

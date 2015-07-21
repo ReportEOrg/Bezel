@@ -193,8 +193,16 @@
 	<script src="../../assets/js/plugins/modernizr/modernizr.js"></script>
 	<script src="../../assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
 	<script src="../../menu/bezelmenu.js"></script>
-	<script> 
+	<script type="text/javascript"> 
 		buildMenu('DataSource');
+		
+		function displaySuccessNotification(datasourceName, label, action) {
+			$.gritter.add({
+				title: label,
+				text: 'Successfully ' + action + ' Data Source [' + datasourceName + '].',
+			});
+		}
+		
 	</script>
 	<script src="../bezel-common.js"></script>
 	<script src="../../demo-style-switcher/assets/js/deliswitch.js"></script>
