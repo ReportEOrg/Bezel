@@ -1,0 +1,133 @@
+.buttonsDiv {
+	height: 35px;
+	margin-top: 10px;
+	border-bottom: 1px solid black;
+}
+
+a.applyChanges {
+	background: #0069d2;
+	text-decoration: none;
+	color: white;
+	font-family: Arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	padding-left: 7px;
+	padding-right: 7px;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	border: 1px solid #aaa;
+	border-radius: 5px;
+	cursor: default;
+	background: #0069d2;
+	background: #0069d2;
+}
+
+a.applyChanges:hover {
+	border-color: red;
+	box-shadow: 0 0 2px #ccc;
+	cursor: pointer;
+}
+
+a.applyChanges:active {
+	vertical-align: -1px;
+}
+
+.outerDiv {
+	padding-left: 15px;
+}
+
+.outerDims {
+	width: 98%;
+	height: 75px;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-top: 1px solid black;
+}
+
+.lastDim {
+	width: 98%;
+	height: 378px;
+	border: 1px solid black;
+}
+
+.outerAvailDiv {
+	width: 98%;
+	height: 110px;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-top: 1px solid black;
+}
+
+#avialDimensionsList {
+	display: inline-table;
+	width: 99%;
+	padding: 0px;
+	margin-left: 5px;
+	background-color: #C98F91;
+	height: 75px;
+}
+
+#ulValueDimensionsList {
+	display: inline-table;
+	width: 99%;
+	height: 40px;
+	padding: 0px;
+	margin-left: 5px;
+	background-color: #C98F91;
+}
+
+#columnDimensionsList {
+	display: inline-table;
+	width: 99%;
+	height: 40px;
+	padding: 0px;
+	margin-left: 5px;
+	background-color: #C98F91;
+}
+
+#avialDimensionsList li, #ulValueDimensionsList li,
+	#columnDimensionsList li, #rowDimensionsList li {
+	border: 1px solid black;
+	margin-left: 5px;
+	margin-top: 5px;
+	height: 30px;
+	line-height: 30px;
+	color: black;
+}
+
+.leftDiv {
+	width: 15%;
+	float: left;
+	height: 100%;
+	border-right: 1px solid black;
+}
+
+.rightDiv {
+	margin-left: 15%;
+}
+
+.rowDimDiv {
+	height: 310px;
+	overflow-y: auto;
+}
+
+#rowDimensionsList {
+	display: inline-table;
+	width: 95%;
+	height: 97%;
+	padding: 0px;
+	margin-left: 5px;
+	background-color: #C98F91;
+}
+
+.columnDimDiv {
+	border-bottom: 1px solid black;
+	height: 70px;
+}
+
+#pvtTable {
+	height: 310px;
+	width: 100%;
+	overflow: auto;
+}
+

@@ -26,8 +26,8 @@
 							<h3><i class="fa fa-desktop"></i> Data Source(s)</h3>
 							<div class="btn-group widget-header-toolbar">
 								<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
-								<!-- <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
-								<a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
+								<!-- <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a> -->
+								<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
 							</div>
 						</div>
 						<div class="widget-content">
@@ -52,19 +52,19 @@
 </div>
 <!-- /content-wrapper -->
 
-<!-- /delete data source dialog -->
-<div class="modal fade" id="delete-datasource-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- delete data source dialog -->
+<div class="modal fade" id="delete-datasource-dialog" tabindex="-1" role="dialog" aria-labelledby="delete-label" aria-hidden="true">
 	<div class="modal-dialog" style="width:450px;">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myModalLabel">Delete Data Source</h4>
+				<h4 class="modal-title" id="delete-label">Delete Data Source</h4>
 			</div>
 			<div class="modal-body">
 				<p></p>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" data-dismiss="modal" id="confirmDeleteDataSourceBtn"><i class="fa fa-check-circle"></i> Yes</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal" onclick="javascript:deleteDataSource()"><i class="fa fa-check-circle"></i> Yes</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> No</button>
 			</div>
 		</div>
@@ -73,7 +73,7 @@
 <!-- /delete data source dialog -->
 	
 <script type="text/javascript">
-//retrive datasource list AJAX function
+
 var datasourceListRequest = function(){
 	$('#datasource-table').empty();
 	//jquery ajax
@@ -92,24 +92,7 @@ var datasourceListRequest = function(){
 						tableDataSet.push(createDataSourceRow(datasources[index], index));
 					}
 					renderTable(tableDataSet);
-					$("#datasource-table").find('button').on('click', function(){
-						var action = $(this).data('action');
-						var reference = $(this).data('reference');
-						var refIdx = parseInt(reference);
-						var datasource = getDataSourceByIndex(refIdx);
-						setBezelPageParam("datasource", datasource);
-						switch (action) {
-							case "view":
-								loadContent("view_datasource.html");
-								break;
-							case "edit":
-								loadContent("edit_datasource.html");
-								break;
-							case "delete":
-								$(".modal-body p").html("Are you sure you want to delete <span style='font-weight:bold;'>" + datasource.name + "</span>?");
-								break;
-						}
-					});
+					
 				}
 			}
 		},
@@ -118,7 +101,6 @@ var datasourceListRequest = function(){
 			if("success" != textStatus){
 				var tableDataSet = [];
 				renderTable(tableDataSet);
-				displayAjaxError();
 				displayAjaxError("Failed to retrieve data from remote server");
 			}
 		}
@@ -162,8 +144,40 @@ function getDataSourceByIndex(index) {
 	return datasources[index];
 }
 
+function registerButtonEventHandler() {
+	jQuery.each($("#datasource-table").find('button'), 
+		function(index, item) {
+			var ev = $._data(item, 'events');
+			if(ev && ev.click) {
+				console.log('has click event handler');
+			} else {
+			// create click event handler
+			$(item).on('click', function() {
+				var action = $(this).data('action');
+				var reference = $(this).data('reference');
+				var refIdx = parseInt(reference);
+				var datasource = getDataSourceByIndex(refIdx);
+				console.log("action: "+action+" reference: "+reference+" datasource: "+datasource);
+				setBezelPageParam("datasource", datasource);
+				switch (action) {
+					case "view":
+						loadContent("view_datasource.html");
+						break;
+					case "edit":
+						loadContent("edit_datasource.html");
+						break;
+					case "delete":
+						$(".modal-body p").html("Are you sure you want to delete <span style='font-weight:bold;'>" + datasource.name + "</span>?");
+						break;
+				}
+			});
+		}
+	});
+}
+
 function renderTable(tableDataSet) {
-	$('#datasource-table').dataTable({
+	$('#datasource-table').on('draw.dt', 
+			function(){registerButtonEventHandler();}).dataTable({
 		"data": tableDataSet,
 		"columns" : [
 			{"title":"Name"},
@@ -178,19 +192,39 @@ function renderTable(tableDataSet) {
 	});
 }
 
+function deleteDataSource() {
+	var datasource = getBezelPageParam("datasource");
+	$("#edit-datasource").hide();
+	$("#loading").show();
+	$.ajax({
+		type: "DELETE",
+		url: getRestServerUrl()+"/reportbay-rest/api/datasources/"+datasource.id,
+		crossDomain: true,
+		success: function(response){
+			displaySuccessNotification(datasource.name);
+			loadContent('datasource_content.html');
+		},
+		complete: function(jqXHR, textStatus){
+			$("#loading").hide();
+			if("success" != textStatus){
+				displayAjaxError("Failed to update data source changes to remote server.");
+				$("#backBtn").show();
+			}
+		}
+	});
+}
+
+function displaySuccessNotification(datasourceName) {
+	$.gritter.add({
+		title: 'Delete Data Source',
+		text: 'Successfully deleted Data Source [' + datasourceName + '].',
+	});
+}
+
 $(document).ready(function(){
 	
 	initBezelParamMap();
 	datasourceListRequest();
-	
-	$('#confirmDeleteDataSourceBtn').click(function (e) {
-		var datasource = getBezelPageParam("datasource");
-		console.log(datasource);
-		
-		loadContent('datasource_content.html');
-		
-   	});
-   	
 	
 });
 </script>

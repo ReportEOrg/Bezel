@@ -73,6 +73,13 @@
 					"href": "../reportconnector/reportconnector.html?group=ReportConnector&target=NewPieChartReportConnector",
 					"pageContent" : "reportconnector_wizard_pie_chart.html"
 				}
+				},
+				{
+					"id"  : "NewPivotTable",
+					"name": "New Pivot Table",
+					"href": "../reportconnector/reportconnector.html?group=ReportConnector&target=NewPivotTable",
+					"pageContent" : "pivottable_wizard.html"
+				}				
 			]
 		},
 		{
