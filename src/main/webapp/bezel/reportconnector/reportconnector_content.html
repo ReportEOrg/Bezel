@@ -1,4 +1,4 @@
-
+					<div id="screen-filler" style="display:none;"></div>
 					<!-- end top general alert -->
 					<!-- content-wrapper -->
 					<div class="col-md-10 content-wrapper expanded">
@@ -68,6 +68,8 @@
 									if(response){
 										var connectors = response.connectors;
 										
+										setBezelPageParam("connectors", connectors);
+										
 										if(connectors){
 											
 											var index;
@@ -76,7 +78,7 @@
 											
 											for(index =0; index < connectors.length; index++){
 												//for each of connector, create elements
-												tableDataSet.push(createConnectorRow(connectors[index]));
+												tableDataSet.push(createConnectorRow(connectors[index], index));
 											}
 
 											renderTable(tableDataSet);
@@ -94,28 +96,113 @@
 									}
 								} 
 							});
-							
 						}
 						
-						function createConnectorRow(connector){
+						var deleteReportConnector = function(connectorId){
+							//jquery ajax
+							$.ajax({
+								type: "DELETE",
+								url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors/"+connectorId,
+								crossDomain: true,
+
+								success: function(response){
+									alert('Report connector has been deleted.');
+									loadContent("model_content.html");
+								},
+								complete: function(jqXHR, textStatus){
+									if("success" != textStatus){
+										displayAjaxError("Failed to delete report connector from remote server");
+									}
+								}
+							});
+						}
+						
+						function createConnectorRow(connector, index){
 							
 							var rowDataSet = [];
 							
 							rowDataSet.push(connector.name);
 							rowDataSet.push(connector.reportDisplayName);
+							rowDataSet.push("<button type='button' class='widget main-header modelActionButton' data-action='view' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-eye' style='margin-left: 5px;'></i></em></button> "+
+											"<button type='button' class='widget main-header modelActionButton' data-action='edit' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-pencil' style='margin-left: 5px;'></i></em></button> "+
+											"<button type='button' class='widget main-header modelActionButton' data-action='delete' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-trash' style='margin-left: 5px;'></i></em></button> ")
 				
 							return rowDataSet;
 						}
 						
+						function getReportConnectorByIndex(index){
+							
+							var reportConnector = undefined;
+							
+							if(!isNaN(index)){
+								var connectors = getBezelPageParam("connectors")
+								
+								reportConnector = connectors[index];
+							}
+							
+							return reportConnector;
+						}
+						
 						function renderTable(tableDataSet){
-							$('#report-connector-table').dataTable({
+							$('#report-connector-table').on('draw.dt', function(){registerButtonEventHandler();})
+														.dataTable({
 								"data": tableDataSet,
 								"columns" : [
 									{"title":"Connector Name"},
-									{"title":"Generated Report Name"}
+									{"title":"Generated Report Name"},
+									{"title":"Action","orderable":false, "width":"10%"}
 								]
 							});
 						}
 
-						rptConnectorListRequest();
+						function registerButtonEventHandler(){
+							console.log("registerButtonEventHandler");
+
+							//for each of button element found
+							jQuery.each($("#report-connector-table").find('button'), 
+										  function(index, item){
+									var ev = $._data(item, 'events');
+									
+									if(ev && ev.click){
+										console.log('has click event handler');
+									}
+									//not yet have click event handler, create clcik event handler
+									else{
+										$(item).on('click', function(){
+											var action = $(this).data('action');
+											var reference = $(this).data('reference');
+											
+											var refIdx = parseInt(reference);
+											var reportConnector = getReportConnectorByIndex(refIdx);
+											
+											console.log("action: "+action+" reference: "+reference+" reportConnector: "+reportConnector);
+											
+											switch (action){
+												case "view":
+													setBezelPageParam("reportConnector", reportConnector);
+													loadContent("view_reportconnector.html");
+													break;
+												case "edit":
+													setBezelPageParam("reportConnector", reportConnector);
+													loadContent("edit_reportconnector.html");
+													break;
+												case "delete":
+													if(confirm("Are you sure you want to delete this report connector?")){
+														$("#screen-filler").fadeIn("slow");
+														deleteReportConnector(reportConnector.id);
+													}
+													break;
+											}
+										});
+									}
+								});
+						}
+
+						$(document).ready(function(){
+							
+							//clear page context before start
+							initBezelParamMap();
+							
+							rptConnectorListRequest();							
+						});
 					</script>

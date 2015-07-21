@@ -22,4 +22,8 @@
         <extension>svg</extension>
         <mime-type>image/svg+xml</mime-type>
 	</mime-mapping>
+	
+	<welcome-file-list>
+		<welcome-file>bezel/dashboard/dashboard.html</welcome-file>
+	</welcome-file-list>
 </web-app>

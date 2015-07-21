@@ -157,7 +157,7 @@
 								},
 								complete: function(jqXHR, textStatus){
 									if("success" != textStatus){
-										displayAjaxError("Failed to delete model changes to remote server");
+										displayAjaxError("Failed to delete model from remote server");
 									}
 								}
 							});
@@ -171,9 +171,9 @@
 							rowDataSet.push(getModelType(model));
 							rowDataSet.push(getDataSource(model));
 							rowDataSet.push(model.description);
-							rowDataSet.push("<button type='button' class='widget main-header' data-action='view' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-eye' style='margin-left: 5px;'></i></em></button> "+
-											"<button type='button' class='widget main-header' data-action='edit' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-pencil' style='margin-left: 5px;'></i></em></button> "+
-											"<button type='button' class='widget main-header' data-action='delete' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-trash' style='margin-left: 5px;'></i></em></button> ")
+							rowDataSet.push("<button type='button' class='widget main-header  modelActionButton' data-action='view' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-eye' style='margin-left: 5px;'></i></em></button> "+
+											"<button type='button' class='widget main-header  modelActionButton' data-action='edit' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-pencil' style='margin-left: 5px;'></i></em></button> "+
+											"<button type='button' class='widget main-header  modelActionButton' data-action='delete' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-trash' style='margin-left: 5px;'></i></em></button> ")
 				
 							return rowDataSet;
 						}

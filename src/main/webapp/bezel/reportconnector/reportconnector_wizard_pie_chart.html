@@ -1,0 +1,525 @@
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Report Connector</li>
+									<li class="active">New Report Connector</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>New Pie Chart Report Connector</h2>
+								<em>Creating a new report connector for pie chart report</em>
+							</div>
+							<div class="main-content">
+								<!-- WIDGET WIZARD -->
+								<div class="widget">
+									<div class="widget-header">
+										<h3><i class="fa fa-pie-chart"></i> New Pie Chart Report Connector Wizard</h3>
+									</div>
+									<div class="widget-content">
+										<div class="wizard-wrapper">
+											<!-- WIZARD -->
+											<div id="report-connector-wizard" class="wizard">
+												<!-- NAVIGATION -->
+												<div id="report-connector-wizard-steps" style="overflow: hidden;">
+													<ul class="steps">
+														<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Report Connector Name<span class="chevron"></span></li>
+														<li data-target="#step2"><span class="badge">2</span>Model<span class="chevron"></span></li>
+														<li data-target="#step3"><span class="badge">3</span>Configuration<span class="chevron"></span></li>
+														<li data-target="#step4" class="last"><span class="badge">4</span>Create Report Connector</li>
+													</ul>
+												</div>
+												<div class="step-content">
+													<!-- STEP 1 Connector Name -->
+													<div class="step-pane active" id="step1">
+														<form id="form1" data-parsley-validate novalidate>
+															<p>Please provide the follow details:</p>
+															<div class="row">
+																<div class="col-md-10">
+																	<div class="form-group">
+																		<label for="connectorName">Report Connector Name *</label>
+																		<input type="text" id="connectorName" style="width:50%;" maxlength="45" 
+																			   class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#connectorNameError">
+																		<div id="connectorNameError" class="errorMessage"></div>
+																	</div>
+																	<div class="form-group">
+																		<label for="reportDisplayName">Report Display Name *</label>
+																		<input type="text" id="reportDisplayName" 
+																			    class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#reportDisplayNameError">
+																		<div id="reportDisplayNameError" class="errorMessage"></div>
+																	</div>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 1 -->
+													<!-- STEP 2 Model -->
+													<div class="step-pane" id="step2">
+														<form id="form2" data-parsley-validate novalidate>
+															<p>Please select model source for connector</p>
+															<div class="row">
+																<div class="col-md-3">
+																	<label for="model">Model *</label>
+																	<select id="model" class="form-control" onchange="javascript:resetConfiguration();"
+																	        required data-parsley-errors-container="#modelError"></select>
+																	<div id="modelError" class="errorMessage"></div>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 2 -->
+													<!-- STEP 3 Configuration -->
+													<div class="step-pane" id="step3">
+														<form id="form3" data-parsley-validate novalidate>
+															<p>Please provide the configuration details:</p>
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="form-group">
+																		<label for="chartTitle">Chart Title</label>
+																		<input type="text" id="chartTitle" class="form-control" 
+																		        data-parsley-errors-container="#chartTitleError">
+																		<div id="chartTitleError" class="errorMessage"></div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="showLegend">Show Legend</label><br>
+																				<input id="showLegend" type="checkbox" checked 
+																					   class="switch-small" data-on="success" data-off="danger"
+																					   data-parsley-errors-container="#showLegendError">
+																				<div id="showLegendError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																		<div class="col-md-4" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="showDataLabel">Show Data Label</label><br>
+																				<input id="showDataLabel" type="checkbox" checked 
+																					   class="switch-small" data-on="success" data-off="danger"
+																					   data-parsley-errors-container="#showDataLabelError">
+																				<div id="showDataLabelError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																		<div class="col-md-4" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="pieChartDataFormat">Pie Chart Data Format *</label><br>
+																				<label class="fancy-radio">
+																					<input type="radio" name="pieChartDataFormat" value="PERCENT" required
+																						   data-parsley-errors-container="#pieChartDataFormatError">
+																					<span><i></i>Percentage</span>
+																				</label>
+																				<label class="fancy-radio">
+																					<input type="radio" name="pieChartDataFormat" value="VALUE" required
+																						   data-parsley-errors-container="#pieChartDataFormatError">
+																					<span><i></i>Value</span>
+																				</label>
+																				<div id="pieChartDataFormatError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label for="modelDataField">Model Data Field *</label>
+																		<select id="modelDataField" class="form-control"  
+																	        required data-parsley-errors-container="#modelDataFieldError"></select>
+																		<div id="modelDataFieldError" class="errorMessage"></div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label for="modelCategoryField">Model Category Field *</label>
+																		<select id="modelCategoryField" class="form-control"  
+																	        required data-parsley-errors-container="#modelCategoryFieldError"></select>
+																		<div id="modelCategoryFieldError" class="errorMessage"></div>
+																	</div>
+																	
+																</div>
+																<div class="col-md-6">
+																	<div id="pieChartPreview" style="width:300px; height: 300px;"></div>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 3 -->
+													<!-- STEP 4 Confirmation -->
+													<div class="step-pane" id="step4">
+														<form id="form4">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Description</span>
+																		<span id="finalModelDesc" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Data Source</span>
+																		<span id="finalDataSource" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Table</span>
+																		<span id="finalTable" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																	<p class="data-row">
+																		<table id="attrFinalTable" class="table table-bordered table-striped">
+																		</table>
+																	</p>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 4 -->
+												</div>
+												<!-- STEP ACTION -->
+												<div class="actions">
+													<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
+													<button type="button" class="btn btn-primary btn-next" data-last="Create Model">Next <i class="fa fa-arrow-right"></i></button>
+												</div>
+												<!-- END STEP ACTION -->
+											</div>
+											<!-- END WIZARD -->
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+				
+	
+	<script type="text/javascript">
+
+		//AJAX functions
+
+		var buildModelOptions = function(){
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models",
+				
+				success: function(response){
+					if(response){
+						var models = response.models;
+						
+						setBezelPageParam("models", models);
+						
+						if(models){
+							$("#model").empty();
+							$("#model").append($('<option></option>'));
+							var index;
+							for(index = 0; index<models.length; index++){
+								var model = models[index];
+								
+								$("#model").append($('<option></option>').val(model.id).html(model.name));
+								
+							}
+						}
+					}
+				}
+			});
+		};
+		
+		var retrieveModel = function(modelId){
+			console.log('retrieveModel');
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+				
+				success: function(response){
+					if(response){
+						var model = response;
+						
+						//store retrieved model
+						setBezelPageParam("model", model);
+						//build the drop down list of model data fields
+						rebuildModelDataFieldOptions(model.attributeBindings);
+
+					}
+				}
+			});
+		};
+		
+		
+		var createReportConnector = function(){
+			
+			var model = getBezelPageParam("model");
+			
+			
+			//jquery ajax
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/models",
+				data: JSON.stringify(model),
+				contentType: "application/json",
+				crossDomain: true,
+
+				success: function(response){
+					alert('New model has been created.');
+					loadContent("model_content.html");
+				},
+
+				error: function(jqXHR, textStatus, ex){
+					alert('Failed creation with error : '+textStatus+","+ex+","+jqXHR.responseText);
+				}
+			});
+		};
+		//End AJAX functions
+		
+		function AttributeRow(idx, name, alias){
+			this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' checked data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
+			this._name = name;
+			this._alias_input = "<input type='text' id='alias_"+idx+"' value='"+alias+"' class='form-control' data-parsley-errors-container='#alias_"+idx+"_error'>"+
+			                    "</input><div id='alias_"+idx+"_error' class='errorMessage'></div>";
+			
+			this._alias = alias;
+			
+			this.enable = function(){
+				return this._enable;
+			};
+			this.name = function(){
+				return this._name;
+			};
+			this.alias = function(){
+				return this._alias;
+			};
+			this.aliasInput = function(){
+				return this._alias_input;
+			} 
+		}
+		
+		function rebuildModelDataFieldOptions(modelAttrBindings){
+			
+			$('#modelDataField').empty();
+			$('#modelDataField').append($('<option></option>'));
+			
+			$('#modelCategoryField').empty();
+			$('#modelCategoryField').append($('<option></option>'));
+			
+			
+			if(modelAttrBindings && $.isArray(modelAttrBindings)){
+				for(var index=0; index < modelAttrBindings.length; index++){
+					if(isValidModelDataField(modelAttrBindings[index].typeName)){
+						$('#modelDataField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+					}
+					$('#modelCategoryField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+				}
+			}
+		}
+		
+		function isValidModelDataField(modelFieldType){
+			var isValid = false;
+			
+			if(modelFieldType){
+				switch(modelFieldType){
+					case 'BIGINT':
+					case 'DECIMAL':
+					case 'DOUBLE':
+					case 'FLOAT':
+					case 'INTEGER' :
+					case 'NUMERIC' :
+					case 'REAL' :
+					case 'SMALLINT' :
+					case 'TINYINT' :
+						isValid = true;
+						break;
+				}
+			}
+			return isValid;
+		}
+		
+		function resetConfiguration(){
+			//clear model, so it trigger reload
+			setBezelPageParam("model", undefined);
+		}
+		
+		function clearRadio(){
+			$('input[name="pieChartDataFormat"]').prop('checked', false);
+		}
+		
+		function updateConfirmationDetail(){
+			
+
+			var tableIdx = getBezelPageParam("tableIdx");
+			var tables = getBezelPageParam("tables");
+
+			$("#finalModelName").append($("#modelName").val());
+			$("#finalModelDesc").append($("#modelDesc").val());
+			$("#finalDataSource").append($("#datasource").find(":selected").text());
+			$("#finalTable").append(tables[tableIdx].name);
+			
+			var attrTab = $('#attrFinalTable').DataTable({
+				"destroy": true,
+				paging : false,
+				searching : false,
+				ordering: false,
+				info:false,
+				"columns" : [
+								{"title":"Table Field Name", data:null, render: "name"},
+								{"title":"Model Attribute Name", data:null, render: "alias"}]
+			});
+			
+			var attributeMaps = getBezelPageParam("attributeMaps");
+			
+			for(index = 0; index<attributeMaps.length; index++){
+				
+				if($("#attr_"+index).is(':checked')){
+					attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,$("#alias_"+index).val()));
+				};
+			}
+			
+			attrTab.draw();
+		}
+		
+	
+		
+		function disableWizardStep(){
+			var $steps = $('#model-wizard').find('.steps li');
+			$steps.removeClass('active').removeClass('complete');
+			$steps.find('span.badge').removeClass('badge-info').removeClass('badge-success');
+			
+			$('.wizard-wrapper .btn-next').attr('disabled','disabled');
+			$('.wizard-wrapper .btn-prev').attr('disabled','disabled');
+		}
+		
+		
+		$(document).ready(function(){
+			
+			//clear page context before start
+			initBezelParamMap();
+			
+			//model wizard function
+			$('#report-connector-wizard').on('change', function(e, data) {
+				
+				//if changes from step button
+				if(data && data.step){
+					// validation
+					if( $('#form'+data.step).length > 0 && data.direction == 'next') {
+						var parsleyForm = $('#form'+data.step).parsley();
+						parsleyForm.validate();
+		
+						if( !parsleyForm.isValid() )
+							return false;
+					}
+		
+					// last step button
+					$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
+					
+					var models = getBezelPageParam("models");
+					var attributeMaps = getBezelPageParam("attributeMaps");
+					var model = getBezelPageParam("model");
+		
+					if(data.step === 1 && data.direction == 'next' && !models){
+						buildModelOptions();
+					}
+					else if(data.step === 2 && data.direction == 'next' && !model) {
+						//obtain selected model id
+						var modelId = $("#model").find(":selected").val();
+						
+						clearRadio();
+						retrieveModel(modelId);
+					}
+					else if(data.step === 3 && data.direction == 'next' && !attributeMaps) {
+						//obtain selected table index
+						var tableIdx = $("#modeltable").find(":selected").val();
+						
+						console.log("tableIdx "+tableIdx);
+						
+						setBezelPageParam("tableIdx",tableIdx);
+						
+						if(tableIdx){
+							$("#attrMapTable").empty();
+							constructAttributeMap(tableIdx, tables);
+						}
+					}
+					else if(data.step === 4 && data.direction == 'next') {
+						
+						//if failed attr validation
+						if(!validateAttribute())
+							return false;
+						
+						updateConfirmationDetail();
+					}
+				}
+	
+			}).on('finished', function(){
+				disableWizardStep();
+				createModel();
+			});
+	
+			$('.form-group .switch-small').bootstrapSwitch();
+		});
+	
+		
+		var pieData = [
+					{ label: "Direct",  data: 70},
+					{ label: "Referral",  data: 20},
+					{ label: "Others", data: 15}
+				];
+		$.plot('#pieChartPreview', pieData, {
+			series: {
+				pie: {
+					show: true,
+					innerRadius: 0,
+					stroke: {
+						width: 4,
+						color: "#F9F9F9"
+					},
+					label: {
+						show: true,
+						radius: 3/4,
+						formatter: labelFormatter
+					}
+				},
+			},
+			legend: {
+				show: true
+			},
+			grid: {
+				hoverable: false
+			},
+			colors: ["#d9d9d9", "#5399D6", "#d7ea2b"],
+		});
+	
+		function labelFormatter(label, series) {
+			var labelFormat = $('input[name="pieChartDataFormat"]:checked', '#form3').val();
+			
+			console.log(series.data[0][1]);
+			console.log(series.percent);
+			
+			var labelPlaceHolder = '';
+			
+			if($('#showDataLabel').prop('checked')){
+				labelPlaceHolder =  label + "<br/>";
+			}
+			
+			var valuePlaceHolder = '';
+			
+			if('PERCENT' == labelFormat && series.percent){
+				valuePlaceHolder = Math.round(series.percent)+'%';
+			}
+			else if ('VALUE' == labelFormat && series.data[0][1]){
+				valuePlaceHolder = Math.round(series.data[0][1])
+			}
+			
+			return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
+		}
+	</script>
+
