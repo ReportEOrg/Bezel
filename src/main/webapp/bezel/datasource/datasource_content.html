@@ -161,7 +161,7 @@ function registerButtonEventHandler() {
 				setBezelPageParam("datasource", datasource);
 				switch (action) {
 					case "view":
-						loadContent("view_datasource.html");
+						loadContent("view_datasource.html");						
 						break;
 					case "edit":
 						loadContent("edit_datasource.html");
@@ -201,7 +201,7 @@ function deleteDataSource() {
 		url: getRestServerUrl()+"/reportbay-rest/api/datasources/"+datasource.id,
 		crossDomain: true,
 		success: function(response){
-			displaySuccessNotification(datasource.name, 'Delete Data Source', 'deleted');
+			displaySuccessNotification(datasource.name, 'deleted');
 			loadContent('datasource_content.html');
 		},
 		complete: function(jqXHR, textStatus){

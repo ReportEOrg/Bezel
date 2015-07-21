@@ -209,13 +209,13 @@ function populateDataSource(datasource) {
 }
 
 function createDataSourceObject(datasource) {
-	datasource.name = $("#dataSourceName").val();
-	datasource.description = $("#dataSourceDescription").val();
-	datasource.schema = $("#dataSourceSchemaName").val();
-	datasource.hostname = $("#dataSourceHostName").val();
-	datasource.port = $("#dataSourcePortNumber").val();
-	datasource.username = $("#dataSourceUsername").val();
-	datasource.password = $("#dataSourcePassword").val();
+	datasource.name = $("#dataSourceName").val().trim();
+	datasource.description = $("#dataSourceDescription").val().trim();
+	datasource.schema = $("#dataSourceSchemaName").val().trim();
+	datasource.hostname = $("#dataSourceHostName").val().trim();
+	datasource.port = $("#dataSourcePortNumber").val().trim();
+	datasource.username = $("#dataSourceUsername").val().trim();
+	datasource.password = $("#dataSourcePassword").val().trim();
 	// database type
 	var selectedDbTypeIdx = $('#selectDataSourceDBType').find('option:selected').val();
 	var databasetype = getDatabaseTypeByIndex(selectedDbTypeIdx);
@@ -244,7 +244,7 @@ function editDataSource() {
 			contentType: "application/json",
 			crossDomain: true,
 			success: function(response){
-				displaySuccessNotification(datasource.name, 'Edit Data Source', 'updated');
+				displaySuccessNotification(datasource.name, 'updated');
 				loadContent('datasource_content.html');
 			},
 			complete: function(jqXHR, textStatus){

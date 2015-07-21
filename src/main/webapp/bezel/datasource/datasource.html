@@ -53,6 +53,9 @@
 	.modal-open {
  		overflow: auto;
 	}
+	.notification {
+		font-size: 12px;
+	}
 	</style>
 </head>
 
@@ -196,10 +199,14 @@
 	<script type="text/javascript"> 
 		buildMenu('DataSource');
 		
-		function displaySuccessNotification(datasourceName, label, action) {
+		function displaySuccessNotification(datasourceName, action) {
+			$.extend( $.gritter.options, {
+				position: 'bottom-right'
+			});
 			$.gritter.add({
-				title: label,
-				text: 'Successfully ' + action + ' Data Source [' + datasourceName + '].',
+				title: 'Data Source',
+				position: 'bottom-right',
+				text: "<span class='notification'>Successfully " + action + " Data Source [" + datasourceName + "].</span>",
 			});
 		}
 		
