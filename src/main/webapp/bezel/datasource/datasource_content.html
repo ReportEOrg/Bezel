@@ -201,7 +201,7 @@ function deleteDataSource() {
 		url: getRestServerUrl()+"/reportbay-rest/api/datasources/"+datasource.id,
 		crossDomain: true,
 		success: function(response){
-			displaySuccessNotification(datasource.name);
+			displaySuccessNotification(datasource.name, 'Delete Data Source', 'deleted');
 			loadContent('datasource_content.html');
 		},
 		complete: function(jqXHR, textStatus){
@@ -211,13 +211,6 @@ function deleteDataSource() {
 				$("#backBtn").show();
 			}
 		}
-	});
-}
-
-function displaySuccessNotification(datasourceName) {
-	$.gritter.add({
-		title: 'Delete Data Source',
-		text: 'Successfully deleted Data Source [' + datasourceName + '].',
 	});
 }
 

@@ -88,7 +88,7 @@ legend {
 									<div class="col-md-6">
 										<div class="form-horizontal">
 											<div class="form-group">
-												<label class="col-sm-3 control-label">URL Pattern</label>
+												<label class="col-sm-3 control-label">URL</label>
 												<label class="col-sm-8" id="dataSourceDBTypeURL"></label>
 											</div>
 											<div class="form-group">
@@ -158,7 +158,7 @@ $(document).ready(function(){
 		$('#dataSourceSchemaName').text(datasource.schema);
 		$('#dataSourceDBTypeName').text(datasource.type.name);
 		$('#dataSourceDBTypeFamily').text(datasource.type.family);
-		$('#dataSourceDBTypeURL').text(datasource.type.urlPattern);
+		$('#dataSourceDBTypeURL').text(datasource.url);
 		$('#dataSourceDBTypeDriver').text(datasource.type.driverName);
 		$('#dataSourceHostName').text(datasource.hostname);
 		$('#dataSourcePortNumber').text(datasource.port);

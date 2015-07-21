@@ -208,7 +208,7 @@ function populateDataSource(datasource) {
 	$('#dataSourcePassword').val(datasource.password);
 }
 
-function updateDataSourceData(datasource) {
+function createDataSourceObject(datasource) {
 	datasource.name = $("#dataSourceName").val();
 	datasource.description = $("#dataSourceDescription").val();
 	datasource.schema = $("#dataSourceSchemaName").val();
@@ -220,6 +220,7 @@ function updateDataSourceData(datasource) {
 	var selectedDbTypeIdx = $('#selectDataSourceDBType').find('option:selected').val();
 	var databasetype = getDatabaseTypeByIndex(selectedDbTypeIdx);
 	datasource.type = databasetype;
+	datasource.url = databasetype.urlPattern.replace("//%s:%s/%s", "//"+datasource.hostname+":"+datasource.port+"/"+datasource.schema);
 }
 
 function editDataSource() {
@@ -229,7 +230,7 @@ function editDataSource() {
 		return false;
 	} else {
 		var datasource = getBezelPageParam("datasource");
-		updateDataSourceData(datasource);
+		createDataSourceObject(datasource);
 		// display loading icon and hide edit form and buttons
 		$("#edit-datasource").hide();
 		$("#submitBtn").hide();
@@ -243,7 +244,7 @@ function editDataSource() {
 			contentType: "application/json",
 			crossDomain: true,
 			success: function(response){
-				displaySuccessNotification(datasource.name);
+				displaySuccessNotification(datasource.name, 'Edit Data Source', 'updated');
 				loadContent('datasource_content.html');
 			},
 			complete: function(jqXHR, textStatus){
@@ -257,13 +258,6 @@ function editDataSource() {
 		});
 		
 	}
-}
-
-function displaySuccessNotification(datasourceName) {
-	$.gritter.add({
-		title: 'Edit Data Source',
-		text: 'Successfully modified Data Source [' + datasourceName + '].',
-	});
 }
 
 $(document).ready(function(){
