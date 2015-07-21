@@ -1,0 +1,608 @@
+
+<!-- content-wrapper -->
+<div class="col-md-10 content-wrapper expanded">
+	<div class="row">
+		<div class="col-md-4 ">
+			<ul class="breadcrumb">
+				<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+				<li class="active">Report Connector</li>
+				<li class="active">New Pivot Table</li>
+			</ul>
+		</div>
+	</div>
+	<!-- main -->
+	<div class="content">
+		<div class="main-header">
+			<h2>New Pivot Table</h2>
+			<em>Creating a new pivot table using existing model</em>
+		</div>
+		<div class="main-content">
+			<!-- WIDGET WIZARD -->
+			<div class="widget">
+				<div class="widget-header">
+					<h3>
+						<i class="fa fa-table"></i> New Pivot Table Wizard
+					</h3>
+				</div>
+				<div class="widget-content">
+					<div class="wizard-wrapper">
+						<!-- WIZARD -->
+						<div id="pivot-wizard" class="wizard">
+							<!-- NAVIGATION -->
+							<div id="model-wizard-steps" style="overflow: hidden;">
+								<ul class="steps">
+									<li data-target="#step1" class="active"><span
+										class="badge badge-info">1</span>Connector Name<span class="chevron"></span></li>
+									<li data-target="#step2"><span class="badge">2</span>Model<span class="chevron"></span></li>
+									<li data-target="#step3"><span class="badge">3</span>Attribute
+										Mapping & Preview<span class="chevron"></span></li>
+									<li data-target="#step4" class="last"><span class="badge">4</span>Confirmation</li>
+								</ul>
+							</div>
+							<div class="step-content">
+								<!-- STEP 1 Template And Report Display Name -->
+								<div class="step-pane active" id="step1">
+									<form id="pivotForm1" data-parsley-validate novalidate>
+										<p>Please provide the follow details</p>
+										<div class="row">
+											<div class="col-md-10">
+												<div class="form-group">
+													<label for="templateName">Template Name *</label> <input
+														type="text" id="templateName" style="width: 50%;"
+														maxlength="45" class="form-control"
+														data-parsley-length="[5,45]" required
+														data-parsley-errors-container="#templateNameError">
+													<div id="templateNameError" class="errorMessage"></div>
+												</div>
+												<div class="form-group">
+													<label for="reportDisplayName">Report Display Name
+														*</label> <input type="text" id="reportDisplayName"
+														style="width: 50%;" maxlength="45" class="form-control"
+														data-parsley-length="[5,45]" required
+														data-parsley-errors-container="#reportDisplayNameError">
+													<div id="reportDisplayNameError" class="errorMessage"></div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<!-- END STEP 1 -->
+								<!-- STEP 2 Model Name -->
+								<div class="step-pane" id="step2">
+									<form id="pivotForm2" data-parsley-validate novalidate>
+										<p>Please select Model for New Pivot Table</p>										
+										<div class="row">
+											<div class="col-md-3">
+												<label for="lstModels">Model Name *</label> <select
+													id="lstModels" class="form-control" required
+													data-parsley-errors-container="#modelNameError">
+												</select>
+												<div id="modelNameError" class="errorMessage"></div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<!-- END STEP 2 -->
+								<!-- STEP 3 Attribute Mapping & Preview -->
+								<div class="step-pane" id="step3">
+									<form id="pivotForm3" data-parsley-validate novalidate>		
+									    <div>							 
+											<p>Please provide the attribute mapping details</p>	
+											<input type="text" id="checkRequiredDims" style="display: none;" data-parsley-errors-container="#requiredDimensionsError"/>
+											<p id="requiredDimensionsError" class="errorMessage"></p>
+										</div>									
+										<div class="row">
+											<div class='outerDiv'>
+												<div class="outerAvailDiv">
+													<div class="innerAvailDiv">
+														<label class="dimenInfoLabel" style="padding-left:5px;">Available Dimensions</label>
+														<ul id="avialDimensionsList" class="droppableUL">
+														</ul>
+													</div>
+												</div>
+												<div class="outerDims">
+													<label class="dimenInfoLabel" style="padding-left:5px;">Value Dimensions</label>
+													<div class="dimDiv">
+														<ul id="ulValueDimensionsList"
+															class="ulValueDimensionsList">
+														</ul>
+													</div>
+												</div>
+												<div class="lastDim">
+													<div class="leftDiv">
+														<div class="buttonsDiv" align="center">
+															<a class='applyChanges' id='applyChanges'>Preview</a>															
+														</div>
+														<div>
+															<label class="dimenInfoLabel" style="padding-left:5px;">Row Dimensions</label>
+															<div class="rowDimDiv">
+																<ul id="rowDimensionsList" class="droppableUL">
+																</ul>
+															</div>
+														</div>
+													</div>
+													<div class="rightDiv">														
+														<div class="columnDimDiv">
+														<label class="dimenInfoLabel" style="padding-left:5px;">Column Dimensions</label>
+															<ul id="columnDimensionsList" class="droppableUL">
+															</ul>
+														</div>
+														<div id="pvtTable"></div>
+													</div>
+												</div>
+											</div>
+										</div>								
+									</form>
+								</div>
+								<!-- END STEP 3 -->
+								<!-- STEP 4 Confirmation -->
+								<div class="step-pane" id="step4">
+									<form id="pivotForm4" data-parsley-validate novalidate>
+										<div class="row">
+											<div class="col-md-6 widget-content">
+												<h4>
+													<i class="fa fa-square"></i> Connector Details
+												</h4>
+												<p class="data-row">
+													<span class="data-name">Template Name : </span> <span
+														id="finalTemplateName" class="data-value"></span>
+												</p>
+												<p class="data-row">
+													<span class="data-name">Report Display Name : </span> <span
+														id="finalRptDisplayName" class="data-value"></span>
+												</p>
+												<p class="data-row">
+													<span class="data-name">Model Name : </span> <span
+														id="finalModelName" class="data-value"></span>
+												</p>												
+											</div>
+											<div class="col-md-6 widget-content">
+												<h4>
+													<i class="fa fa-square"></i> Attribute(s) Information
+												</h4>
+												<p class="data-row">
+													<span class="data-name">Value Dimensions : </span> <span
+														id="finalValueDimensions" class="data-value"></span>
+												</p>
+												<p class="data-row">
+													<span class="data-name">Row Dimensions : </span> <span
+														id="finalRowDimensions" class="data-value"></span>
+												</p>
+												<p class="data-row">
+													<span class="data-name">Column Dimensions : </span> <span
+														id="finalColumnDimensions" class="data-value"></span>
+												</p>
+											</div>
+										</div>
+									</form>
+								</div>
+								<!-- END STEP 4 -->
+							</div>
+							<!-- STEP ACTION -->
+							<div class="actions">
+								<button type="button" class="btn btn-default btn-prev">
+									<i class="fa fa-arrow-left"></i> Prev
+								</button>
+								<button type="button" class="btn btn-primary btn-next"
+									data-last="Save">
+									Next <i class="fa fa-arrow-right"></i>
+								</button>
+							</div>
+							<!-- END STEP ACTION -->
+						</div>
+						<!-- END WIZARD -->
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- /main-content -->
+	</div>
+	<!-- /main -->
+</div>
+<!-- /content-wrapper -->
+
+
+<script type="text/javascript">
+	var allModelsData;
+	var selectedModelId;
+	var createPivotTable = function() {
+		var pivotData = JSON.stringify(preparePivotDataToSave());
+		$.ajax({
+			type : 'POST',
+			url : 'http://localhost:8080/reportbay-rest/api/reportconnectors/',
+			dataType : 'JSON',
+			data : pivotData,
+			contentType:'application/json',				
+			success : function(returnData) {
+				alert('ReturnData : '+JSON.stringify(returnData));
+			},
+			error : function(e) {
+				alert("Error while saving template Data : " + JSON.stringify(e));
+			}
+		});
+	}
+	
+	function preparePivotDataToSave() {
+		var pivotData = new Object();		
+		pivotData.type='CROSSTAB';
+		if (selectedModelId != 'undefined' && selectedModelId != null && selectedModelId.length > 0) {			
+			$.each(allModelsData.models, function(idx, model) {
+				if (model.id == selectedModelId) {
+					pivotData.crossTabTemplate = prepareCrossTabDetails(model);			
+				}
+			});
+		}
+		pivotData.cartesianChartTemplate=null;
+		pivotData.pieChartTemplate=null;		
+		return pivotData;
+	}
+	function prepareCrossTabDetails(selModel)
+	 {		
+		var rowDimsData = prepareRowDimsToSave(selModel);
+		var colDimsData = prepareColumnDimsToSave(selModel);
+		var valDimsData = prepareValueDimsToSave(selModel);
+		
+		var allDimsData = [];
+		var count = 0;
+		
+		for( var i=0;i<rowDimsData.length; i++)
+		 {
+			allDimsData[count++] = rowDimsData[i];
+		 }
+		for( var i=0;i<colDimsData.length; i++)
+		 {
+			allDimsData[count++] = colDimsData[i];
+		 }
+		for( var i=0;i<valDimsData.length; i++)
+		 {
+			allDimsData[count++] = valDimsData[i];
+		 }
+		
+	    var crossTabDetails = new Object();
+	    crossTabDetails.crossTabDetail = allDimsData;	    
+	    
+	    crossTabDetails.id = 0;
+	    crossTabDetails.reportTemplateType='SIMPLE';
+	    crossTabDetails.reportDisplayName=$('#reportDisplayName').val();
+	    crossTabDetails.templateName=$('#templateName').val();
+	    crossTabDetails.modelId=selModel.id;
+	    crossTabDetails.reportQuery=null;
+	    crossTabDetails.dataSeries=null;
+	    
+	    return crossTabDetails;
+	 }
+	function prepareRowDimsToSave(selRowModel)
+	 {
+		var rowDims =[];
+		var rowCount=0;		
+		$('#rowDimensionsList li').each(function() {
+			var selectedRowDim = $(this).html();
+			var selectedRowObj = new Object();
+			selectedRowObj.fieldType='ROW';
+			selectedRowObj.sqlFunction='GROUPBY';
+			selectedRowObj.attributeDisplayName = selectedRowDim;
+			selectedRowObj.attributeDisplaySequence = ++rowCount;
+			selectedRowObj.groupOrAggregate='GROUPING';
+			
+			$.each(selRowModel.attributeBindings, function(idx, eachColumn) {
+				if(eachColumn.alias == selectedRowDim)
+				 {
+					selectedRowObj.sqltype=eachColumn.typeName;
+					selectedRowObj.modelAttributeName=eachColumn.referencedColumn;
+				 }
+			});	
+			
+		    rowDims.push(selectedRowObj);
+		});
+		return rowDims;
+	 }
+	function prepareColumnDimsToSave(selColModel)
+	 {
+		var colDims =[];
+		var colCount=0;
+		$('#columnDimensionsList li').each(function() {
+			var selectedColDim =$(this).html();
+			var selectedColObj = new Object();
+			selectedColObj.fieldType='COLUMN';			
+			selectedColObj.sqlFunction='GROUPBY';			
+			selectedColObj.attributeDisplayName = selectedColDim;
+			selectedColObj.attributeDisplaySequence = ++colCount;
+			selectedColObj.groupOrAggregate='GROUPING';
+			
+			$.each(selColModel.attributeBindings, function(idx, eachColumn) {
+				if(eachColumn.alias == selectedColDim)
+				 {
+					selectedColObj.sqltype=eachColumn.typeName;
+					selectedColObj.modelAttributeName=eachColumn.referencedColumn;
+				 }
+			});	
+			colDims.push(selectedColObj);
+		});
+		return colDims;
+	 }
+	function prepareValueDimsToSave(selValModel)
+	 {
+		var valDims =[];
+		var valCount=0;
+		$('#ulValueDimensionsList li').each(function() {
+			var selectedValDim =$(this).html();
+			var selectedValObj = new Object();
+			selectedValObj.fieldType='COLUMN';			
+			selectedValObj.sqlFunction='SUM';
+			selectedValObj.attributeDisplayName = selectedValDim;
+			selectedValObj.attributeDisplaySequence = ++valCount;
+			selectedValObj.groupOrAggregate='SUM';			
+			
+			$.each(selValModel.attributeBindings, function(idx, eachColumn) {
+				if(eachColumn.alias == selectedValDim)
+				 {
+					if(eachColumn.typeName == 'INT')
+					 {
+						selectedValObj.sqltype='INTEGER';	
+					 }
+					else
+					 {
+						selectedValObj.sqltype=eachColumn.typeName;	
+					 }					
+					selectedValObj.modelAttributeName=eachColumn.referencedColumn;
+				 }
+			});				
+			
+			valDims.push(selectedValObj);
+		});
+		return valDims;
+	 }
+	function disableWizardStep() {
+		var $steps = $('#pivot-wizard').find('.steps li');
+		$steps.removeClass('active').removeClass('complete');
+		$steps.find('span.badge').removeClass('badge-info').removeClass(
+				'badge-success');
+
+		$('.wizard-wrapper .btn-next').attr('disabled', 'disabled');
+		$('.wizard-wrapper .btn-prev').attr('disabled', 'disabled');
+	}
+	
+	function getAllExistingModels() {
+		$.ajax({
+					type : 'GET',
+					url : 'http://jbosswildfly-mkwong04.rhcloud.com/reportbay-rest/api/models',
+					dataType : 'JSON',
+					success : function(data) {
+						allModelsData = data;
+						$('#lstModels').empty();
+						$('#lstModels').append($('<option>', {
+							value : "",
+							text : ""
+						}));
+						$.each(data.models, function(idx, model) {
+							$('#lstModels').append($('<option>', {
+								value : model.id,
+								text : model.name
+							}));
+						});
+					},
+					error : function(e) {
+						alert("Error while fetching model Meta Data : "
+								+ JSON.stringify(e));
+					}
+				});
+	}
+	
+	function resetRptConnectorConfirmationDetails()
+	 {
+		$("#finalTemplateName").empty();
+		$("#finalRptDisplayName").empty();
+		$("#finalModelName").empty();
+		$("#finalValueDimensions").empty();
+		$("#finalRowDimensions").empty();
+		$("#finalColumnDimensions").empty();
+	 }
+	function updateRptConnectorConfirmationDetails()
+	 {
+		resetRptConnectorConfirmationDetails();
+		var rowDimsStr=""; 
+		$('#rowDimensionsList li').each(function() {
+			var selectedRowDim = $(this).html();
+			if(rowDimsStr.length > 0)
+			 {
+				rowDimsStr += ","; 	
+			 }
+			rowDimsStr += selectedRowDim;
+		});
+		
+		var colDimsStr=""; 
+		$('#columnDimensionsList li').each(function() {
+			var selectedColDim =$(this).html();
+			if(colDimsStr.length > 0)
+			 {
+				colDimsStr += ","; 	
+			 }
+			colDimsStr += selectedColDim;
+		});
+		
+		var valDimsStr="";
+		$('#ulValueDimensionsList li').each(function() {
+			var selectedValDim =$(this).html();
+			if(valDimsStr.length > 0)
+			 {
+				valDimsStr += ","; 	
+			 }
+			valDimsStr += selectedValDim;
+		});
+				
+		$("#finalTemplateName").append($("#templateName").val());
+		$("#finalRptDisplayName").append($("#reportDisplayName").val());
+		$("#finalModelName").append($('#lstModels option:selected').text());
+		$("#finalValueDimensions").append(valDimsStr);
+		$("#finalRowDimensions").append(rowDimsStr);
+		$("#finalColumnDimensions").append(colDimsStr);
+		
+	 }
+	
+	function validateRequiredAttributeMappings()
+	 {
+			 $("#pivotForm3").parsley().reset();
+			 var checkRequiredDimsError = $("#checkRequiredDims").parsley();
+			 var rowDims = [];
+			 var colDims = [];
+			 var valDims = []; 
+			$('#ulValueDimensionsList li').each(function() {
+				valDims.push($(this).html());
+			});
+
+			if (valDims.length == 0) {					
+				window.ParsleyUI.addError(checkRequiredDimsError,"requiredDimensionsError", "Atleast one value dimension required");
+				return false;
+			}
+
+			$('#rowDimensionsList li').each(function() {
+				rowDims.push($(this).html());
+			});
+
+			if (rowDims.length == 0) {
+				window.ParsleyUI.addError(checkRequiredDimsError,"requiredDimensionsError", "Atleast one row dimension required");
+				return false;
+			}
+
+			$('#columnDimensionsList li').each(function() {
+				colDims.push($(this).html());
+			});
+
+			if (colDims.length == 0) {
+				window.ParsleyUI.addError(checkRequiredDimsError,"requiredDimensionsError", "Atleast one column dimension required");
+				return false;
+			}
+			return true;
+	 }
+	
+	$(document).ready(function() {
+		//clear page context before start
+		initBezelParamMap();
+		$('#lstModels').empty();		
+		//model wizard function
+		$('#pivot-wizard').on('change',function(e, data) {
+			//if changes from step button
+			if (data && data.step) {
+				// validation					
+				if ($('#pivotForm' + data.step).length > 0 && data.direction == 'next') {
+					var parsleyForm = $('#pivotForm'+ data.step).parsley();
+					parsleyForm.validate();
+					if (!parsleyForm.isValid())
+						return false;
+				}
+				// last step button
+				$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
+				if (data.step === 1 && data.direction == 'next' && ($('#lstModels').has('option').length == 0)) {
+					getAllExistingModels();
+				} 
+				else if (data.step === 2 && data.direction == 'next') {
+				  
+				} 
+				else if (data.step === 3 && data.direction == 'next') {					
+					updateRptConnectorConfirmationDetails();
+					return validateRequiredAttributeMappings();
+				}
+			}
+			}).on('finished', function() {
+				disableWizardStep();
+				createPivotTable();
+			});
+		
+		 $("#lstModels").change(function() {
+				selectedModelId = $('#lstModels').val();
+				if (selectedModelId != 'undefined' && selectedModelId != null && selectedModelId.length > 0) {
+					$('.outerDiv').hide();
+					$.each(allModelsData.models, function(idx, model) {
+						if (model.id == selectedModelId) {
+							$('#avialDimensionsList').empty();
+							$('#ulValueDimensionsList').empty();
+							$('#rowDimensionsList').empty();
+							$('#columnDimensionsList').empty();
+							$("#pvtTable").empty();
+							$('.outerDiv').show();
+							prepareAvailableDimensionList(model);
+						}
+					});
+				}
+			});
+		 $('#templateName').keyup(function(){
+				$('#reportDisplayName').val('Report_'+$('#templateName').val());				
+			});
+		 var custom_renderers = {
+					"Multifact Table" : multifactTableRenderer()
+		 };
+
+		 var custom_aggregators = {
+					"Multifact aggregator" : multifactSumAggregator()
+		 }; 
+		 
+		 $('#applyChanges').click(function() {
+			 	var result = validateRequiredAttributeMappings();
+			 	if(result === false)
+			  	 {
+					 return;
+			 	 }
+			   $("#pvtTable").empty();
+				var rowDims = [];
+				var colDims = [];
+				var valDims = []; 
+				$('#ulValueDimensionsList li').each(function() {
+					valDims.push($(this).html());
+				});		
+
+				$('#rowDimensionsList li').each(function() {
+					rowDims.push($(this).html());
+				});				
+
+				$('#columnDimensionsList li').each(function() {
+					colDims.push($(this).html());
+				});			
+				
+				$.ajax({
+					type : 'GET',
+					url : 'http://jbosswildfly-mkwong04.rhcloud.com/reportbay-rest/api/models/' + selectedModelId + '/previewdata?maxRow=100',
+					dataType : 'JSON',
+					success : function(data) {
+						var modelActData = data;
+						$("#pvtTable").pivotUI(modelActData, {
+							aggregators : $.extend(custom_aggregators, $.pivotUtilities.aggregators),
+							renderers : $.extend(custom_renderers, $.pivotUtilities.renderers, $.pivotUtilities.gchart_renderers),
+							rows : rowDims,
+							cols : colDims,
+							vals : valDims,
+							hiddenAttributes : [ "id" ]
+						}, true);
+					},
+					error : function(e) {
+						alert("Error while fetching model Data: " + JSON.stringify(e));
+					}
+				});
+				
+		 });
+  });
+	function prepareAvailableDimensionList(colMetadata) {
+		$.each(colMetadata.attributeBindings, function(idx, eachColumn) {
+			if (eachColumn.typeName == 'VARCHAR') {
+				$('#avialDimensionsList').append($("<li>").addClass('ui-state-default').addClass('not-value-field').html(eachColumn.alias));
+			} else {
+				$('#avialDimensionsList').append($("<li>").addClass('ui-state-default').html(eachColumn.alias));
+			}
+		});
+	}
+	$(function() {
+		$("#avialDimensionsList, #columnDimensionsList, #rowDimensionsList, #ulValueDimensionsList").sortable({
+			connectWith : ".droppableUL, .ulValueDimensionsList",
+			receive : function(event, ui) {
+				if ($(this).hasClass("ulValueDimensionsList")) {
+					if (ui.item.hasClass("not-value-field")) {
+						$("#pivotForm3").parsley().reset();
+						var checkRequiredDimsError = $("#checkRequiredDims").parsley();
+						window.ParsleyUI.addError(checkRequiredDimsError,"requiredDimensionsError", "Only value fields can add to Value Dimensions");
+						ui.sender.sortable("cancel");
+					}
+				}
+			}
+		});
+	});
+</script>

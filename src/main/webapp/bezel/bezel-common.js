@@ -22,7 +22,7 @@ $(document).ready(function(){
 });
 
 function getRestServerUrl(){
-	return "http://localhost:8080";
+	return "http://jbosswildfly-mkwong04.rhcloud.com";
 }
 
 function displayAjaxError(errorMessage){
