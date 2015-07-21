@@ -72,7 +72,6 @@
 					"name": "New Pie Chart Report Connector",
 					"href": "../reportconnector/reportconnector.html?group=ReportConnector&target=NewPieChartReportConnector",
 					"pageContent" : "reportconnector_wizard_pie_chart.html"
-				}
 				},
 				{
 					"id"  : "NewPivotTable",
