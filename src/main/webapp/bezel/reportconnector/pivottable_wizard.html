@@ -210,7 +210,7 @@
 		var pivotData = JSON.stringify(preparePivotDataToSave());
 		$.ajax({
 			type : 'POST',
-			url : 'http://localhost:8080/reportbay-rest/api/reportconnectors/',
+			url : getRestServerUrl()+'/reportbay-rest/api/reportconnectors/',
 			dataType : 'JSON',
 			data : pivotData,
 			contentType:'application/json',				
@@ -366,7 +366,7 @@
 	function getAllExistingModels() {
 		$.ajax({
 					type : 'GET',
-					url : 'http://jbosswildfly-mkwong04.rhcloud.com/reportbay-rest/api/models',
+					url : getRestServerUrl()+'/reportbay-rest/api/models',
 					dataType : 'JSON',
 					success : function(data) {
 						allModelsData = data;
@@ -561,7 +561,7 @@
 				
 				$.ajax({
 					type : 'GET',
-					url : 'http://jbosswildfly-mkwong04.rhcloud.com/reportbay-rest/api/models/' + selectedModelId + '/previewdata?maxRow=100',
+					url : getRestServerUrl()+'/reportbay-rest/api/models/' + selectedModelId + '/previewdata?maxRow=100',
 					dataType : 'JSON',
 					success : function(data) {
 						var modelActData = data;
