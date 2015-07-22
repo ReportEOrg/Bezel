@@ -46,13 +46,14 @@
 																<div class="col-md-10">
 																	<div class="form-group">
 																		<label for="modelName">Name *</label>
-																		<input type="text" id="modelName" style="width:50%;" maxlength="45" 
+																		<input type="text" id="modelName" style="width:50%;" maxlength="45" placeholder="Model Name"
 																			   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#modelNameError">
 																		<div id="modelNameError" class="errorMessage"></div>
 																	</div>
 																	<div class="form-group">
 																		<label for="modelDesc">Description</label>
-																		<input type="text" id="modelDesc" class="form-control" data-parsley-errors-container="#modelDescError">
+																		<input type="text" id="modelDesc" placeholder="Model Description" 
+																			   class="form-control" data-parsley-errors-container="#modelDescError">
 																		<div id="modelDescError" class="errorMessage"></div>
 																	</div>
 																</div>
@@ -80,7 +81,8 @@
 															<p>Please provide the joined query</p>
 															<div class="row">
 																<div class="col-md-10">
-																	<textarea id="joined-query" class="form-control" row="6" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError"></textarea>
+																	<textarea id="joined-query" row="6" cols="100" maxlength="1000" placeholder="Select ..."
+																			  class="form-control" required data-parsley-errors-container="#joinedQueryError"></textarea>
 																	<p class="help-block text-right js-textarea-help"><span class="text-muted"></span></p>
 																	<button type="button" id="validate-joined-query" class="btn btn-default">
 																		Validate Query
@@ -632,10 +634,7 @@
 		}
 		
 		function clearConfirmationDetail(){
-			$("#finalModelName").empty();
-			$("#finalModelDesc").empty();
-			$("#finalDataSource").empty();
-			$("#finalQuery").empty();
+			$(".data-row .data-value").empty();
 			
 			$("#attrFinalTable").empty();
 		}

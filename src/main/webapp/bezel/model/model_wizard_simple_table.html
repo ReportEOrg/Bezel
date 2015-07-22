@@ -44,13 +44,14 @@
 																<div class="col-md-10">
 																	<div class="form-group">
 																		<label for="modelName">Name *</label>
-																		<input type="text" id="modelName" style="width:50%;" maxlength="45" 
+																		<input type="text" id="modelName" style="width:50%;" maxlength="45" placeholder="Model Name"
 																			   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#modelNameError">
 																		<div id="modelNameError" class="errorMessage"></div>
 																	</div>
 																	<div class="form-group">
 																		<label for="modelDesc">Description</label>
-																		<input type="text" id="modelDesc" class="form-control" data-parsley-errors-container="#modelDescError">
+																		<input type="text" id="modelDesc" placeholder="Model Description" 
+																			   class="form-control" data-parsley-errors-container="#modelDescError">
 																		<div id="modelDescError" class="errorMessage"></div>
 																	</div>
 																</div>
@@ -457,10 +458,7 @@
 		}
 		
 		function clearConfirmationDetail(){
-			$("#finalModelName").empty();
-			$("#finalModelDesc").empty();
-			$("#finalDataSource").empty();
-			$("#finalTable").empty();
+			$(".data-row .data-value").empty();
 			
 			$("#attrFinalTable").empty();
 		}
