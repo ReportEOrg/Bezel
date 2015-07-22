@@ -25,6 +25,10 @@
 	height: 20px!important;
 }
 
+.divContentCenterAlign{
+	margin: 0px auto 0px auto;
+}
+
 #screen-filler {
     opacity:0.4;
     background-color:#000;

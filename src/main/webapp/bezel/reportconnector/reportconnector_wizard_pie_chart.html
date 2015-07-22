@@ -42,14 +42,14 @@
 															<div class="row">
 																<div class="col-md-10">
 																	<div class="form-group">
-																		<label for="connectorName">Report Connector Name *</label>
-																		<input type="text" id="connectorName" style="width:50%;" maxlength="45" 
+																		<label for="connectorName">Name *</label>
+																		<input type="text" id="connectorName" style="width:50%;" maxlength="45" placeholder="Report Connector Name"
 																			   class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#connectorNameError">
 																		<div id="connectorNameError" class="errorMessage"></div>
 																	</div>
 																	<div class="form-group">
-																		<label for="reportDisplayName">Report Display Name *</label>
-																		<input type="text" id="reportDisplayName" 
+																		<label for="reportDisplayName">Report Name *</label>
+																		<input type="text" id="reportDisplayName" placeholder="Report Display Name"
 																			    class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#reportDisplayNameError">
 																		<div id="reportDisplayNameError" class="errorMessage"></div>
 																	</div>
@@ -81,7 +81,7 @@
 																<div class="col-md-6">
 																	<div class="form-group">
 																		<label for="chartTitle">Chart Title</label>
-																		<input type="text" id="chartTitle" class="form-control" 
+																		<input type="text" id="chartTitle" class="form-control" placeholder="Chart Title"
 																		        data-parsley-errors-container="#chartTitleError">
 																		<div id="chartTitleError" class="errorMessage"></div>
 																	</div>
@@ -137,7 +137,33 @@
 																	
 																</div>
 																<div class="col-md-6">
-																	<div id="pieChartPreview" style="width:300px; height: 300px;"></div>
+																	<div  style="border-style: dotted; border-width: 1px; margin:1px;">
+																		<div style="text-align:right; margin: 4px 4px;">
+																			<button id="previewButton" type="button" class="btn btn-default" onclick="javascript:plotPiePreview();">Preview</button>
+																		</div>
+																		<div id="samplePreview" class="divContentCenterAlign" style="width: 80%;">
+																			<div id="samplePieChartPreviewTitle" style="width: 100%; text-align: center; border-style: dotted; border-width: 1px; margin:4px;">
+																				Chart Title
+																			</div>
+																			
+																			<div id="samplePieChartPreview" class="divContentCenterAlign" style="width:100%; height: 300px; margin:8px;">
+																			
+																			</div>																	
+																		</div>
+																		<div id="generatingPreview" class="divContentCenterAlign" style="width: 80%;display:none;" >
+																			<div  style="width: 100%; text-align: center; height: 300px; position:relative">
+																				<i class="fa fa-spinner fa-pulse fa-5x" style="position:absolute; top: 35%;"></i>
+																			</div>
+																		</div>
+																		<div id="preview" class="divContentCenterAlign" style="width: 80%; display:none;" >
+																			<div id="pieChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
+																			</div>
+																			
+																			<div id="pieChartPreview" class="divContentCenterAlign" style="width:100%; height: 300px; margin:8px;">
+																			
+																			</div>																	
+																		</div>
+																	</div>
 																</div>
 															</div>
 														</form>
@@ -154,29 +180,45 @@
 																	</h4>
 																	<p class="data-row">
 																		<span class="data-name">Name</span>
-																		<span id="finalModelName" class="data-value"></span>
+																		<span id="finalConnectorName" class="data-value"></span>
 																	</p>
 																	<p class="data-row">
-																		<span class="data-name">Description</span>
-																		<span id="finalModelDesc" class="data-value"></span>
+																		<span class="data-name">Report Name</span>
+																		<span id="finalReportName" class="data-value"></span>
 																	</p>
 																	<p class="data-row">
-																		<span class="data-name">Data Source</span>
-																		<span id="finalDataSource" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Table</span>
-																		<span id="finalTable" class="data-value"></span>
+																		<span class="data-name">Model</span>
+																		<span id="finalModel" class="data-value"></span>
 																	</p>
 																</div>
 																<div class="col-md-6 widget-content">												
 																	<h4>
 																		<i class="fa fa-square"></i>
-																		Attribute(s) Information
+																		Chart Configuration Information
 																	</h4>
 																	<p class="data-row">
-																		<table id="attrFinalTable" class="table table-bordered table-striped">
-																		</table>
+																		<span class="data-name">Chart Title</span>
+																		<span id="finalChartTitle" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Data Label</span>
+																		<span id="finalShowDataLabel" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Legend</span>
+																		<span id="finalShowLegend" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Pie Chart Data Format</span>
+																		<span id="finalPieChartDataFormat" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Data Field</span>
+																		<span id="finalModelDataField" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Category Field</span>
+																		<span id="finalModelCategoryField" class="data-value"></span>
 																	</p>
 																</div>
 															</div>
@@ -187,7 +229,7 @@
 												<!-- STEP ACTION -->
 												<div class="actions">
 													<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
-													<button type="button" class="btn btn-primary btn-next" data-last="Create Model">Next <i class="fa fa-arrow-right"></i></button>
+													<button type="button" class="btn btn-primary btn-next" data-last="Create Report Connector">Next <i class="fa fa-arrow-right"></i></button>
 												</div>
 												<!-- END STEP ACTION -->
 											</div>
@@ -251,29 +293,88 @@
 						setBezelPageParam("model", model);
 						//build the drop down list of model data fields
 						rebuildModelDataFieldOptions(model.attributeBindings);
-
+						//reset preview
+						resetPreview();
 					}
 				}
 			});
 		};
 		
+		function plotPiePreview(){
+			//validate required field
+			var parsleyForm = $('#form3').parsley();
+			parsleyForm.validate();
+		
+			if( !parsleyForm.isValid() )
+				return false;
+
+			$('#pieChartPreview').empty();
+			$('#pieChartPreviewTitle').empty();
+			
+			var reportConnector = buildReportConnector();
+			
+			console.log('generatePreview '+JSON.stringify(reportConnector));
+			
+			$("#previewButton").attr('disabled','disabled');
+			//jquery ajax
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/reports/preview",
+				data: JSON.stringify(reportConnector),
+				contentType: "application/json",
+				crossDomain: true,
+				
+				success: function(response){
+					if(response){
+						console.log('generatePreview success');
+						var report = response.pieChartReport;
+						
+						setBezelPageParam('report',report);
+						
+						//chart title
+						$('#pieChartPreviewTitle').append(report.title);
+						
+						//obtain data
+						var pieData = preparePreviewData(report.categoryData);
+
+						//prepare configuration
+						var configuration = preparePreviewConfiguration(report);
+						
+						//hide sample
+						$('#samplePreview').hide();
+						$('#generatingPreview').show();
+						
+						//plot pie
+						$.plot('#pieChartPreview', pieData, configuration);
+						
+						$('#generatingPreview').hide();
+						//show preview
+						$('#preview').show();
+					}
+				},
+				complete: function(jqXHR, textStatus){
+					$("#previewButton").removeAttr('disabled');
+				}
+			});
+		}
+		
+
 		
 		var createReportConnector = function(){
 			
-			var model = getBezelPageParam("model");
-			
+			var reportConnector = getBezelPageParam('reportConnector');
 			
 			//jquery ajax
 			$.ajax({
 				type: "POST",
-				url: getRestServerUrl()+"/reportbay-rest/api/models",
-				data: JSON.stringify(model),
+				url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors",
+				data: JSON.stringify(reportConnector),
 				contentType: "application/json",
 				crossDomain: true,
 
 				success: function(response){
-					alert('New model has been created.');
-					loadContent("model_content.html");
+					alert('New report connector has been created.');
+					loadContent("reportconnector_content.html");
 				},
 
 				error: function(jqXHR, textStatus, ex){
@@ -283,26 +384,10 @@
 		};
 		//End AJAX functions
 		
-		function AttributeRow(idx, name, alias){
-			this._enable = "<input type='checkbox'  id='attr_"+idx+"' name='attr_"+name+"' checked data-parsley-errors-container='#attr_"+idx+"_error' class='switch-reportbay switch-mini' data-on='success' data-off='danger' data-on-label='<i class=&#39fa fa-check&#39></i>' data-off-label='<i class=&#39fa fa-remove&#39 style=&#39color:white;&#39></i>'><div id='attr_"+idx+"_error' class='errorMessage'></div>";
-			this._name = name;
-			this._alias_input = "<input type='text' id='alias_"+idx+"' value='"+alias+"' class='form-control' data-parsley-errors-container='#alias_"+idx+"_error'>"+
-			                    "</input><div id='alias_"+idx+"_error' class='errorMessage'></div>";
-			
-			this._alias = alias;
-			
-			this.enable = function(){
-				return this._enable;
-			};
-			this.name = function(){
-				return this._name;
-			};
-			this.alias = function(){
-				return this._alias;
-			};
-			this.aliasInput = function(){
-				return this._alias_input;
-			} 
+				function resetPreview(){
+			$('#samplePreview').show();
+			$('#generatingPreview').hide();
+			$('#preview').hide();
 		}
 		
 		function rebuildModelDataFieldOptions(modelAttrBindings){
@@ -356,42 +441,54 @@
 		
 		function updateConfirmationDetail(){
 			
-
-			var tableIdx = getBezelPageParam("tableIdx");
-			var tables = getBezelPageParam("tables");
-
-			$("#finalModelName").append($("#modelName").val());
-			$("#finalModelDesc").append($("#modelDesc").val());
-			$("#finalDataSource").append($("#datasource").find(":selected").text());
-			$("#finalTable").append(tables[tableIdx].name);
+			clearConfirmationDetail();
 			
-			var attrTab = $('#attrFinalTable').DataTable({
-				"destroy": true,
-				paging : false,
-				searching : false,
-				ordering: false,
-				info:false,
-				"columns" : [
-								{"title":"Table Field Name", data:null, render: "name"},
-								{"title":"Model Attribute Name", data:null, render: "alias"}]
-			});
+			var reportConnector = getBezelPageParam('reportConnector');
 			
-			var attributeMaps = getBezelPageParam("attributeMaps");
-			
-			for(index = 0; index<attributeMaps.length; index++){
+			if(reportConnector && reportConnector.pieChartTemplate){
+				$("#finalConnectorName").append(reportConnector.pieChartTemplate.templateName);
+				$("#finalReportName").append(reportConnector.pieChartTemplate.reportDisplayName);
+				$("#finalModel").append($("#model").find(":selected").text());
 				
-				if($("#attr_"+index).is(':checked')){
-					attrTab.row.add(new AttributeRow(index, attributeMaps[index].referencedColumn,$("#alias_"+index).val()));
-				};
+				//chart configuration
+				$("#finalChartTitle").append(reportConnector.pieChartTemplate.title);
+				
+				var showDataLabel = "No";
+				
+				if(reportConnector.pieChartTemplate.showDataLabel){
+					showDataLabel = "Yes";
+				}
+				$("#finalShowDataLabel").append(showDataLabel);
+				
+				var showLegend = "No";
+				
+				if(reportConnector.pieChartTemplate.showLegend){
+					showLegend = "Yes";
+				}
+				$("#finalShowLegend").append(showLegend);
+				
+				var dataFormat ='-';
+				if('PERCENT' == reportConnector.pieChartTemplate.dataTypeFormat){
+					dataFormat = 'Percentage';
+				}
+				else if ('VALUE' == reportConnector.pieChartTemplate.dataTypeFormat){
+					dataFormat = 'Value';
+				}
+
+				$("#finalPieChartDataFormat").append(dataFormat);
+				
+				$("#finalModelDataField").append($('#modelDataField').find(":selected").text());
+
+				$("#finalModelCategoryField").append($('#modelCategoryField').find(":selected").text());
 			}
-			
-			attrTab.draw();
 		}
 		
-	
+		function clearConfirmationDetail(){
+			$(".data-row .data-value").empty();
+		}
 		
 		function disableWizardStep(){
-			var $steps = $('#model-wizard').find('.steps li');
+			var $steps = $('#report-connector-wizard').find('.steps li');
 			$steps.removeClass('active').removeClass('complete');
 			$steps.find('span.badge').removeClass('badge-info').removeClass('badge-success');
 			
@@ -399,6 +496,132 @@
 			$('.wizard-wrapper .btn-prev').attr('disabled','disabled');
 		}
 		
+		function plotSamplePie(){
+			
+			var pieData = [
+			               {label: "Series 1", data: 70},
+			               {label: "Series 2", data: 20},
+			               ];
+			
+			var configuration = {
+				legend:{show: true, location: 'ne'},
+				series:{
+					pie:{
+						show: true,
+						stroke: {
+							width: 4,
+							color: "#F9F9F9"
+						},
+					}
+				},
+				colors: ["#d9d9d9"],
+			};
+			
+			$.plot('#samplePieChartPreview', pieData, configuration);
+		}
+		
+		function preparePreviewData(categoryData){
+			
+			var previewData = new Array();
+			
+			for (var key in categoryData) {
+				//only process non prototype
+				if (categoryData.hasOwnProperty(key)) {
+				    var seriesData ={};
+				    previewData.push(seriesData);
+				    
+				    seriesData['label'] = key;
+				    seriesData['data']  = categoryData[key];
+				  }
+			}
+			
+			return previewData; 
+		}
+		
+		function buildReportConnector(){
+			var connector = {};
+
+			connector['type']='PIE';
+			connector['cartesianChartTemplate'] =undefined;
+			connector['pieChartTemplate'] = buildPieChartConnector();
+			connector['crossTabTemplate'] = undefined;
+			
+			return connector;
+		}
+		
+		function buildPieChartConnector(){
+			var pieChartConnector = {};
+
+			pieChartConnector['id']				   = '0';
+			pieChartConnector['modelId']		   = $("#model").find(":selected").val();
+			pieChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
+			pieChartConnector['reportQuery']	   = undefined;
+			pieChartConnector['templateName']	   = $("#connectorName").val();
+			pieChartConnector['reportTemplateType']= 'SIMPLE';
+			pieChartConnector['title']			   = $('#chartTitle').val();
+			pieChartConnector['showLegend']		   = $('#showLegend').prop('checked');
+			pieChartConnector['showDataLabel']	   = $('#showDataLabel').prop('checked');
+			pieChartConnector['categoryName']	   = undefined;
+			pieChartConnector['modelCategoryField']= $('#modelCategoryField').find(":selected").val();
+			pieChartConnector['modelDataField']	   = $('#modelDataField').find(":selected").val();
+			pieChartConnector['dataTypeFormat']	   = $('input[name="pieChartDataFormat"]:checked', '#form3').val();
+			
+			return pieChartConnector;
+		}
+		
+		
+		function preparePreviewConfiguration(report){
+			
+			return {
+				series: {
+					pie: {
+						show: true,
+						stroke: {
+							width: 4,
+							color: "#F9F9F9"
+						},
+						label: {
+							show: report.showDataLabel,
+							radius: 3/4,
+							formatter: labelFormatter
+						}
+					},
+				},
+				legend: {
+					show: report.showLegend
+				},
+				grid: {
+					hoverable: false
+				},
+				colors: ["#d9d9d9", "#5399D6", "#d7ea2b"],
+			};
+			
+		}
+		
+		function labelFormatter(label, series) {
+			
+			var report = getBezelPageParam('report');
+			var labelFormat = report.dataTypeFormat;
+			
+			console.log(series.data[0][1]);
+			console.log(series.percent);
+			
+			var labelPlaceHolder = '';
+			var valuePlaceHolder = '';
+			
+			if(report.showDataLabel){
+				labelPlaceHolder =  label + "<br/>";
+			
+				if('PERCENT' == labelFormat && series.percent){
+					valuePlaceHolder = Math.round(series.percent)+'%';
+				}
+				else if ('VALUE' == labelFormat && series.data[0][1]){
+					valuePlaceHolder = Math.round(series.data[0][1])
+				}
+			}
+
+			return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
+		}
 		
 		$(document).ready(function(){
 			
@@ -437,89 +660,22 @@
 						retrieveModel(modelId);
 					}
 					else if(data.step === 3 && data.direction == 'next' && !attributeMaps) {
-						//obtain selected table index
-						var tableIdx = $("#modeltable").find(":selected").val();
+						var reportConnector = buildReportConnector();
 						
-						console.log("tableIdx "+tableIdx);
-						
-						setBezelPageParam("tableIdx",tableIdx);
-						
-						if(tableIdx){
-							$("#attrMapTable").empty();
-							constructAttributeMap(tableIdx, tables);
-						}
-					}
-					else if(data.step === 4 && data.direction == 'next') {
-						
-						//if failed attr validation
-						if(!validateAttribute())
-							return false;
-						
+						setBezelPageParam("reportConnector", reportConnector);
 						updateConfirmationDetail();
 					}
 				}
 	
 			}).on('finished', function(){
 				disableWizardStep();
-				createModel();
+				createReportConnector();
 			});
 	
 			$('.form-group .switch-small').bootstrapSwitch();
+			
+			plotSamplePie();
 		});
-	
-		
-		var pieData = [
-					{ label: "Direct",  data: 70},
-					{ label: "Referral",  data: 20},
-					{ label: "Others", data: 15}
-				];
-		$.plot('#pieChartPreview', pieData, {
-			series: {
-				pie: {
-					show: true,
-					innerRadius: 0,
-					stroke: {
-						width: 4,
-						color: "#F9F9F9"
-					},
-					label: {
-						show: true,
-						radius: 3/4,
-						formatter: labelFormatter
-					}
-				},
-			},
-			legend: {
-				show: true
-			},
-			grid: {
-				hoverable: false
-			},
-			colors: ["#d9d9d9", "#5399D6", "#d7ea2b"],
-		});
-	
-		function labelFormatter(label, series) {
-			var labelFormat = $('input[name="pieChartDataFormat"]:checked', '#form3').val();
-			
-			console.log(series.data[0][1]);
-			console.log(series.percent);
-			
-			var labelPlaceHolder = '';
-			
-			if($('#showDataLabel').prop('checked')){
-				labelPlaceHolder =  label + "<br/>";
-			}
-			
-			var valuePlaceHolder = '';
-			
-			if('PERCENT' == labelFormat && series.percent){
-				valuePlaceHolder = Math.round(series.percent)+'%';
-			}
-			else if ('VALUE' == labelFormat && series.data[0][1]){
-				valuePlaceHolder = Math.round(series.data[0][1])
-			}
-			
-			return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
-		}
+
 	</script>
 
