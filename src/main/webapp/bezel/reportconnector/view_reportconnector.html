@@ -1,0 +1,290 @@
+
+					<!-- end top general alert -->
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-10 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Report Connector</li>
+									<li class="active"><a href="javascript:loadContent('reportconnector_content.html');">Manage Report Connector</a></li>
+									<li class="active">View Report Connector</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Report Connector</h2>
+								<em>Connector to connect model to report output</em>
+							</div>
+							<div class="main-content">
+
+								<!-- ROW -->
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET TABLE -->
+										<div class="widget widget-table">
+											<div class="widget-header">
+												<h3><i class="fa fa-eye"></i> View Report Connector</h3>
+												<div class="btn-group widget-header-toolbar">
+													<!-- <a href="#" title="Focus" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a> -->
+													<!-- <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a> -->
+													<!-- <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a> -->
+												</div>
+											</div>
+											<div class="widget-content">
+												<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
+												</div>
+												<div id="loading" style="text-align: center;">
+													<i class="fa fa-spinner fa-pulse fa-2x"></i>
+												</div>
+												<div id="cartesian-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div id="pie-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="pieFinalConnectorName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Report Name</span>
+																		<span id="pieFinalReportName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model</span>
+																		<span id="pieFinalModel" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Chart Configuration Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Chart Title</span>
+																		<span id="pieFinalChartTitle" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Data Label</span>
+																		<span id="pieFinalShowDataLabel" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Legend</span>
+																		<span id="pieFinalShowLegend" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Pie Chart Data Format</span>
+																		<span id="pieFinalPieChartDataFormat" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Data Field</span>
+																		<span id="pieFinalModelDataField" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Category Field</span>
+																		<span id="pieFinalModelCategoryField" class="data-value"></span>
+																	</p>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div id="pivot-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																	
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div>
+													<button type='button' class='widget widget-header' style="float:right;" onclick="javascript:loadContent('reportconnector_content.html')"> Back </button>
+												</div>
+											</div>
+										</div>
+										<!-- END WIDGET TABLE -->
+
+									</div>
+								</div>
+								<!-- END ROW -->
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+						
+						
+						
+					</div>
+					<!-- /content-wrapper -->
+	
+					<script type="text/javascript">
+						var viewReportConnectorById = function(reportConnectorId){
+							
+							//jquery ajax
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors/"+reportConnectorId,
+								
+								success: function(response){
+									if(response){
+										var reportConnector = response;
+										
+										setBezelPageParam("reportConnector", reportConnector);
+										
+										if(reportConnector){
+											
+											updateViewReportConnectorDetail(reportConnector);
+										}
+									}
+								},
+								complete: function(jqXHR, textStatus){
+									
+									$('#loading').hide();
+									
+									if("success" != textStatus){
+										displayAjaxError("Failed to retrieve data from remote server");
+									}
+								}
+							});
+						}
+						
+						var updatePieConnectorModelRelateDetail = function(modelId){
+							console.log('updatePieConnectorModelRelateDetail');
+
+							$.ajax({
+								type: "GET",
+								url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+								
+								success: function(response){
+									if(response){
+										var model = response;
+										
+										$("#pieFinalModel").append(model.name);
+									}
+								},
+								complete: function(){
+									$("#pie-rptconnector-view-detail").show();
+								}
+							});
+						}
+						
+						function updateViewReportConnectorDetail(reportConnector){
+							if('AREA' == reportConnector.type ||
+							   'BAR' == reportConnector.type ||
+							   'COLUMN' == reportConnector.type ||
+							   'LINE' == reportConnector.type ){
+								
+							}
+							else if ('PIE' == reportConnector.type ){
+								updatePieReportConnectorViewDetail(reportConnector.pieChartTemplate);
+							}
+							else if ('CROSSTAB' == reportConnector.type){
+								
+							}
+						}
+						
+						function updatePieReportConnectorViewDetail(pieChartTemplate){
+							
+							if(pieChartTemplate){
+								$("#pieFinalConnectorName").append(pieChartTemplate.templateName);
+								$("#pieFinalReportName").append(pieChartTemplate.reportDisplayName);
+								
+								//chart configuration
+								$("#pieFinalChartTitle").append(pieChartTemplate.title);
+								
+								var showDataLabel = "No";
+								
+								if(pieChartTemplate.showDataLabel){
+									showDataLabel = "Yes";
+								}
+								$("#pieFinalShowDataLabel").append(showDataLabel);
+								
+								var showLegend = "No";
+								
+								if(pieChartTemplate.showLegend){
+									showLegend = "Yes";
+								}
+								$("#pieFinalShowLegend").append(showLegend);
+								
+								var dataFormat ='-';
+								if('PERCENT' == pieChartTemplate.dataTypeFormat){
+									dataFormat = 'Percentage';
+								}
+								else if ('VALUE' == pieChartTemplate.dataTypeFormat){
+									dataFormat = 'Value';
+								}
+
+								$("#pieFinalPieChartDataFormat").append(dataFormat);
+
+								$("#pieFinalModelDataField").append(pieChartTemplate.modelDataField);
+
+								$("#pieFinalModelCategoryField").append(pieChartTemplate.modelCategoryField);
+								
+								updatePieConnectorModelRelateDetail(pieChartTemplate.modelId);
+							}
+						}
+						
+					
+						$(document).ready(function(){
+
+							var reportConnector = getBezelPageParam("reportConnector");
+							//clear page context before start
+							initBezelParamMap();
+							
+							if(reportConnector){
+								var title = $(".widget-header h3").html();
+								
+								$(".widget-header h3").html((title+" - "+reportConnector.name));
+								
+								viewReportConnectorById(reportConnector.id);
+							}
+
+						});
+					</script>

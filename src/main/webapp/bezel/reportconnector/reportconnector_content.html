@@ -58,7 +58,7 @@
 					
 						//retrive report connector list AJAX function
 						var rptConnectorListRequest = function(){
-							
+							$('#report-connector-table').empty();
 							//jquery ajax
 							$.ajax({
 								type: "GET",
@@ -107,7 +107,7 @@
 
 								success: function(response){
 									alert('Report connector has been deleted.');
-									loadContent("model_content.html");
+									loadContent("reportconnector_content.html");
 								},
 								complete: function(jqXHR, textStatus){
 									if("success" != textStatus){
