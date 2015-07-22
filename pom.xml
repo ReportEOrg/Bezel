@@ -21,4 +21,30 @@
 		</plugins>
 	</build>
 	
+	<profiles>
+		<profile>
+			<id>openshift</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>maven-war-plugin</artifactId>
+							<configuration>
+								<outputDirectory>deployments</outputDirectory>
+								<warName>bezel</warName>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-enforcer-plugin</artifactId>
+							<configuration>
+								<skip>true</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+	
 </project>
