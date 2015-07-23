@@ -39,111 +39,12 @@
 												<div id="loading" style="text-align: center;">
 													<i class="fa fa-spinner fa-pulse fa-2x"></i>
 												</div>
-												<div id="cartesian-rptconnector-view-detail" style="display: none;">
-													<div class="step-content" style="margin:0px;">
-														<form id="form5">
-															<div class="row">
-																<div class="col-md-6 widget-content">
-																	<h4>
-																		<i class="fa fa-square"></i>
-																		Basic Information
-																	</h4>
-																	<p class="data-row">
-																		<span class="data-name">Name</span>
-																		<span id="finalModelName" class="data-value"></span>
-																	</p>
-																</div>
-																<div class="col-md-6 widget-content">												
-																	<h4>
-																		<i class="fa fa-square"></i>
-																		Attribute(s) Information
-																	</h4>
-																</div>
-															</div>
-														</form>
-													</div>
+
+												<!-- view detail include -->
+												<div id="view-content-include-div">
 												</div>
-												<div id="pie-rptconnector-view-detail" style="display: none;">
-													<div class="step-content" style="margin:0px;">
-														<form id="form5">
-															<div class="row">
-																<div class="col-md-6 widget-content">
-																	<h4>
-																		<i class="fa fa-square"></i>
-																		Basic Information
-																	</h4>
-																	<p class="data-row">
-																		<span class="data-name">Name</span>
-																		<span id="pieFinalConnectorName" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Report Name</span>
-																		<span id="pieFinalReportName" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Model</span>
-																		<span id="pieFinalModel" class="data-value"></span>
-																	</p>
-																</div>
-																<div class="col-md-6 widget-content">												
-																	<h4>
-																		<i class="fa fa-square"></i>
-																		Chart Configuration Information
-																	</h4>
-																	<p class="data-row">
-																		<span class="data-name">Chart Title</span>
-																		<span id="pieFinalChartTitle" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Show Data Label</span>
-																		<span id="pieFinalShowDataLabel" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Show Legend</span>
-																		<span id="pieFinalShowLegend" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Pie Chart Data Format</span>
-																		<span id="pieFinalPieChartDataFormat" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Model Data Field</span>
-																		<span id="pieFinalModelDataField" class="data-value"></span>
-																	</p>
-																	<p class="data-row">
-																		<span class="data-name">Model Category Field</span>
-																		<span id="pieFinalModelCategoryField" class="data-value"></span>
-																	</p>
-																</div>
-															</div>
-														</form>
-													</div>
-												</div>
-												<div id="pivot-rptconnector-view-detail" style="display: none;">
-													<div class="step-content" style="margin:0px;">
-														<form id="form5">
-															<div class="row">
-																<div class="col-md-6 widget-content">
-																	<h4>
-																		<i class="fa fa-square"></i>
-																		Basic Information
-																	</h4>
-																	<p class="data-row">
-																		<span class="data-name">Name</span>
-																		<span id="finalModelName" class="data-value"></span>
-																	</p>
-																</div>
-																<div class="col-md-6 widget-content">												
-																	<h4>
-																		<i class="fa fa-square"></i>
-																		Attribute(s) Information
-																	</h4>
-																	
-																</div>
-															</div>
-														</form>
-													</div>
-												</div>
+												<!-- END view detail include -->
+
 												<div>
 													<button type='button' class='widget widget-header' style="float:right;" onclick="javascript:loadContent('reportconnector_content.html')"> Back </button>
 												</div>
@@ -178,100 +79,45 @@
 										
 										setBezelPageParam("reportConnector", reportConnector);
 										
-										if(reportConnector){
+										if(reportConnector && reportConnector.type){
 											
-											updateViewReportConnectorDetail(reportConnector);
+											switch(reportConnector.type){
+												case 'AREA':
+												case 'BAR':
+												case 'COLUMN':
+												case 'LINE':
+													
+													break;
+												case 'PIE':
+													loadViewContent('view_reportconnector_pie_chart.html');
+													break;
+												case 'CROSSTAB':
+													
+													break;
+											}
+											
 										}
 									}
 								},
 								complete: function(jqXHR, textStatus){
 									
-									$('#loading').hide();
-									
 									if("success" != textStatus){
+										//only hide loading if error, respective success page responsble to hide loading after their initialization complete 
+										$('#loading').hide();
 										displayAjaxError("Failed to retrieve data from remote server");
 									}
 								}
 							});
 						}
 						
-						var updatePieConnectorModelRelateDetail = function(modelId){
-							console.log('updatePieConnectorModelRelateDetail');
-
-							$.ajax({
-								type: "GET",
-								url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
-								
-								success: function(response){
-									if(response){
-										var model = response;
-										
-										$("#pieFinalModel").append(model.name);
-									}
-								},
-								complete: function(){
-									$("#pie-rptconnector-view-detail").show();
-								}
-							});
-						}
-						
-						function updateViewReportConnectorDetail(reportConnector){
-							if('AREA' == reportConnector.type ||
-							   'BAR' == reportConnector.type ||
-							   'COLUMN' == reportConnector.type ||
-							   'LINE' == reportConnector.type ){
-								
-							}
-							else if ('PIE' == reportConnector.type ){
-								updatePieReportConnectorViewDetail(reportConnector.pieChartTemplate);
-							}
-							else if ('CROSSTAB' == reportConnector.type){
-								
-							}
-						}
-						
-						function updatePieReportConnectorViewDetail(pieChartTemplate){
+						function loadViewContent(pageContent){
+							var contentIncludeDiv = document.getElementById("view-content-include-div");
 							
-							if(pieChartTemplate){
-								$("#pieFinalConnectorName").append(pieChartTemplate.templateName);
-								$("#pieFinalReportName").append(pieChartTemplate.reportDisplayName);
-								
-								//chart configuration
-								$("#pieFinalChartTitle").append(pieChartTemplate.title);
-								
-								var showDataLabel = "No";
-								
-								if(pieChartTemplate.showDataLabel){
-									showDataLabel = "Yes";
-								}
-								$("#pieFinalShowDataLabel").append(showDataLabel);
-								
-								var showLegend = "No";
-								
-								if(pieChartTemplate.showLegend){
-									showLegend = "Yes";
-								}
-								$("#pieFinalShowLegend").append(showLegend);
-								
-								var dataFormat ='-';
-								if('PERCENT' == pieChartTemplate.dataTypeFormat){
-									dataFormat = 'Percentage';
-								}
-								else if ('VALUE' == pieChartTemplate.dataTypeFormat){
-									dataFormat = 'Value';
-								}
-
-								$("#pieFinalPieChartDataFormat").append(dataFormat);
-
-								$("#pieFinalModelDataField").append(pieChartTemplate.modelDataField);
-
-								$("#pieFinalModelCategoryField").append(pieChartTemplate.modelCategoryField);
-								
-								updatePieConnectorModelRelateDetail(pieChartTemplate.modelId);
-							}
+							$(contentIncludeDiv).empty();
+							
+							$(contentIncludeDiv).load(pageContent);
 						}
 						
-					
 						$(document).ready(function(){
 
 							var reportConnector = getBezelPageParam("reportConnector");

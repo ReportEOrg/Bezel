@@ -1,0 +1,139 @@
+											<div id="pie-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+
+														<div class="row">
+															<div class="col-md-6 widget-content">
+																<h4>
+																	<i class="fa fa-square"></i>
+																	Basic Information
+																</h4>
+																<p class="data-row">
+																	<span class="data-name">Name</span>
+																	<span id="pieFinalConnectorName" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Report Name</span>
+																	<span id="pieFinalReportName" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Model</span>
+																	<span id="pieFinalModel" class="data-value"></span>
+																</p>
+															</div>
+															<div class="col-md-6 widget-content">												
+																<h4>
+																	<i class="fa fa-square"></i>
+																	Chart Configuration Information
+																</h4>
+																<p class="data-row">
+																	<span class="data-name">Chart Title</span>
+																	<span id="pieFinalChartTitle" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Show Data Label</span>
+																	<span id="pieFinalShowDataLabel" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Show Legend</span>
+																	<span id="pieFinalShowLegend" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Pie Chart Data Format</span>
+																	<span id="pieFinalPieChartDataFormat" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Model Data Field</span>
+																	<span id="pieFinalModelDataField" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Model Category Field</span>
+																	<span id="pieFinalModelCategoryField" class="data-value"></span>
+																</p>
+															</div>
+														</div>
+
+													</div>
+												</div>
+
+	<script type="text/javascript">
+	
+		var updatePieConnectorModelRelateDetail = function(modelId){
+			console.log('updatePieConnectorModelRelateDetail');
+	
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+				
+				success: function(response){
+					if(response){
+						var model = response;
+						
+						$("#pieFinalModel").append(model.name);
+					}
+				},
+				complete: function(){
+					$("#pie-rptconnector-view-detail").show();
+					$('#loading').hide();
+				}
+			});
+		}
+	
+		function updatePieReportConnectorViewDetail(pieChartTemplate){
+			
+			if(pieChartTemplate){
+				$("#pieFinalConnectorName").append(pieChartTemplate.templateName);
+				$("#pieFinalReportName").append(pieChartTemplate.reportDisplayName);
+				
+				//chart configuration
+				$("#pieFinalChartTitle").append(pieChartTemplate.title);
+				
+				var showDataLabel = "No";
+				
+				if(pieChartTemplate.showDataLabel){
+					showDataLabel = "Yes";
+				}
+				$("#pieFinalShowDataLabel").append(showDataLabel);
+				
+				var showLegend = "No";
+				
+				if(pieChartTemplate.showLegend){
+					showLegend = "Yes";
+				}
+				$("#pieFinalShowLegend").append(showLegend);
+				
+				var dataFormat ='-';
+				if('PERCENT' == pieChartTemplate.dataTypeFormat){
+					dataFormat = 'Percentage';
+				}
+				else if ('VALUE' == pieChartTemplate.dataTypeFormat){
+					dataFormat = 'Value';
+				}
+	
+				$("#pieFinalPieChartDataFormat").append(dataFormat);
+	
+				$("#pieFinalModelDataField").append(pieChartTemplate.modelDataField);
+	
+				$("#pieFinalModelCategoryField").append(pieChartTemplate.modelCategoryField);
+				
+				updatePieConnectorModelRelateDetail(pieChartTemplate.modelId);
+			}
+		}
+	
+		/***** initialization *****/
+		$(document).ready(function(){
+
+			var reportConnector = getBezelPageParam("reportConnector");
+			
+			//clear page context before start
+			initBezelParamMap();
+			
+			//put back for current page usage
+			setBezelPageParam("reportConnector",reportConnector);
+			
+			if(reportConnector){
+				updatePieReportConnectorViewDetail(reportConnector.pieChartTemplate);	
+			}
+			
+
+		});
+	</script>
