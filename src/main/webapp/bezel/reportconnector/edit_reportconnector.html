@@ -1,0 +1,238 @@
+
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-10 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Report Connector</li>
+									<li class="active"><a href="javascript:loadContent('reportconnector_content.html');">Manage Report Connector</a></li>
+									<li class="active">Edit Report Connector</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>Report Connector</h2>
+								<em>Connector to connect model to report output</em>
+							</div>
+							<div class="main-content">
+
+								<!-- ROW -->
+								<div class="row">
+									<div class="col-md-12">
+										<!-- WIDGET TABLE -->
+										<div class="widget widget-table">
+											<div class="widget-header">
+												<h3><i class="fa fa-pencil"></i> Edit Report Connector</h3>
+												<div class="btn-group widget-header-toolbar">
+												</div>
+											</div>
+											<div class="widget-content">
+												<div class="alert alert-danger" id="ajaxErrorMsg" style="display: none;">
+												</div>
+												<div id="loading" style="text-align: center;">
+													<i class="fa fa-spinner fa-pulse fa-2x"></i>
+												</div>
+												<div id="edit-content-include-div">
+												</div>
+												<div id="cartesian-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div id="pie-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="pieFinalConnectorName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Report Name</span>
+																		<span id="pieFinalReportName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model</span>
+																		<span id="pieFinalModel" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Chart Configuration Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Chart Title</span>
+																		<span id="pieFinalChartTitle" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Data Label</span>
+																		<span id="pieFinalShowDataLabel" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Legend</span>
+																		<span id="pieFinalShowLegend" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Pie Chart Data Format</span>
+																		<span id="pieFinalPieChartDataFormat" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Data Field</span>
+																		<span id="pieFinalModelDataField" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Category Field</span>
+																		<span id="pieFinalModelCategoryField" class="data-value"></span>
+																	</p>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div id="pivot-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+														<form id="form5">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalModelName" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Attribute(s) Information
+																	</h4>
+																	
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
+												<div style="float:right;">
+													<button type='button' id="backButton" class='btn widget widget-header' onclick="javascript:loadContent('reportconnector_content.html')"> Back </button>
+													<button type='button' id="updateButton" class='btn widget widget-header' > Update </button>
+												</div>
+											</div>
+										</div>
+										<!-- END WIDGET TABLE -->
+
+									</div>
+								</div>
+								<!-- END ROW -->
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+					
+					<script type="text/javascript">
+					var viewReportConnectorById = function(reportConnectorId){
+						
+						//jquery ajax
+						$.ajax({
+							type: "GET",
+							url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors/"+reportConnectorId,
+							
+							success: function(response){
+								if(response){
+									var reportConnector = response;
+									
+									setBezelPageParam("reportConnector", reportConnector);
+									
+									if(reportConnector && reportConnector.type){
+										
+										switch(reportConnector.type){
+											case 'AREA':
+											case 'BAR':
+											case 'COLUMN':
+											case 'LINE':
+												
+												break;
+											case 'PIE':
+												loadEditContent('edit_reportconnector_pie_chart.html');
+												break;
+											case 'CROSSTAB':
+												
+												break;
+										}
+										
+									}
+								}
+							},
+							complete: function(jqXHR, textStatus){
+								
+								if("success" != textStatus){
+									//only hide loading if error, respective success page responsble to hide loading after their initialization complete 
+									$('#loading').hide();
+									displayAjaxError("Failed to retrieve data from remote server");
+								}
+							}
+						});
+					}
+					
+					function loadEditContent(pageContent){
+						var contentIncludeDiv = document.getElementById("edit-content-include-div");
+						
+						$(contentIncludeDiv).empty();
+						
+						$(contentIncludeDiv).load(pageContent);
+					}
+					
+					
+					/***** initialization *****/
+					$(document).ready(function(){
+
+						var reportConnector = getBezelPageParam("reportConnector");
+						
+						//clear page context before start
+						initBezelParamMap();
+						
+						//put back for current page usage
+						setBezelPageParam("reportConnector",reportConnector);
+						
+						if(reportConnector){
+							var title = $(".widget-header h3").html();
+							
+							$(".widget-header h3").html((title+" - "+reportConnector.name));
+							
+							viewReportConnectorById(reportConnector.id);
+						}
+
+					});
+						
+					</script>

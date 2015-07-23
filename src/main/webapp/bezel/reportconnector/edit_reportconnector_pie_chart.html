@@ -1,0 +1,588 @@
+										<div id="pie-rptconnector-edit-detail" >
+											<form role="form" id="modelDetailForm">
+												<!-- Basic Info -->
+												<fieldset>
+													<legend>Basic Information</legend>
+													<div class="form-group">
+														<label for="reportConnectorName">Name *</label>
+														<input type="text" id="reportConnectorName" style="width:50%;" maxlength="45" placeholder="Report Connector Name"
+															   class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#reportConnectorNameError">
+														<div id="reportConnectorNameError" class="errorMessage"></div>
+													</div>
+													<div class="form-group">
+														<label for="reportDisplayName">Report Name *</label>
+														<input type="text" id="reportDisplayName" placeholder="Report Display Name"
+															    class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#reportDisplayNameError">
+														<div id="reportDisplayNameError" class="errorMessage"></div>
+													</div>
+													<div class="form-group">
+														<label for="model">Model *</label>
+														<select id="model" class="form-control" onchange="javascript:resetConfiguration();"
+														        required data-parsley-errors-container="#modelError"></select>
+														<div id="modelError" class="errorMessage"></div>
+													</div>
+												</fieldset>
+												
+												<!-- Configuration -->
+												<fieldset>
+													<legend>Configuration</legend>
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group">
+																<label for="chartTitle">Chart Title</label>
+																<input type="text" id="chartTitle" class="form-control" placeholder="Chart Title"
+																        data-parsley-errors-container="#chartTitleError">
+																<div id="chartTitleError" class="errorMessage"></div>
+															</div>
+															<div class="form-group">
+																<div class="col-md-4" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="showLegend">Show Legend</label><br>
+																		<input id="showLegend" type="checkbox" checked 
+																			   class="switch-reportbay switch-small" data-on="success" data-off="danger"
+																			   data-parsley-errors-container="#showLegendError">
+																		<div id="showLegendError" class="errorMessage"></div>
+																	</div>
+																</div>
+																<div class="col-md-4" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="showDataLabel">Show Data Label</label><br>
+																		<input id="showDataLabel" type="checkbox" checked 
+																			   class="switch-reportbay switch-small" data-on="success" data-off="danger"
+																			   data-parsley-errors-container="#showDataLabelError">
+																		<div id="showDataLabelError" class="errorMessage"></div>
+																	</div>
+																</div>
+																<div class="col-md-4" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="pieChartDataFormat">Pie Chart Data Format *</label><br>
+																		<label class="fancy-radio">
+																			<input type="radio" name="pieChartDataFormat" value="PERCENT" required
+																				   data-parsley-errors-container="#pieChartDataFormatError">
+																			<span><i></i>Percentage</span>
+																		</label>
+																		<label class="fancy-radio">
+																			<input type="radio" name="pieChartDataFormat" value="VALUE" required
+																				   data-parsley-errors-container="#pieChartDataFormatError">
+																			<span><i></i>Value</span>
+																		</label>
+																		<div id="pieChartDataFormatError" class="errorMessage"></div>
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="modelDataField">Model Data Field *</label>
+																<select id="modelDataField" class="form-control"  onchange="javascript:resetPreview()"
+															        required data-parsley-errors-container="#modelDataFieldError"></select>
+																<div id="modelDataFieldError" class="errorMessage"></div>
+															</div>
+															
+															<div class="form-group">
+																<label for="modelCategoryField">Model Category Field *</label>
+																<select id="modelCategoryField" class="form-control"  onchange="javascript:resetPreview()"
+															        required data-parsley-errors-container="#modelCategoryFieldError"></select>
+																<div id="modelCategoryFieldError" class="errorMessage"></div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div  style="border-style: dotted; border-width: 1px; margin:1px;">
+																<div style="text-align:right; margin: 4px 4px;">
+																	<button id="previewButton" type="button" class="btn btn-default" onclick="javascript:plotPiePreview(false);">Preview</button>
+																</div>
+																<div id="samplePreview" class="divContentCenterAlign" style="width: 80%;">
+																	<div id="samplePieChartPreviewTitle" style="width: 100%; text-align: center; border-style: dotted; border-width: 1px; margin:4px;">
+																		Chart Title
+																	</div>
+																	
+																	<div id="samplePieChartPreview" class="divContentCenterAlign" style="width:100%; height: 300px; margin:8px;">
+																	
+																	</div>																	
+																</div>
+																<div id="generatingPreview" class="divContentCenterAlign" style="width: 80%;display:none;" >
+																	<div  style="width: 100%; text-align: center; height: 300px; position:relative">
+																		<i class="fa fa-spinner fa-pulse fa-5x" style="position:absolute; top: 35%;"></i>
+																	</div>
+																</div>
+																<div id="preview" class="divContentCenterAlign" style="width: 80%; display:none;" >
+																	<div id="pieChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
+																	</div>
+																	
+																	<div id="pieChartPreview" class="divContentCenterAlign" style="width:100%; height: 300px; margin:8px;">
+																	
+																	</div>																	
+																</div>
+															</div>
+														</div>
+													</div>	
+												</fieldset>
+											</form>			
+										</div>
+												
+		<script type="text/javascript">
+		/***** initialization *****/
+		
+		function buildModelOptions(selectedModeId, modelDataField, modelCategoryField){
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models",
+				
+				success: function(response){
+					if(response){
+						var models = response.models;
+						
+						setBezelPageParam("models", models);
+						
+						var selectedModel = undefined;
+						
+						if(models){
+							$("#model").empty();
+							$("#model").append($('<option></option>'));
+							var index;
+							for(index = 0; index<models.length; index++){
+								var model = models[index];
+								
+								$("#model").append($('<option></option>').val(model.id).html(model.name));
+								
+								if(selectedModeId && selectedModeId == model.id ){
+									selectedModel = model;
+								}
+							}
+						}
+						
+						if(selectedModel){
+							rebuildModelDataFieldOptions(selectedModel.attributeBindings);
+						}
+						
+						$("#model").val(selectedModeId);
+						$("#modelDataField").val(modelDataField);
+
+						$("#modelCategoryField").val(modelCategoryField);
+						
+						reinitBootstrapSwitch();
+						//plot pie preview with hide loading handling
+						plotPiePreview(true);
+						
+					}
+				},
+				complete: function(jqXHR, textStatus){
+
+					if("success" != textStatus){
+						//set value for not success case
+						$("#model").val(selectedModeId);
+						$("#modelDataField").val(modelDataField);
+
+						$("#modelCategoryField").val(modelCategoryField);
+
+						$('#loading').hide();
+						displayAjaxError("Failed to retrieve data from remote server");
+					}
+				}
+			});
+		};
+		
+		function updatePieChartReportConnector(){
+			
+			//validate required field
+			var parsleyForm = $('#modelDetailForm').parsley();
+			parsleyForm.validate();
+		
+			if( !parsleyForm.isValid() )
+				return false;
+
+			blockItems();
+			updatePieChartReportConnectorChanges();
+		}
+		
+		function updatePieChartReportConnectorChanges(){
+			
+			var reportConnector = getBezelPageParam("reportConnector");
+			
+			updatePieChartReportConnectorFields(reportConnector);
+			
+			var content = JSON.stringify(reportConnector); 
+			
+			console.log(content);
+
+			//jquery ajax
+			$.ajax({
+				type: "PUT",
+				url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors",
+				data: content,
+				contentType: "application/json",
+				crossDomain: true,
+
+				success: function(response){
+					alert('Report connector change has been updated.');
+					loadContent("reportconnector_content.html");
+				},
+				complete: function(jqXHR, textStatus){
+					if("success" != textStatus){
+						displayAjaxError("Failed to update report connector changes to remote server");
+						restoreBlockedItem();
+					}
+				}
+			});
+		}
+		
+		function updatePieChartReportConnectorFields(reportConnector){
+			if(reportConnector){
+				
+				var pieChartConnector = reportConnector.pieChartTemplate;
+				
+				if(pieChartConnector){
+
+					pieChartConnector['modelId']		   = $("#model").find(":selected").val();
+					pieChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
+					pieChartConnector['templateName']	   = $("#reportConnectorName").val();
+					pieChartConnector['title']			   = $('#chartTitle').val();
+					pieChartConnector['showLegend']		   = $('#showLegend').prop('checked');
+					pieChartConnector['showDataLabel']	   = $('#showDataLabel').prop('checked');
+					pieChartConnector['modelCategoryField']= $('#modelCategoryField').find(":selected").val();
+					pieChartConnector['modelDataField']	   = $('#modelDataField').find(":selected").val();
+					pieChartConnector['dataTypeFormat']	   = $('input[name="pieChartDataFormat"]:checked', '#modelDetailForm').val();
+					
+					console.log('updatePieChartReportConnectorFields completed');
+				}
+			}
+		}
+		
+		function blockItems(){
+			$('button').attr('disabled','disabled');
+			$('input').attr('disabled','disabled');
+			$('select').attr('disabled','disabled');
+		}
+		
+		function restoreBlockedItem(){
+			
+			console.log('restoreBlockedItem');
+			
+			$('button').removeAttr('disabled');
+			$('input').removeAttr('disabled');
+			$('select').removeAttr('disabled');
+		}
+
+		function isValidModelDataField(modelFieldType){
+			var isValid = false;
+			
+			if(modelFieldType){
+				switch(modelFieldType){
+					case 'BIGINT':
+					case 'DECIMAL':
+					case 'DOUBLE':
+					case 'FLOAT':
+					case 'INTEGER' :
+					case 'NUMERIC' :
+					case 'REAL' :
+					case 'SMALLINT' :
+					case 'TINYINT' :
+						isValid = true;
+						break;
+				}
+			}
+			return isValid;
+		}
+		
+		function reinitBootstrapSwitch(){
+			//*******************************************
+			/*	SWITCH INIT Rendering
+			/********************************************/
+			$('.switch-reportbay').bootstrapSwitch();
+		}
+		
+		function rebuildModelDataFieldOptions(modelAttrBindings){
+			
+			$('#modelDataField').empty();
+			$('#modelDataField').append($('<option></option>'));
+			
+			$('#modelCategoryField').empty();
+			$('#modelCategoryField').append($('<option></option>'));
+			
+			
+			if(modelAttrBindings && $.isArray(modelAttrBindings)){
+				for(var index=0; index < modelAttrBindings.length; index++){
+					if(isValidModelDataField(modelAttrBindings[index].typeName)){
+						$('#modelDataField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+					}
+					$('#modelCategoryField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+				}
+			}
+		}
+		
+		function populatePieConnectorDetails(pieChartTemplate){
+			
+			if(pieChartTemplate){
+				$("#reportConnectorName").val(pieChartTemplate.templateName);
+				$("#reportDisplayName").val(pieChartTemplate.reportDisplayName);
+				
+				//chart configuration
+				$("#chartTitle").val(pieChartTemplate.title);
+				
+				$("#showLegend").prop('checked', pieChartTemplate.showLegend);
+				$("#showDataLabel").prop('checked', pieChartTemplate.showDataLabel);
+				
+				$('input:radio[name=pieChartDataFormat][value="'+pieChartTemplate.dataTypeFormat+'"]').prop('checked', true);
+
+				//ajax call to build model drop down + other dependent drop down 
+				buildModelOptions(pieChartTemplate.modelId, pieChartTemplate.modelDataField, pieChartTemplate.modelCategoryField);
+			}
+		}
+		
+		function plotSamplePie(){
+			
+			var pieData = [
+			               {label: "Series 1", data: 70},
+			               {label: "Series 2", data: 20},
+			               ];
+			
+			var configuration = {
+				legend:{show: true, location: 'ne'},
+				series:{
+					pie:{
+						show: true,
+						stroke: {
+							width: 4,
+							color: "#F9F9F9"
+						},
+					}
+				},
+				colors: ["#d9d9d9"],
+			};
+			
+			$.plot('#samplePieChartPreview', pieData, configuration);
+		}
+		
+		function plotPiePreview(hideLoading){
+			
+			if(!hideLoading){
+				//validate required field
+				var parsleyForm = $('#modelDetailForm').parsley();
+				parsleyForm.validate();
+			
+				if( !parsleyForm.isValid() )
+					return false;
+			}
+
+			$('#pieChartPreview').empty();
+			$('#pieChartPreviewTitle').empty();
+			
+			var reportConnector = buildReportConnector();
+			
+			console.log('generatePreview '+JSON.stringify(reportConnector));
+			
+			$("#previewButton").attr('disabled','disabled');
+			//jquery ajax
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/reports/preview",
+				data: JSON.stringify(reportConnector),
+				contentType: "application/json",
+				crossDomain: true,
+				
+				success: function(response){
+					if(response){
+						console.log('generatePreview success');
+						var report = response.pieChartReport;
+						
+						setBezelPageParam('report',report);
+						
+						//chart title
+						$('#pieChartPreviewTitle').append(report.title);
+						
+						//obtain data
+						var pieData = preparePreviewData(report.categoryData);
+
+						//prepare configuration
+						var configuration = preparePreviewConfiguration(report);
+						
+						//hide sample
+						$('#samplePreview').hide();
+						$('#generatingPreview').show();
+						
+						//plot pie
+						$.plot('#pieChartPreview', pieData, configuration);
+						
+						$('#generatingPreview').hide();
+						//show preview
+						$('#preview').show();
+					}
+				},
+				complete: function(jqXHR, textStatus){
+					$("#previewButton").removeAttr('disabled');
+					
+					if(hideLoading){
+						$('#loading').hide();
+					}
+				}
+			});
+		}
+		
+		function resetPreview(){
+			$('#samplePreview').show();
+			$('#generatingPreview').hide();
+			$('#preview').hide();
+		}
+		function preparePreviewData(categoryData){
+			
+			var previewData = new Array();
+			
+			for (var key in categoryData) {
+				//only process non prototype
+				if (categoryData.hasOwnProperty(key)) {
+				    var seriesData ={};
+				    previewData.push(seriesData);
+				    
+				    seriesData['label'] = key;
+				    seriesData['data']  = categoryData[key];
+				  }
+			}
+			
+			return previewData; 
+		}
+		function preparePreviewConfiguration(report){
+			
+			return {
+				series: {
+					pie: {
+						show: true,
+						stroke: {
+							width: 4,
+							color: "#F9F9F9"
+						},
+						label: {
+							show: report.showDataLabel,
+							radius: 3/4,
+							formatter: labelFormatter
+						}
+					},
+				},
+				legend: {
+					show: report.showLegend
+				},
+				grid: {
+					hoverable: false
+				},
+				colors: ["#d9d9d9", "#5399D6", "#d7ea2b"],
+			};
+			
+		}
+		
+		function labelFormatter(label, series) {
+			
+			var report = getBezelPageParam('report');
+			var labelFormat = report.dataTypeFormat;
+			
+			var labelPlaceHolder = '';
+			var valuePlaceHolder = '';
+			
+			if(report.showDataLabel){
+				labelPlaceHolder =  label + "<br/>";
+			
+				if('PERCENT' == labelFormat && series.percent){
+					valuePlaceHolder = Math.round(series.percent)+'%';
+				}
+				else if ('VALUE' == labelFormat && series.data[0][1]){
+					valuePlaceHolder = Math.round(series.data[0][1])
+				}
+			}
+
+			return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
+		}
+
+		function buildReportConnector(){
+			var connector = {};
+
+			connector['type']='PIE';
+			connector['cartesianChartTemplate'] =undefined;
+			connector['pieChartTemplate'] = buildPieChartConnector();
+			connector['crossTabTemplate'] = undefined;
+			
+			return connector;
+		}
+		
+		function buildPieChartConnector(){
+			var pieChartConnector = {};
+
+			pieChartConnector['id']				   = '0';
+			pieChartConnector['modelId']		   = $("#model").find(":selected").val();
+			pieChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
+			pieChartConnector['reportQuery']	   = undefined;
+			pieChartConnector['templateName']	   = $("#reportConnectorName").val();
+			pieChartConnector['reportTemplateType']= 'SIMPLE';
+			pieChartConnector['title']			   = $('#chartTitle').val();
+			pieChartConnector['showLegend']		   = $('#showLegend').prop('checked');
+			pieChartConnector['showDataLabel']	   = $('#showDataLabel').prop('checked');
+			pieChartConnector['categoryName']	   = undefined;
+			pieChartConnector['modelCategoryField']= $('#modelCategoryField').find(":selected").val();
+			pieChartConnector['modelDataField']	   = $('#modelDataField').find(":selected").val();
+			pieChartConnector['dataTypeFormat']	   = $('input[name="pieChartDataFormat"]:checked', '#modelDetailForm').val();
+			
+			return pieChartConnector;
+		}
+
+		function resetConfiguration(){
+			
+			//reset to default
+			$("#showLegend").prop('checked', true);
+			$("#showDataLabel").prop('checked', true);
+			
+			$('input[name="pieChartDataFormat"]').prop('checked', false);
+			
+			$("#modelCategoryField").val('');
+			$("#modelDataField").val('');
+			
+			resetPreview();
+			
+			var selectedModel = getSelectedModel($("#model").find(":selected").val());
+
+			if(selectedModel){
+				rebuildModelDataFieldOptions(selectedModel.attributeBindings);
+			}
+			
+			$('.switch-reportbay').bootstrapSwitch("setState", true);
+		}
+		
+		function getSelectedModel(selectedModelId){
+			
+			var selectedModel = undefined;
+			
+			var models = getBezelPageParam("models");
+
+			if(models){
+				
+				for(var index=0; index<models.length; index++){
+					var model = models[index];
+					
+					if(model && model.id == selectedModelId){
+						selectedModel = model;
+						break;
+					}
+				}
+			}
+			
+			return selectedModel;
+		}
+		
+		$(document).ready(function(){
+
+			var reportConnector = getBezelPageParam("reportConnector");
+			
+			//clear page context before start
+			initBezelParamMap();
+			
+			//put back for current page usage
+			setBezelPageParam("reportConnector",reportConnector);
+			plotSamplePie();
+			
+			populatePieConnectorDetails(reportConnector.pieChartTemplate);
+			
+			$("#updateButton").on('click', function(){
+				//update Pie chart report connector
+				console.log('update Pie chart report connector');
+				
+				updatePieChartReportConnector();
+			});
+
+		});
+		
+		</script>
