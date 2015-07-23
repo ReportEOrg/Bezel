@@ -117,9 +117,9 @@ function createDataSourceRow(dataSource, index) {
 	rowDataSet.push(dataSource.hostname);
 	rowDataSet.push(dataSource.port);
 	rowDataSet.push(dataSource.schema);
-	rowDataSet.push("<button type='button' title='View Data Source' class='widget main-header' data-action='view' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-eye' style='margin-left: 5px;'></i></em></button> "+
-					"<button type='button' title='Edit Data Source' class='widget main-header' data-action='edit' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-pencil' style='margin-left: 5px;'></i></em></button> "+
-					"<button type='button' title='Delete Data Source' class='widget main-header' data-action='delete' data-reference='"+index+"' style='border:none;' data-toggle='modal' data-target='#delete-datasource-dialog'><em><i class='fa fa-trash' style='margin-left: 5px;'></i></em></button> ")
+	rowDataSet.push("<button type='button' title='View Data Source' class='widget main-header modelActionButton' data-action='view' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-eye' style='margin-left: 5px;'></i></em></button> "+
+					"<button type='button' title='Edit Data Source' class='widget main-header modelActionButton' data-action='edit' data-reference='"+index+"' style='border:none;'><em><i class='fa fa-pencil' style='margin-left: 5px;'></i></em></button> "+
+					"<button type='button' title='Delete Data Source' class='widget main-header modelActionButton' data-action='delete' data-reference='"+index+"' style='border:none;' data-toggle='modal' data-target='#delete-datasource-dialog'><em><i class='fa fa-trash' style='margin-left: 5px;'></i></em></button> ")
 	return rowDataSet;
 }
 
