@@ -69,7 +69,7 @@
 															</div>
 															<div class="form-group" id="joinedQueryField">
 																<label for="joined-query">Joined Query *</label>
-																<textarea id="joined-query" class="form-control" row="6" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError" style="resize:none;" onkeyup="javascript:updateValidateButton();"></textarea>
+																<textarea id="joined-query" class="form-control" rows="8" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError" style="resize:none;" onkeyup="javascript:updateValidateButton();"></textarea>
 																<p class="help-block text-right js-textarea-help"><span class="text-muted"></span></p>
 																<button type="button" id="validate-joined-query" class="btn btn-default" disabled="disabled" onclick="javascript:validateJoinedQuery()">
 																	Validate Query
@@ -257,7 +257,7 @@
 								crossDomain: true,
 								
 								success: function(response){
-
+									$('#preview-result-table').empty();
 									console.log("success generateModelPreview");
 									var prvResultTable = $('#preview-result-table').DataTable({
 																								"destroy": true,
@@ -428,6 +428,8 @@
 							var model = getBezelPageParam("model");
 							updateModelFields(model);
 							
+							console.log(JSON.stringify(model));
+							
 							//jquery ajax
 							$.ajax({
 								type: "PUT",
@@ -514,7 +516,6 @@
 							}
 							
 							clearAttributeMap();
-							model.attributeBindings =[];
 						}
 						
 						function clearAttributeMap(){
@@ -535,7 +536,6 @@
 								var model = getBezelPageParam("model");
 								
 								model.table = tables[tableIdx].name;
-								model.attributeBindings =[];
 								
 								buildAttributeMap(model, true);
 							}
@@ -623,6 +623,7 @@
 						
 						function validateJoinedQuery(){
 							var joinQueryField = $("#joined-query").parsley();
+							joinQueryField.reset();
 							joinQueryField.validate();
 							
 							if(!joinQueryField.isValid()){
@@ -644,6 +645,9 @@
 						}
 						
 						function restoreBlockedItem(){
+							
+							console.log('restoreBlockedItem');
+							
 							$('button').removeAttr('disabled');
 							$('input').removeAttr('disabled');
 							$('select').removeAttr('disabled');
@@ -656,11 +660,33 @@
 
 						/** enable validate Query button if attribute map is cleared **/
 						function updateValidateButton(){
-							var attrMapTabChild = $('#attrMapTable input');
 							
+							//if joined query different from original
+							if(isJoinedQueryChanged()){
+								clearQueryResultPreviewTable();
+								clearAttributeMap();
+							}
+
+							//if attribute map is empty, enable the validate button
+							var attrMapTabChild = $('#attrMapTable input');
+
 							if(attrMapTabChild.length == 0){
 								$("#validate-joined-query").removeAttr('disabled');
 							}
+						}
+						
+						function isJoinedQueryChanged(){
+							var changed = false;
+							
+							var model = getBezelPageParam('model');
+							
+							if(model && model.query ){
+								if(model.query.joinQuery != $("#joined-query").val()){
+									changed = true;
+								}
+							}
+							
+							return changed;
 						}
 						
 						function updateModelDataSource(model, datasourceId){
@@ -756,8 +782,17 @@
 						}
 						
 						function updateModelSelectedAttributes(model){
+							
+							//create a map based on existing attribute using referencedColumn as key
+							var existAttrMap = {};
+							$.each(model.attributeBindings, function(index, item){
+								existAttrMap[item.referencedColumn]=item;
+							});
+							
 							//clear attribute array
 							model['attributeBindings'].length=0;
+							
+							var newAttrMap = new Array();
 							
 							var attributeMaps = getBezelPageParam("attributeMaps");
 							var newOrder = 1;
@@ -771,9 +806,21 @@
 
 									newOrder ++;
 
-									model['attributeBindings'].push(attrMap);
+									newAttrMap.push(attrMap);
 								}
 							}
+							
+							$.each(newAttrMap, function(index, item){
+								
+								//lookup by referencedColumn name
+								var attr =  existAttrMap[item.referencedColumn];
+								
+								//if found in existing, update with the id
+								if(attr){
+									item.id = attr.id;
+								}
+								model['attributeBindings'].push(item);
+							});
 						}
 
 						/***** initialization *****/
