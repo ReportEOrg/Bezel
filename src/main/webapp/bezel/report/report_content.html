@@ -138,6 +138,7 @@
 						function renderTable(tableDataSet){
 							$('#report-table').dataTable({
 								"data": tableDataSet,
+								"destroy": true,
 								"columns" : [
 									{"title":"Name"},
 									{"title":"Template Type"},

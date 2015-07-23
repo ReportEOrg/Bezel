@@ -179,6 +179,7 @@ function renderTable(tableDataSet) {
 	$('#datasource-table').on('draw.dt', 
 			function(){registerButtonEventHandler();}).dataTable({
 		"data": tableDataSet,
+		"destroy": true,
 		"columns" : [
 			{"title":"Name"},
 			{"title":"Description"},

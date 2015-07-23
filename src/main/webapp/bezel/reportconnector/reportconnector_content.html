@@ -147,6 +147,7 @@
 							$('#report-connector-table').on('draw.dt', function(){registerButtonEventHandler();})
 														.dataTable({
 								"data": tableDataSet,
+								"destroy": true,
 								"columns" : [
 									{"title":"Connector Name"},
 									{"title":"Generated Report Name"},
