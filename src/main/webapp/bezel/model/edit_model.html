@@ -448,6 +448,7 @@
 								complete: function(jqXHR, textStatus){
 									if("success" != textStatus){
 										displayAjaxError("Failed to update model changes to remote server");
+										restoreBlockedItem();
 									}
 								}
 							});
