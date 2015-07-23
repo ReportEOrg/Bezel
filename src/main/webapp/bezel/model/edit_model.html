@@ -46,13 +46,14 @@
 															<legend>Basic Information</legend>
 															<div class="form-group">
 																<label for="modelName">Name *</label>
-																<input type="text" id="modelName" style="width:50%;" maxlength="45" 
+																<input type="text" id="modelName" style="width:50%;" maxlength="45" placeholder="Model Name"
 																	   class="form-control" data-parsley-length="[5,45]" required data-parsley-errors-container="#modelNameError">
 																<div id="modelNameError" class="errorMessage"></div>
 															</div>
 															<div class="form-group">
 																<label for="modelDesc">Description</label>
-																<input type="text" id="modelDesc" class="form-control" data-parsley-errors-container="#modelDescError">
+																<input type="text" id="modelDesc" placeholder="Model Description"
+																       class="form-control" data-parsley-errors-container="#modelDescError">
 																<div id="modelDescError" class="errorMessage"></div>
 															</div>
 															<div class="form-group">
@@ -69,7 +70,9 @@
 															</div>
 															<div class="form-group" id="joinedQueryField">
 																<label for="joined-query">Joined Query *</label>
-																<textarea id="joined-query" class="form-control" rows="8" cols="100" maxlength="1000" required data-parsley-errors-container="#joinedQueryError" style="resize:none;" onkeyup="javascript:updateValidateButton();"></textarea>
+																<textarea id="joined-query" rows="8" cols="100" maxlength="1000" placeholder="Select ..." 
+																		  class="form-control" required data-parsley-errors-container="#joinedQueryError" style="resize:none;" 
+																		  onkeyup="javascript:updateValidateButton();"></textarea>
 																<p class="help-block text-right js-textarea-help"><span class="text-muted"></span></p>
 																<button type="button" id="validate-joined-query" class="btn btn-default" disabled="disabled" onclick="javascript:validateJoinedQuery()">
 																	Validate Query
