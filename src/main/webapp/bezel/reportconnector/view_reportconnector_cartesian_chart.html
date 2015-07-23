@@ -1,0 +1,201 @@
+											<div id="cartesian-rptconnector-view-detail" style="display: none;">
+													<div class="step-content" style="margin:0px;">
+
+														<div class="row">
+															<div class="col-md-6 widget-content">
+																<h4>
+																	<i class="fa fa-square"></i>
+																	Basic Information
+																</h4>
+																<p class="data-row">
+																	<span class="data-name">Name</span>
+																	<span id="cartFinalConnectorName" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Report Name</span>
+																	<span id="cartFinalReportName" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Model</span>
+																	<span id="cartFinalModel" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<br>
+																</p>
+																
+																<h4>
+																	<i class="fa fa-square"></i>
+																	Chart Configuration Information
+																</h4>
+																<p class="data-row">
+																	<span class="data-name">Chart Title</span>
+																	<span id="cartFinalChartTitle" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Show Data Label</span>
+																	<span id="cartFinalShowDataLabel" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Show Legend</span>
+																	<span id="cartFinalShowLegend" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Show X-Axis</span>
+																	<span id="cartFinalShowXAxis" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">X-Axis Title</span>
+																	<span id="cartFinalXAxisTitle" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Show Y-Axis</span>
+																	<span id="cartFinalShowYAxis" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Y-Axis Title</span>
+																	<span id="cartFinalYAxisTitle" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Model Data Field</span>
+																	<span id="cartFinalModelDataField" class="data-value"></span>
+																</p>
+																<p class="data-row">
+																	<span class="data-name">Model Data Label Field</span>
+																	<span id="cartFinalModelDataLabelField" class="data-value"></span>
+																</p>
+															</div>
+															<div class="col-md-6 widget-content">												
+																<h4>
+																	<i class="fa fa-square"></i>
+																	Series
+																</h4>
+																<p class="data-row">
+																	<table id="seriesFinalTable" class="table table-bordered table-striped">
+																	</table>
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
+
+	<script type="text/javascript">
+	
+		var updateCartesianConnectorModelRelateDetail = function(modelId){
+			console.log('updateCartesianConnectorModelRelateDetail');
+	
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+				
+				success: function(response){
+					if(response){
+						var model = response;
+						
+						$("#cartFinalModel").append(model.name);
+					}
+				},
+				complete: function(){
+					$("#cartesian-rptconnector-view-detail").show();
+					$('#loading').hide();
+				}
+			});
+		}
+	
+		function updateCartesianReportConnectorViewDetail(cartesianChartTemplate){
+			
+			if(cartesianChartTemplate){
+				$("#cartFinalConnectorName").append(cartesianChartTemplate.templateName);
+				$("#cartFinalReportName").append(cartesianChartTemplate.reportDisplayName);
+				
+				//chart configuration
+				$("#cartFinalChartTitle").append(cartesianChartTemplate.title);
+				
+				var showDataLabel = "No";
+				
+				if(cartesianChartTemplate.showDataLabel){
+					showDataLabel = "Yes";
+				}
+				$("#cartFinalShowDataLabel").append(showDataLabel);
+				
+				var showLegend = "No";
+				
+				if(cartesianChartTemplate.showLegend){
+					showLegend = "Yes";
+				}
+				$("#cartFinalShowLegend").append(showLegend);
+				
+				
+				var showXAxis = "No";
+				
+				if(cartesianChartTemplate.showXAxis){
+					showXAxis = "Yes";
+				}
+				$("#cartFinalShowXAxis").append(showXAxis);
+				
+				$("#cartFinalXAxisTitle").append(cartesianChartTemplate.xaxisTitle);
+				
+				var showYAxis = "No";
+				
+				if(cartesianChartTemplate.showYAxis){
+					showYAxis = "Yes";
+				}
+				$("#cartFinalShowYAxis").append(showYAxis);
+				
+				$("#cartFinalYAxisTitle").append(cartesianChartTemplate.yaxisTitle);
+				
+				$("#cartFinalModelDataField").append(cartesianChartTemplate.modelDataValueField);
+				$("#cartFinalModelDataLabelField").append(cartesianChartTemplate.modelDataLabelField);
+				
+				var seriesTab = $('#seriesFinalTable').DataTable({
+					"destroy": true,
+					paging : false,
+					searching : false,
+					ordering: false,
+					info:false,
+					"columns" : [
+									{"title":"Model Series Name", data:null, render: "modelSeriesName"},
+									{"title":"Series Display Name", data:null, render: "seriesDisplayName"}]
+				});
+				
+				var dataSeries = cartesianChartTemplate.dataSeries;
+
+				if(dataSeries){
+					for(index = 0; index<dataSeries.length; index++){
+						seriesTab.row.add(new SeriesRow(dataSeries[index].modelSeriesValue,dataSeries[index].name));
+					}
+					
+					seriesTab.draw();
+				}
+				
+				updateCartesianConnectorModelRelateDetail(cartesianChartTemplate.modelId);
+			}
+		}
+		
+		function SeriesRow(modelSeriesName, seriesDisplayName){
+			this._modelSeriesName = modelSeriesName;
+			this._seriesDisplayName = seriesDisplayName;
+			
+			this.modelSeriesName = function(){
+				return this._modelSeriesName;
+			};
+			this.seriesDisplayName = function(){
+				return this._seriesDisplayName;
+			};
+		}
+	
+		/***** initialization *****/
+		$(document).ready(function(){
+
+			var reportConnector = getBezelPageParam("reportConnector");
+			
+			//clear page context before start
+			initBezelParamMap();
+			
+			//put back for current page usage
+			setBezelPageParam("reportConnector",reportConnector);
+			
+			if(reportConnector){
+				updateCartesianReportConnectorViewDetail(reportConnector.cartesianChartTemplate);	
+			}
+		});
+	</script>
