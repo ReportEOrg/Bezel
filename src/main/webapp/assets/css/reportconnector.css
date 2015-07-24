@@ -1,7 +1,8 @@
 .buttonsDiv {
-	height: 35px;
-	margin-top: 10px;
-	border-bottom: 1px solid black;
+	height: 45px;
+	border-top: 1px solid transparent;
+	border-left: 1px solid transparent;
+	border-color: #ddd;
 }
 
 a.applyChanges {
@@ -47,7 +48,7 @@ a.applyChanges:active {
 .lastDim {
 	width: 98%;
 	height: 378px;
-	border: 1px solid black;
+	/* border: 1px solid black; */
 }
 
 .outerAvailDiv {
@@ -58,48 +59,68 @@ a.applyChanges:active {
 	border-top: 1px solid black;
 }
 
-#avialDimensionsList {
+#avialDimensionsList, #ulValueDimensionsList {
 	display: inline-table;
 	width: 99%;
 	padding: 0px;
 	margin-left: 5px;
-	background-color: #C98F91;
-	height: 75px;
+	height: 99%;
 }
 
-#ulValueDimensionsList {
+#rowDimensionsList {
 	display: inline-table;
-	width: 99%;
-	height: 40px;
+	width: 95%;
+	height: 94%;
 	padding: 0px;
 	margin-left: 5px;
-	background-color: #C98F91;
 }
 
 #columnDimensionsList {
 	display: inline-table;
 	width: 99%;
-	height: 40px;
+	height: 20px;
 	padding: 0px;
 	margin-left: 5px;
-	background-color: #C98F91;
 }
 
-#avialDimensionsList li, #ulValueDimensionsList li,
-	#columnDimensionsList li, #rowDimensionsList li {
+#avialDimensionsList li {
+	display: inline-block;
 	border: 1px solid black;
 	margin-left: 5px;
 	margin-top: 5px;
 	height: 30px;
 	line-height: 30px;
-	color: black;
+	border: 1px solid #3A87AD;
+	background-color: #3A87AD;
+	color: #fff;
+	cursor: move;
+	font-size: 0.9em;
+	opacity: 0.8;
+	padding-left: 17px;
+	padding-right: 17px;
+}
+
+#ulValueDimensionsList li, #columnDimensionsList li, #rowDimensionsList li
+	{
+	display: inline-block;
+	border: 1px solid black;
+	margin-left: 5px;
+	margin-top: 5px;
+	height: 30px;
+	line-height: 30px;
+	border: 1px solid #3A87AD;
+	background-color: #3A87AD;
+	color: #fff;
+	cursor: move;
+	font-size: 0.9em;
+	padding-left: 17px;
+	padding-right: 17px;
 }
 
 .leftDiv {
 	width: 15%;
 	float: left;
 	height: 100%;
-	border-right: 1px solid black;
 }
 
 .rightDiv {
@@ -111,15 +132,6 @@ a.applyChanges:active {
 	overflow-y: auto;
 }
 
-#rowDimensionsList {
-	display: inline-table;
-	width: 95%;
-	height: 97%;
-	padding: 0px;
-	margin-left: 5px;
-	background-color: #C98F91;
-}
-
 .columnDimDiv {
 	border-bottom: 1px solid black;
 	height: 70px;
@@ -129,5 +141,6 @@ a.applyChanges:active {
 	height: 310px;
 	width: 100%;
 	overflow: auto;
+	/* border: 1px solid transparent;
+	border-color: #ddd; */
 }
-

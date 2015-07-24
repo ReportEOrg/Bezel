@@ -90,48 +90,66 @@
 											<p>Please provide the attribute mapping details</p>	
 											<input type="text" id="checkRequiredDims" style="display: none;" data-parsley-errors-container="#requiredDimensionsError"/>
 											<p id="requiredDimensionsError" class="errorMessage"></p>
-										</div>									
+										</div>	
+										<div id="external-events">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="panel panel-default">
+														<div class="panel-heading">
+															<h3 class="panel-title">Available Dimensions</h3>
+														</div>
+														<div class="panel-body"	id="avialDimensionsPanel">	
+															<ul id="avialDimensionsList" class="droppableUL">
+															</ul>
+														</div>
+													</div>	
+												</div>
+												<div class="col-md-6">
+													<div class="panel panel-default">
+														<div class="panel-heading">
+															<h3 class="panel-title">Value Dimensions</h3>
+														</div>
+														<div class="panel-body"	id="valueDimensionsPanel">
+															<ul id="ulValueDimensionsList" class="ulValueDimensionsList">
+															</ul>	
+														</div>
+													</div>
+												</div>												
+											</div>											
+										</div>								
 										<div class="row">
-											<div class='outerDiv'>
-												<div class="outerAvailDiv">
-													<div class="innerAvailDiv">
-														<label class="dimenInfoLabel" style="padding-left:5px;">Available Dimensions</label>
-														<ul id="avialDimensionsList" class="droppableUL">
-														</ul>
-													</div>
-												</div>
-												<div class="outerDims">
-													<label class="dimenInfoLabel" style="padding-left:5px;">Value Dimensions</label>
-													<div class="dimDiv">
-														<ul id="ulValueDimensionsList"
-															class="ulValueDimensionsList">
-														</ul>
-													</div>
-												</div>
+											<div class='outerDiv'>	
 												<div class="lastDim">
 													<div class="leftDiv">
-														<div class="buttonsDiv" align="center">
-															<a class='applyChanges' id='applyChanges'>Preview</a>															
-														</div>
-														<div>
-															<label class="dimenInfoLabel" style="padding-left:5px;">Row Dimensions</label>
-															<div class="rowDimDiv">
+														<div class="buttonsDiv" align="center">															
+															<button type="button" class="btn btn-primary" id="previewBtn" style="margin-top: 5px;"><i class="fa fa-eye"></i> Preview</button>														
+														</div>														
+														<div class="panel panel-default" style="border-right:0px;">															
+															<div class="panel-heading" >
+																<h3 class="panel-title" style="height:25px;">Row Dimensions</h3>
+															</div>
+															<div class="panel-body rowDimDiv" style="border:0px;">
 																<ul id="rowDimensionsList" class="droppableUL">
-																</ul>
+																</ul>	
 															</div>
 														</div>
 													</div>
-													<div class="rightDiv">														
-														<div class="columnDimDiv">
-														<label class="dimenInfoLabel" style="padding-left:5px;">Column Dimensions</label>
-															<ul id="columnDimensionsList" class="droppableUL">
-															</ul>
+													<div class="rightDiv">	
+													    <div class="panel panel-default">															
+															<div class="panel-heading" style="height:45px;">
+																<h3 class="panel-title">Column Dimensions</h3>
+															</div>
+															<div style="height:46px;border-bottom: 1px solid transparent;border-color: #ddd;">
+																<ul id="columnDimensionsList" class="droppableUL">
+																</ul>
+															</div>
+															<div id="pvtTable" class="panel-body"></div>
 														</div>
-														<div id="pvtTable"></div>
+														
 													</div>
 												</div>
 											</div>
-										</div>								
+										</div>						
 									</form>
 								</div>
 								<!-- END STEP 3 -->
@@ -208,9 +226,10 @@
 	var selectedModelId;
 	var createPivotTable = function() {
 		var pivotData = JSON.stringify(preparePivotDataToSave());
+		alert('PivotData for Save : '+pivotData);
 		$.ajax({
 			type : 'POST',
-			url : getRestServerUrl()+'/reportbay-rest/api/reportconnectors/',
+			url : getRestServerUrl()+"/reportbay-rest/api/reportconnectors/",
 			dataType : 'JSON',
 			data : pivotData,
 			contentType:'application/json',				
@@ -366,7 +385,7 @@
 	function getAllExistingModels() {
 		$.ajax({
 					type : 'GET',
-					url : getRestServerUrl()+'/reportbay-rest/api/models',
+					url : getRestServerUrl()+"/reportbay-rest/api/models",
 					dataType : 'JSON',
 					success : function(data) {
 						allModelsData = data;
@@ -476,7 +495,14 @@
 			return true;
 	 }
 	
-	$(document).ready(function() {
+	$(document).ready(function() {		
+		$('#avialDimensionsPanel').resize(function() {
+			if($('#avialDimensionsList li').length > 0)
+			 {
+	        	$('#valueDimensionsPanel').height($('#avialDimensionsPanel').height());
+			 }			
+	    });
+		
 		//clear page context before start
 		initBezelParamMap();
 		$('#lstModels').empty();		
@@ -497,7 +523,7 @@
 					getAllExistingModels();
 				} 
 				else if (data.step === 2 && data.direction == 'next') {
-				  
+					$("#pivotForm3").parsley().reset();
 				} 
 				else if (data.step === 3 && data.direction == 'next') {					
 					updateRptConnectorConfirmationDetails();
@@ -537,7 +563,7 @@
 					"Multifact aggregator" : multifactSumAggregator()
 		 }; 
 		 
-		 $('#applyChanges').click(function() {
+		 $('#previewBtn').click(function() {
 			 	var result = validateRequiredAttributeMappings();
 			 	if(result === false)
 			  	 {
@@ -561,7 +587,7 @@
 				
 				$.ajax({
 					type : 'GET',
-					url : getRestServerUrl()+'/reportbay-rest/api/models/' + selectedModelId + '/previewdata?maxRow=100',
+					url : getRestServerUrl()+"/reportbay-rest/api/models/" + selectedModelId + "/previewdata?maxRow=100",
 					dataType : 'JSON',
 					success : function(data) {
 						var modelActData = data;
