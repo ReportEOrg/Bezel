@@ -1,0 +1,844 @@
+					<!-- content-wrapper -->
+					<div class="col-md-10 content-wrapper expanded">
+						<div class="row">
+							<div class="col-md-4 ">
+								<ul class="breadcrumb">
+									<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+									<li class="active">Report Connector</li>
+									<li class="active">New Report Connector</li>
+								</ul>
+							</div>
+						</div>
+						<!-- main -->
+						<div class="content">
+							<div class="main-header">
+								<h2>New Cartesian Chart Report Connector</h2>
+								<em>Creating a new report connector for Cartesian chart report</em>
+							</div>
+							<div class="main-content">
+								<!-- WIDGET WIZARD -->
+								<div class="widget">
+									<div class="widget-header">
+										<h3><i class="fa fa-clipboard"></i> New Cartesian Chart Report Connector Wizard</h3>
+									</div>
+									<div class="widget-content">
+										<div class="wizard-wrapper">
+											<!-- WIZARD -->
+											<div id="report-connector-wizard" class="wizard">
+												<!-- NAVIGATION -->
+												<div id="report-connector-wizard-steps" style="overflow: hidden;">
+													<ul class="steps">
+														<li data-target="#step1" class="active"><span class="badge badge-info">1</span>Report Connector Name<span class="chevron"></span></li>
+														<li data-target="#step2"><span class="badge">2</span>Model<span class="chevron"></span></li>
+														<li data-target="#step3"><span class="badge">3</span>Configuration<span class="chevron"></span></li>
+														<li data-target="#step4" class="last"><span class="badge">4</span>Create Report Connector</li>
+													</ul>
+												</div>
+												<div class="step-content">
+													<!-- STEP 1 Connector Name -->
+													<div class="step-pane active" id="step1">
+														<form id="form1" data-parsley-validate novalidate>
+															<p>Please provide the follow details:</p>
+															<div class="row">
+																<div class="col-md-10">
+																	<div class="form-group">
+																		<label for="connectorName">Name *</label>
+																		<input type="text" id="connectorName" style="width:50%;" maxlength="45" placeholder="Report Connector Name"
+																			   class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#connectorNameError">
+																		<div id="connectorNameError" class="errorMessage"></div>
+																	</div>
+																	<div class="form-group">
+																		<label for="reportDisplayName">Report Name *</label>
+																		<input type="text" id="reportDisplayName" placeholder="Report Display Name"
+																			    class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#reportDisplayNameError">
+																		<div id="reportDisplayNameError" class="errorMessage"></div>
+																	</div>
+																	<div class="form-group">
+																		<label for="reportDisplayName">Type *</label>
+																		<label class="fancy-radio">
+																			<input type="radio" name="chartType" value="AREA" required
+																				   data-parsley-errors-container="#chartTypeError">
+																			<span><i></i><span class="fa fa-area-chart"></span>&nbsp;Area</span>
+																		</label>
+																		<label class="fancy-radio">
+																			<input type="radio" name="chartType" value="BAR" required
+																				   data-parsley-errors-container="#chartTypeError">
+																			<span><i></i><span  class="fa fa-bar-chart"></span>&nbsp;Bar</span>
+																		</label>
+																		<label class="fancy-radio">
+																			<input type="radio" name="chartType" value="COLUMN" required
+																				   data-parsley-errors-container="#chartTypeError">
+																			<span><i></i><span  class="fa fa-bar-chart fa-rotate-90"></span>&nbsp;Column</span>
+																		</label>
+																		<label class="fancy-radio">
+																			<input type="radio" name="chartType" value="LINE" required
+																				   data-parsley-errors-container="#chartTypeError">
+																			<span><i></i><span  class="fa fa-line-chart"></span>&nbsp;Line</span>
+																		</label>
+																		<div id="chartTypeError" class="errorMessage"></div>
+																	</div>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 1 -->
+													<!-- STEP 2 Model -->
+													<div class="step-pane" id="step2">
+														<form id="form2" data-parsley-validate novalidate>
+															<p>Please select model source for connector</p>
+															<div class="row">
+																<div class="col-md-3">
+																	<label for="model">Model *</label>
+																	<select id="model" class="form-control" onchange="javascript:resetConfiguration();"
+																	        required data-parsley-errors-container="#modelError"></select>
+																	<div id="modelError" class="errorMessage"></div>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 2 -->
+													<!-- STEP 3 Configuration -->
+													<div class="step-pane" id="step3">
+														<form id="form3" data-parsley-validate novalidate>
+															<p>Please provide the configuration details:</p>
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="form-group">
+																		<label for="chartTitle">Chart Title</label>
+																		<input type="text" id="chartTitle" class="form-control" placeholder="Chart Title"
+																		        data-parsley-errors-container="#chartTitleError">
+																		<div id="chartTitleError" class="errorMessage"></div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="showLegend">Show Legend</label><br>
+																				<input id="showLegend" type="checkbox" checked 
+																					   class="switch-small" data-on="success" data-off="danger"
+																					   data-parsley-errors-container="#showLegendError">
+																				<div id="showLegendError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																		<div class="col-md-8" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="showDataLabel">Show Data Label</label><br>
+																				<input id="showDataLabel" type="checkbox" checked 
+																					   class="switch-small" data-on="success" data-off="danger"
+																					   data-parsley-errors-container="#showDataLabelError">
+																				<div id="showDataLabelError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="showXAxis">Show X-Axis</label><br>
+																				<input id="showXAxis" type="checkbox" checked 
+																					   class="switch-small" data-on="success" data-off="danger"
+																					   data-parsley-errors-container="#showXAxisError">
+																				<div id="showXAxisError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																		<div class="col-md-8" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="xAxisTitlel">X-Axis Title</label><br>
+																				<input type="text" id="xAxisTitlel" class="form-control" placeholder="X-Axis Title"
+																		        	   data-parsley-length="[1,45]" data-parsley-errors-container="#xAxisTitlelError">
+																				<div id="xAxisTitlelError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<div class="col-md-4" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="showYAxis">Show Y-Axis</label><br>
+																				<input id="showYAxis" type="checkbox" checked 
+																					   class="switch-small" data-on="success" data-off="danger"
+																					   data-parsley-errors-container="#showYAxisError">
+																				<div id="showYAxisError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																		<div class="col-md-8" style="padding-left:0px;">
+																			<div class="form-group">
+																				<label for="yAxisTitlel">Y-Axis Title</label><br>
+																				<input type="text" id="yAxisTitlel" class="form-control" placeholder="Y-Axis Title"
+																		        	    data-parsley-length="[1,45]" data-parsley-errors-container="#yAxisTitlelError">
+																				<div id="yAxisTitlelError" class="errorMessage"></div>
+																			</div>
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label for="modelDataValueField">Model Data Value Field *</label>
+																		<select id="modelDataValueField" class="form-control"  
+																	        required data-parsley-errors-container="#modelDataValueFieldError"></select>
+																		<div id="modelDataValueFieldError" class="errorMessage"></div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label for="modelDataLabelField">Model Data Label Field *</label>
+																		<select id="modelDataLabelField" class="form-control"  
+																	        required data-parsley-errors-container="#modelDataLabelFieldError"></select>
+																		<div id="modelDataLabelFieldError" class="errorMessage"></div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label for="dataSeries">Data Series *</label>
+																		
+																	</div>
+																</div>
+																<div class="col-md-6">
+																	<div  style="border-style: dotted; border-width: 1px; margin:1px;">
+																		<div style="text-align:right; margin: 4px 4px;">
+																			<button id="previewButton" type="button" class="btn btn-default" onclick="javascript:plotPiePreview();"><i class="fa fa-eye"></i> Preview</button>
+																		</div>
+																		<div id="samplePreview" class="divContentCenterAlign" style="width: 90%;">
+																			<div id="samplePieChartPreviewTitle" style="width: 100%; text-align: center; border-style: dotted; border-width: 1px; margin:4px;">
+																				Chart Title
+																			</div>
+																			
+																			<div id="sampleChartPreview" class="divContentCenterAlign" style="width:100%; height: 350px; margin:8px;">
+																			
+																			</div>																	
+																		</div>
+																		<div id="generatingPreview" class="divContentCenterAlign" style="width: 90%;display:none;" >
+																			<div  style="width: 100%; text-align: center; height: 350px; position:relative">
+																				<i class="fa fa-spinner fa-pulse fa-5x" style="position:absolute; top: 35%;"></i>
+																			</div>
+																		</div>
+																		<div id="preview" class="divContentCenterAlign" style="width: 90%; display:none;" >
+																			<div id="pieChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
+																			</div>
+																			
+																			<div id="pieChartPreview" class="divContentCenterAlign" style="width:100%; height: 350px; margin:8px;">
+																			
+																			</div>																	
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 3 -->
+													<!-- STEP 4 Confirmation -->
+													<div class="step-pane" id="step4">
+														<form id="form4">
+															<div class="row">
+																<div class="col-md-6 widget-content">
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Basic Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Name</span>
+																		<span id="finalConnectorName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Report Name</span>
+																		<span id="finalReportName" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model</span>
+																		<span id="finalModel" class="data-value"></span>
+																	</p>
+																</div>
+																<div class="col-md-6 widget-content">												
+																	<h4>
+																		<i class="fa fa-square"></i>
+																		Chart Configuration Information
+																	</h4>
+																	<p class="data-row">
+																		<span class="data-name">Chart Title</span>
+																		<span id="finalChartTitle" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Data Label</span>
+																		<span id="finalShowDataLabel" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Legend</span>
+																		<span id="finalShowLegend" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Pie Chart Data Format</span>
+																		<span id="finalPieChartDataFormat" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Data Field</span>
+																		<span id="finalModelDataField" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Model Category Field</span>
+																		<span id="finalModelCategoryField" class="data-value"></span>
+																	</p>
+																</div>
+															</div>
+														</form>
+													</div>
+													<!-- END STEP 4 -->
+												</div>
+												<!-- STEP ACTION -->
+												<div class="actions">
+													<button type="button" class="btn btn-default btn-prev"><i class="fa fa-arrow-left"></i> Prev</button>
+													<button type="button" class="btn btn-primary btn-next" data-last="Create Report Connector">Next <i class="fa fa-arrow-right"></i></button>
+												</div>
+												<!-- END STEP ACTION -->
+											</div>
+											<!-- END WIZARD -->
+										</div>
+									</div>
+								</div>
+								
+							</div>
+							<!-- /main-content -->
+						</div>
+						<!-- /main -->
+					</div>
+					<!-- /content-wrapper -->
+				
+
+	<script type="text/javascript">
+
+		//AJAX functions
+
+		var buildModelOptions = function(){
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models",
+				
+				success: function(response){
+					if(response){
+						var models = response.models;
+						
+						setBezelPageParam("models", models);
+						
+						if(models){
+							$("#model").empty();
+							$("#model").append($('<option></option>'));
+							var index;
+							for(index = 0; index<models.length; index++){
+								var model = models[index];
+								
+								$("#model").append($('<option></option>').val(model.id).html(model.name));
+								
+							}
+						}
+					}
+				}
+			});
+		};
+		
+		var retrieveModel = function(modelId){
+			console.log('retrieveModel');
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+				
+				success: function(response){
+					if(response){
+						var model = response;
+						
+						//store retrieved model
+						setBezelPageParam("model", model);
+						//build the drop down list of model data fields
+						rebuildModelDataFieldOptions(model.attributeBindings);
+						//reset preview
+						resetPreview();
+					}
+				}
+			});
+		};
+		
+		function plotPiePreview(){
+			//validate required field
+			var parsleyForm = $('#form3').parsley();
+			parsleyForm.validate();
+		
+			if( !parsleyForm.isValid() )
+				return false;
+
+			$('#pieChartPreview').empty();
+			$('#pieChartPreviewTitle').empty();
+			
+			var reportConnector = buildReportConnector();
+			
+			console.log('generatePreview '+JSON.stringify(reportConnector));
+			
+			$("#previewButton").attr('disabled','disabled');
+			//jquery ajax
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/reports/preview",
+				data: JSON.stringify(reportConnector),
+				contentType: "application/json",
+				crossDomain: true,
+				
+				success: function(response){
+					if(response){
+						console.log('generatePreview success');
+						var report = response.pieChartReport;
+						
+						setBezelPageParam('report',report);
+						
+						//chart title
+						$('#pieChartPreviewTitle').append(report.title);
+						
+						//obtain data
+						var pieData = preparePreviewData(report.categoryData);
+
+						//prepare configuration
+						var configuration = preparePreviewConfiguration(report);
+						
+						//hide sample
+						$('#samplePreview').hide();
+						$('#generatingPreview').show();
+						
+						//plot pie
+						$.plot('#pieChartPreview', pieData, configuration);
+						
+						$('#generatingPreview').hide();
+						//show preview
+						$('#preview').show();
+					}
+				},
+				complete: function(jqXHR, textStatus){
+					$("#previewButton").removeAttr('disabled');
+				}
+			});
+		}
+		
+
+		
+		var createReportConnector = function(){
+			
+			var reportConnector = getBezelPageParam('reportConnector');
+			
+			//jquery ajax
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors",
+				data: JSON.stringify(reportConnector),
+				contentType: "application/json",
+				crossDomain: true,
+
+				success: function(response){
+					alert('New report connector has been created.');
+					loadContent("reportconnector_content.html");
+				},
+
+				error: function(jqXHR, textStatus, ex){
+					alert('Failed creation with error : '+textStatus+","+ex+","+jqXHR.responseText);
+				}
+			});
+		};
+		//End AJAX functions
+		
+		function resetPreview(){
+			$('#samplePreview').show();
+			$('#generatingPreview').hide();
+			$('#preview').hide();
+		}
+		
+		function rebuildModelDataFieldOptions(modelAttrBindings){
+			
+			$('#modelDataValueField').empty();
+			$('#modelDataValueField').append($('<option></option>'));
+			
+			$('#modelDataLabelField').empty();
+			$('#modelDataLabelField').append($('<option></option>'));
+			
+			
+			if(modelAttrBindings && $.isArray(modelAttrBindings)){
+				for(var index=0; index < modelAttrBindings.length; index++){
+					if(isValidModelDataField(modelAttrBindings[index].typeName)){
+						$('#modelDataValueField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+					}
+					$('#modelDataLabelField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+				}
+			}
+		}
+		
+		function isValidModelDataField(modelFieldType){
+			var isValid = false;
+			
+			if(modelFieldType){
+				switch(modelFieldType){
+					case 'BIGINT':
+					case 'DECIMAL':
+					case 'DOUBLE':
+					case 'FLOAT':
+					case 'INTEGER' :
+					case 'NUMERIC' :
+					case 'REAL' :
+					case 'SMALLINT' :
+					case 'TINYINT' :
+						isValid = true;
+						break;
+				}
+			}
+			return isValid;
+		}
+		
+		function resetConfiguration(){
+			//clear model, so it trigger reload
+			setBezelPageParam("model", undefined);
+		}
+		
+		function clearRadio(){
+			$('input[name="pieChartDataFormat"]').prop('checked', false);
+		}
+		
+		function updateConfirmationDetail(){
+			
+			clearConfirmationDetail();
+			
+			var reportConnector = getBezelPageParam('reportConnector');
+			
+			if(reportConnector && reportConnector.pieChartTemplate){
+				$("#finalConnectorName").append(reportConnector.pieChartTemplate.templateName);
+				$("#finalReportName").append(reportConnector.pieChartTemplate.reportDisplayName);
+				$("#finalModel").append($("#model").find(":selected").text());
+				
+				//chart configuration
+				$("#finalChartTitle").append(reportConnector.pieChartTemplate.title);
+				
+				var showDataLabel = "No";
+				
+				if(reportConnector.pieChartTemplate.showDataLabel){
+					showDataLabel = "Yes";
+				}
+				$("#finalShowDataLabel").append(showDataLabel);
+				
+				var showLegend = "No";
+				
+				if(reportConnector.pieChartTemplate.showLegend){
+					showLegend = "Yes";
+				}
+				$("#finalShowLegend").append(showLegend);
+				
+				var dataFormat ='-';
+				if('PERCENT' == reportConnector.pieChartTemplate.dataTypeFormat){
+					dataFormat = 'Percentage';
+				}
+				else if ('VALUE' == reportConnector.pieChartTemplate.dataTypeFormat){
+					dataFormat = 'Value';
+				}
+
+				$("#finalPieChartDataFormat").append(dataFormat);
+				
+				$("#finalModelDataField").append($('#modelDataField').find(":selected").text());
+
+				$("#finalModelCategoryField").append($('#modelCategoryField').find(":selected").text());
+			}
+		}
+		
+		function clearConfirmationDetail(){
+			$(".data-row .data-value").empty();
+		}
+		
+		function disableWizardStep(){
+			var $steps = $('#report-connector-wizard').find('.steps li');
+			$steps.removeClass('active').removeClass('complete');
+			$steps.find('span.badge').removeClass('badge-info').removeClass('badge-success');
+			
+			$('.wizard-wrapper .btn-next').attr('disabled','disabled');
+			$('.wizard-wrapper .btn-prev').attr('disabled','disabled');
+		}
+		
+		function plotSampleChart(chartType){
+			
+			$('#sampleChartPreview').empty();
+			
+			var seriesData = getSampleSeriesByChartType(chartType);
+			
+			var configuration = getSampleConfigByChartType(chartType);
+			
+			console.log("ploting sample chart "+chartType);
+
+			$.plot('#sampleChartPreview', seriesData, configuration);
+		}
+		
+		function getSampleSeriesByChartType(chartType){
+			var seriesData = new Array();
+			
+			if(chartType){
+				switch(chartType){
+					case 'AREA':
+					case 'LINE':
+						seriesData = [
+										{
+											data: [[1,10],[2,50],[3,40],[4,80]],
+											label: "Series 1",
+											lines: {
+												show: true,
+												lineWidth: 2,
+												fill: true,
+											},
+											points: {
+												show: true, 
+												lineWidth: 3,
+												fill: true,
+												fillColor: '#adadad'
+											}
+										}
+									];
+						break;
+					case 'BAR':
+						seriesData = [
+										{
+											data: [[1,10],[2,50],[3,40],[4,80]],
+											label: "Series 1"
+										}
+									];
+						break;
+					case 'COLUMN':
+						seriesData = [
+										{
+											data: [[5,10],[2,20],[1,30],[4,40]],
+											label: "Series 1"
+										}
+									];
+						break;
+				}
+				
+				if('LINE' == chartType){
+					seriesData[0].lines.fill = false;
+				}
+			}
+			
+			
+			return seriesData;
+		}
+		
+		function getSampleConfigByChartType(chartType){
+			
+			var configuration = {};
+			
+			if(chartType){
+				switch(chartType){
+					case 'AREA':
+					case 'LINE':
+						configuration['series'] ={
+							lines: {
+								lineWidth: 2,
+								fillColor: { colors: [ { opacity: 0.4 }, { opacity: 0.4 } ] }
+							},
+							points: {
+								lineWidth: 3,
+							},
+	
+							shadowSize: 0
+						};
+						
+						break;
+					case 'BAR':
+					case 'COLUMN':
+						configuration['series'] ={
+								bars:{
+										show : true,
+										fill : true,
+										lineWidth: 0,
+										order: true,
+										barWidth: 0.8,
+										align: 'center'
+								}
+							};
+						configuration['xaxis'] = {autoscaleMargin: '0.2'};
+						break;
+				}
+
+				configuration['grid']= {
+						hoverable: true, 
+						clickable: true,
+						borderWidth: 0,
+						tickColor: "#E4E4E4"
+					};
+				configuration['colors'] = ["#adadad"];
+				configuration['tooltip'] = true;
+				configuration['xaxes']=[{axisLabel: 'X-Axis Title', axisLabelPadding: 15}];
+				configuration['yaxes']=[{position : 'left', axisLabel: 'Y-Axis Title'}];
+				configuration.series['valueLabels']= {show: true};
+				
+				if('COLUMN' == chartType){
+					configuration.series.bars['horizontal'] = true;
+					configuration.series.bars.barWidth = 8;
+					configuration.series.valueLabels['align']='center';
+				}
+			}
+			
+			
+			return configuration;
+			
+		}
+		
+		function preparePreviewData(categoryData){
+			
+			var previewData = new Array();
+			
+			for (var key in categoryData) {
+				//only process non prototype
+				if (categoryData.hasOwnProperty(key)) {
+				    var seriesData ={};
+				    previewData.push(seriesData);
+				    
+				    seriesData['label'] = key;
+				    seriesData['data']  = categoryData[key];
+				  }
+			}
+			
+			return previewData; 
+		}
+		
+		function buildReportConnector(){
+			var connector = {};
+
+			connector['type']='PIE';
+			connector['cartesianChartTemplate'] =undefined;
+			connector['pieChartTemplate'] = buildPieChartConnector();
+			connector['crossTabTemplate'] = undefined;
+			
+			return connector;
+		}
+		
+		function buildPieChartConnector(){
+			var pieChartConnector = {};
+
+			pieChartConnector['id']				   = '0';
+			pieChartConnector['modelId']		   = $("#model").find(":selected").val();
+			pieChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
+			pieChartConnector['reportQuery']	   = undefined;
+			pieChartConnector['templateName']	   = $("#connectorName").val();
+			pieChartConnector['reportTemplateType']= 'SIMPLE';
+			pieChartConnector['title']			   = $('#chartTitle').val();
+			pieChartConnector['showLegend']		   = $('#showLegend').prop('checked');
+			pieChartConnector['showDataLabel']	   = $('#showDataLabel').prop('checked');
+			pieChartConnector['categoryName']	   = undefined;
+			pieChartConnector['modelCategoryField']= $('#modelCategoryField').find(":selected").val();
+			pieChartConnector['modelDataField']	   = $('#modelDataField').find(":selected").val();
+			pieChartConnector['dataTypeFormat']	   = $('input[name="pieChartDataFormat"]:checked', '#form3').val();
+			
+			return pieChartConnector;
+		}
+		
+		
+		function preparePreviewConfiguration(report){
+			
+			return {
+				series: {
+					pie: {
+						show: true,
+						stroke: {
+							width: 4,
+							color: "#F9F9F9"
+						},
+						label: {
+							show: report.showDataLabel,
+							radius: 3/4,
+							formatter: labelFormatter
+						}
+					},
+				},
+				legend: {
+					show: report.showLegend
+				},
+				grid: {
+					hoverable: false
+				},
+				colors: ["#d9d9d9", "#5399D6", "#d7ea2b"],
+			};
+			
+		}
+		
+		function labelFormatter(label, series) {
+			
+			var report = getBezelPageParam('report');
+			var labelFormat = report.dataTypeFormat;
+			
+			console.log(series.data[0][1]);
+			console.log(series.percent);
+			
+			var labelPlaceHolder = '';
+			var valuePlaceHolder = '';
+			
+			if(report.showDataLabel){
+				labelPlaceHolder =  label + "<br/>";
+			
+				if('PERCENT' == labelFormat && series.percent){
+					valuePlaceHolder = Math.round(series.percent)+'%';
+				}
+				else if ('VALUE' == labelFormat && series.data[0][1]){
+					valuePlaceHolder = Math.round(series.data[0][1])
+				}
+			}
+
+			return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
+		}
+		
+		$(document).ready(function(){
+			
+			//clear page context before start
+			initBezelParamMap();
+			
+			//model wizard function
+			$('#report-connector-wizard').on('change', function(e, data) {
+				
+				//if changes from step button
+				if(data && data.step){
+					// validation
+					if( $('#form'+data.step).length > 0 && data.direction == 'next') {
+						var parsleyForm = $('#form'+data.step).parsley();
+						parsleyForm.validate();
+		
+						if( !parsleyForm.isValid() )
+							return false;
+					}
+		
+					// last step button
+					$btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
+					
+					var models = getBezelPageParam("models");
+					var attributeMaps = getBezelPageParam("attributeMaps");
+					var model = getBezelPageParam("model");
+					
+					if(data.step === 1 && data.direction == 'next'){
+						var chartType= $('input[name="chartType"]:checked', '#form1').val();
+						
+						var sampleChartType = getBezelPageParam('chartType');
+						
+						if(chartType != sampleChartType){
+							
+							setBezelPageParam('chartType',chartType);
+							plotSampleChart(chartType);
+						}
+					}
+		
+					if(data.step === 1 && data.direction == 'next' && !models){
+						buildModelOptions();
+					}
+					else if(data.step === 2 && data.direction == 'next' && !model) {
+						//obtain selected model id
+						var modelId = $("#model").find(":selected").val();
+						
+						clearRadio();
+						retrieveModel(modelId);
+					}
+					else if(data.step === 3 && data.direction == 'next' && !attributeMaps) {
+						var reportConnector = buildReportConnector();
+						
+						setBezelPageParam("reportConnector", reportConnector);
+						updateConfirmationDetail();
+					}
+				}
+	
+			}).on('finished', function(){
+				disableWizardStep();
+				createReportConnector();
+			});
+	
+			$('.form-group .switch-small').bootstrapSwitch();
+			
+		});
+
+	</script>
+

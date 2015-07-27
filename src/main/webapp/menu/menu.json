@@ -74,6 +74,12 @@
 					"pageContent" : "reportconnector_wizard_pie_chart.html"
 				},
 				{
+				    "id"  : "NewCartesianChartReportConnector",
+					"name": "New Cartesian Chart Report Connector",
+					"href": "../reportconnector/reportconnector.html?group=ReportConnector&target=NewCartesianChartReportConnector",
+					"pageContent" : "reportconnector_wizard_cartesian_chart.html"
+				},
+				{
 					"id"  : "NewPivotTable",
 					"name": "New Pivot Table",
 					"href": "../reportconnector/reportconnector.html?group=ReportConnector&target=NewPivotTable",
