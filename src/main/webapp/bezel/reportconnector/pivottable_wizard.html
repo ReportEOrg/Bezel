@@ -226,7 +226,6 @@
 	var selectedModelId;
 	var createPivotTable = function() {
 		var pivotData = JSON.stringify(preparePivotDataToSave());
-		alert('PivotData for Save : '+pivotData);
 		$.ajax({
 			type : 'POST',
 			url : getRestServerUrl()+"/reportbay-rest/api/reportconnectors/",
@@ -234,7 +233,8 @@
 			data : pivotData,
 			contentType:'application/json',				
 			success : function(returnData) {
-				alert('ReturnData : '+JSON.stringify(returnData));
+				alert('Pivot Data Saved Successfully.');
+				loadContent("reportconnector_content.html");
 			},
 			error : function(e) {
 				alert("Error while saving template Data : " + JSON.stringify(e));
@@ -287,7 +287,7 @@
 	    crossTabDetails.templateName=$('#templateName').val();
 	    crossTabDetails.modelId=selModel.id;
 	    crossTabDetails.reportQuery=null;
-	    crossTabDetails.dataSeries=null;
+	    crossTabDetails.dataSeries=[];
 	    
 	    return crossTabDetails;
 	 }

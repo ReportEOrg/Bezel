@@ -148,17 +148,29 @@
 	<script type="text/javascript">
 		var allModelsData;
 		var selectedModelId="";
+		var crossTabTemplatedId;
 		$(document).ready(function() {
 			$('#avialDimensionsPanel').resize(function() {
 				if($('#avialDimensionsList li').length > 0)
 				 {
 		        	$('#valueDimensionsPanel').height($('#avialDimensionsPanel').height());
 				 }			
+		    });
+			$('#valueDimensionsPanel').resize(function() {
+				if($('#valueDimensionsPanel li').length > 0)
+				 {
+		        	$('#avialDimensionsPanel').height($('#valueDimensionsPanel').height());
+				 }			
 		    });			
+			
+			var reportConnector = getBezelPageParam("reportConnector");
 			//clear page context before start
 			initBezelParamMap();
-			//$('#modelName').empty();
-			getAllExistingModels();
+			//put back for current page usage
+			setBezelPageParam("reportConnector",reportConnector);
+			
+			
+			$('#modelName').empty();			
 			$("#pivot-edit-detail").show();
 			$("#modelName").change(function() {
 				selectedModelId = $('#modelName').val();
@@ -176,65 +188,146 @@
 						}
 					});
 				}
-			});
+			});					
 			
-			 $('#templateName').keyup(function(){
-					$('#reportDisplayName').val('Report_'+$('#templateName').val());				
-				});
-			 var custom_renderers = {
-						"Multifact Table" : multifactTableRenderer()
-			 };
-
-			 var custom_aggregators = {
-						"Multifact aggregator" : multifactSumAggregator()
-			 }; 
-			 
-			 $('#previewBtn').click(function() {
-				 	var result = validateRequiredAttributeMappings();
-				 	if(result === false)
-				  	 {
-						 return;
-				 	 }
-				   $("#pvtTable").empty();
-					var rowDims = [];
-					var colDims = [];
-					var valDims = []; 
-					$('#ulValueDimensionsList li').each(function() {
-						valDims.push($(this).html());
-					});		
-
-					$('#rowDimensionsList li').each(function() {
-						rowDims.push($(this).html());
-					});				
-
-					$('#columnDimensionsList li').each(function() {
-						colDims.push($(this).html());
-					});			
-					
-					$.ajax({
-						type : 'GET',
-						url : getRestServerUrl()+"/reportbay-rest/api/models/" + selectedModelId + "/previewdata?maxRow=100",
-						dataType : 'JSON',
-						success : function(data) {
-							var modelActData = data;
-							$("#pvtTable").pivotUI(modelActData, {
-								aggregators : $.extend(custom_aggregators, $.pivotUtilities.aggregators),
-								renderers : $.extend(custom_renderers, $.pivotUtilities.renderers, $.pivotUtilities.gchart_renderers),
-								rows : rowDims,
-								cols : colDims,
-								vals : valDims,
-								hiddenAttributes : [ "id" ]
-							}, true);
-						},
-						error : function(e) {
-							alert("Error while fetching model Data: " + JSON.stringify(e));
-						}
-					});
-					
+			$('#templateName').keyup(function(){
+				$('#reportDisplayName').val('Report_'+$('#templateName').val());				
+			});			
+		 
+		 	$('#previewBtn').click(function() {
+			 	previewData();
 			 });
+		 	
+			populateCrossTabDetails(reportConnector.crossTabTemplate);		
 			
+			$("#updateButton").on('click', function(){
+				var result = validateRequiredAttributeMappings();
+			 	if(result === false)
+			  	 {
+					 return;
+			 	 }
+				//update Pie chart report connector
+				console.log('update Cross Tab report connector');
+				
+				updateCrossTabReportConnector();
+			});
 		});
 		
+		function previewData()
+		 {
+			var result = validateRequiredAttributeMappings();
+		 	if(result === false)
+		  	 {
+				 return;
+		 	 }
+		   $("#pvtTable").empty();
+			var rowDims = [];
+			var colDims = [];
+			var valDims = []; 
+			$('#ulValueDimensionsList li').each(function() {
+				valDims.push($(this).html());
+			});		
+
+			$('#rowDimensionsList li').each(function() {
+				rowDims.push($(this).html());
+			});				
+
+			$('#columnDimensionsList li').each(function() {
+				colDims.push($(this).html());
+			});			
+			
+			var custom_renderers = {
+					"Multifact Table" : multifactTableRenderer()
+		 	};
+	
+			var custom_aggregators = {
+					"Multifact aggregator" : multifactSumAggregator()
+		 	};
+			
+			$.ajax({
+				type : 'GET',
+				url : getRestServerUrl()+"/reportbay-rest/api/models/" + selectedModelId + "/previewdata?maxRow=100",
+				dataType : 'JSON',
+				success : function(data) {
+					var modelActData = data;
+					$("#pvtTable").pivotUI(modelActData, {
+						aggregators : $.extend(custom_aggregators, $.pivotUtilities.aggregators),
+						renderers : $.extend(custom_renderers, $.pivotUtilities.renderers, $.pivotUtilities.gchart_renderers),
+						rows : rowDims,
+						cols : colDims,
+						vals : valDims,
+						hiddenAttributes : [ "id" ]
+					}, true);
+				},
+				error : function(e) {
+					alert("Error while fetching model Data: " + JSON.stringify(e));
+				}
+			});
+		}
+		function populateCrossTabDetails(crossTabTemplate)
+		{
+			if(crossTabTemplate){				
+				crossTabTemplatedId = crossTabTemplate.id;
+				$("#templateName").val(crossTabTemplate.templateName);
+				$("#reportDisplayName").val(crossTabTemplate.reportDisplayName);
+				selectedModelId = crossTabTemplate.modelId;
+				//$('#modelName').val(modelId);				
+				var rowAttributes=[];
+				var columnAttributes=[];
+				var valueAttributes=[];
+				$.each(crossTabTemplate.crossTabDetail, function(idx, eachAttribute) {
+					if(eachAttribute.sqlFunction == 'GROUPBY' && eachAttribute.groupOrAggregate == 'GROUPING')
+					 {
+							if(eachAttribute.fieldType == 'ROW')
+						 	 {
+								rowAttributes.push(eachAttribute);
+							 }	
+							else if(eachAttribute.fieldType == 'COLUMN')
+						 	 {
+								columnAttributes.push(eachAttribute);
+							 }
+							else{}
+					 }
+					else if(eachAttribute.fieldType == 'COLUMN' && eachAttribute.sqlFunction == 'SUM' && eachAttribute.groupOrAggregate == 'SUM')
+					 {
+						valueAttributes.push(eachAttribute);
+					 }
+					else{}
+				});	
+				
+				sortByAttributeDisplaySequence(rowAttributes);
+				sortByAttributeDisplaySequence(columnAttributes);
+				sortByAttributeDisplaySequence(valueAttributes);
+				var usedAttributes=[];
+				$.each(rowAttributes, function(idx, rowAttribute) {
+					if (rowAttribute.sqltype == 'VARCHAR') {
+						$('#rowDimensionsList').append($("<li>").addClass('ui-state-default').addClass('not-value-field').html(rowAttribute.attributeDisplayName));
+					} else {
+						$('#rowDimensionsList').append($("<li>").addClass('ui-state-default').html(rowAttribute.attributeDisplayName));
+					}
+					usedAttributes.push(rowAttribute.attributeDisplayName);
+				});
+				$.each(columnAttributes, function(idx, columnAttribute) {
+					if (columnAttribute.sqltype == 'VARCHAR') {
+						$('#columnDimensionsList').append($("<li>").addClass('ui-state-default').addClass('not-value-field').html(columnAttribute.attributeDisplayName));
+					} else {
+						$('#columnDimensionsList').append($("<li>").addClass('ui-state-default').html(columnAttribute.attributeDisplayName));
+					}
+					usedAttributes.push(columnAttribute.attributeDisplayName);
+				});
+				$.each(valueAttributes, function(idx, valueAttribute) {
+					$('#ulValueDimensionsList').append($("<li>").addClass('ui-state-default').html(valueAttribute.attributeDisplayName));
+					usedAttributes.push(valueAttribute.attributeDisplayName);
+				});				
+				getAllExistingModels(usedAttributes);
+			}
+		}
+		function sortByAttributeDisplaySequence(attributeMappings)
+		{
+			attributeMappings.sort(function(attr1, attr2) {
+			    return parseInt (attr1.attributeDisplaySequence) - parseInt (attr2.attributeDisplaySequence);
+			});
+		}
 		function validateRequiredAttributeMappings()
 		 {
 				 $("#pivotAttrForm").parsley().reset();
@@ -271,7 +364,7 @@
 				return true;
 		 }
 		
-		function getAllExistingModels() {
+		function getAllExistingModels(usedAttributes) {
 			$.ajax({
 						type : 'GET',
 						url : getRestServerUrl()+"/reportbay-rest/api/models",
@@ -289,6 +382,23 @@
 									text : model.name
 								}));
 							});
+							$('#modelName').val(selectedModelId);
+							$.each(allModelsData.models, function(idx, model) {
+								if (model.id == selectedModelId) {
+									$('#avialDimensionsList').empty();									
+									$("#pvtTable").empty();
+									$('.outerDiv').show();
+									var remainingAttributes=[];									
+									$.each(model.attributeBindings, function(jdx, eachColumn) {										
+										if($.inArray(eachColumn.alias,usedAttributes) == -1)
+										 {
+											remainingAttributes.push(eachColumn);
+										 }
+									});
+									prepareRemainingAvailableDimensionList(remainingAttributes);
+									previewData();
+								}
+							});
 						},
 						error : function(e) {
 							alert("Error while fetching model Meta Data : "
@@ -299,6 +409,16 @@
 						}
 					});
 		}
+		function prepareRemainingAvailableDimensionList(remainingAttributes)
+		 {
+			$.each(remainingAttributes, function(idx, eachColumn) {
+				if (eachColumn.typeName == 'VARCHAR') {
+					$('#avialDimensionsList').append($("<li>").addClass('ui-state-default').addClass('not-value-field').html(eachColumn.alias));
+				} else {
+					$('#avialDimensionsList').append($("<li>").addClass('ui-state-default').html(eachColumn.alias));
+				}
+			});
+		 }
 		function prepareAvailableDimensionList(colMetadata) {
 			$.each(colMetadata.attributeBindings, function(idx, eachColumn) {
 				if (eachColumn.typeName == 'VARCHAR') {
@@ -324,8 +444,143 @@
 			});
 		});
 		
-		function updatePivotTable()
-		{
-			alert('Pivot Table updating....');
+		function updateCrossTabReportConnector()
+		 {
+			var reportConnector = getBezelPageParam("reportConnector");
+			var pivotData = JSON.stringify(prepareCrossTabDataToUpdate(reportConnector));
+			alert('Pivot Data to Update : '+pivotData);
+			$.ajax({
+				type : 'PUT',
+				url : getRestServerUrl()+"/reportbay-rest/api/reportconnectors/",
+				dataType : 'JSON',
+				data : pivotData,
+				contentType:'application/json',				
+				success : function(returnData) {
+					alert('CrossTab Report Connector details updated successfully.');
+					loadContent("reportconnector_content.html");
+				},
+				error : function(e) {
+					alert("Error while updating CrossTab Report Connector details : " + JSON.stringify(e));
+				}
+			});
+		 }
+		
+		function prepareCrossTabDataToUpdate(reportConnector) {							
+			if (selectedModelId != 'undefined' && selectedModelId != null) {
+				$.each(allModelsData.models, function(idx, model) {
+					if (model.id == selectedModelId) {	
+						prepareCrossTabDetails(model,reportConnector);		
+					}
+				});
+			}		
+			return reportConnector;
 		}
+		
+		function prepareCrossTabDetails(selModel,reportConnector)
+		 {		
+			var rowDimsData = prepareRowDimsToUpdate(selModel);
+			var colDimsData = prepareColumnDimsToUpdate(selModel);
+			var valDimsData = prepareValueDimsToUpdate(selModel);			
+			var allDimsData = [];
+			var count = 0;
+			
+			for( var i=0;i<rowDimsData.length; i++)
+			 {
+				allDimsData[count++] = rowDimsData[i];
+			 }
+			for( var i=0;i<colDimsData.length; i++)
+			 {
+				allDimsData[count++] = colDimsData[i];
+			 }
+			for( var i=0;i<valDimsData.length; i++)
+			 {
+				allDimsData[count++] = valDimsData[i];
+			 }					    
+		    reportConnector.crossTabTemplate.crossTabDetail = allDimsData;
+		    reportConnector.crossTabTemplate.reportDisplayName=$('#reportDisplayName').val();
+		    reportConnector.crossTabTemplate.templateName=$('#templateName').val();
+		    reportConnector.crossTabTemplate.modelId=selModel.id;
+		    
+		 }
+		function prepareRowDimsToUpdate(selRowModel)
+		 {
+			var rowDims =[];
+			var rowCount=0;		
+			$('#rowDimensionsList li').each(function() {
+				var selectedRowDim = $(this).html();
+				var selectedRowObj = new Object();
+				selectedRowObj.fieldType='ROW';
+				selectedRowObj.sqlFunction='GROUPBY';
+				selectedRowObj.attributeDisplayName = selectedRowDim;
+				selectedRowObj.attributeDisplaySequence = ++rowCount;
+				selectedRowObj.groupOrAggregate='GROUPING';
+				
+				$.each(selRowModel.attributeBindings, function(idx, eachColumn) {
+					if(eachColumn.alias == selectedRowDim)
+					 {
+						selectedRowObj.sqltype=eachColumn.typeName;
+						selectedRowObj.modelAttributeName=eachColumn.referencedColumn;
+					 }
+				});	
+				
+			    rowDims.push(selectedRowObj);
+			});
+			return rowDims;
+		 }
+		function prepareColumnDimsToUpdate(selColModel)
+		 {
+			var colDims =[];
+			var colCount=0;
+			$('#columnDimensionsList li').each(function() {
+				var selectedColDim =$(this).html();
+				var selectedColObj = new Object();
+				selectedColObj.fieldType='COLUMN';			
+				selectedColObj.sqlFunction='GROUPBY';			
+				selectedColObj.attributeDisplayName = selectedColDim;
+				selectedColObj.attributeDisplaySequence = ++colCount;
+				selectedColObj.groupOrAggregate='GROUPING';
+				
+				$.each(selColModel.attributeBindings, function(idx, eachColumn) {
+					if(eachColumn.alias == selectedColDim)
+					 {
+						selectedColObj.sqltype=eachColumn.typeName;
+						selectedColObj.modelAttributeName=eachColumn.referencedColumn;
+					 }
+				});	
+				colDims.push(selectedColObj);
+			});
+			return colDims;
+		 }
+		function prepareValueDimsToUpdate(selValModel)
+		 {
+			var valDims =[];
+			var valCount=0;
+			$('#ulValueDimensionsList li').each(function() {
+				var selectedValDim =$(this).html();
+				var selectedValObj = new Object();
+				selectedValObj.fieldType='COLUMN';			
+				selectedValObj.sqlFunction='SUM';
+				selectedValObj.attributeDisplayName = selectedValDim;
+				selectedValObj.attributeDisplaySequence = ++valCount;
+				selectedValObj.groupOrAggregate='SUM';			
+				
+				$.each(selValModel.attributeBindings, function(idx, eachColumn) {
+					if(eachColumn.alias == selectedValDim)
+					 {
+						if(eachColumn.typeName == 'INT')
+						 {
+							selectedValObj.sqltype='INTEGER';	
+						 }
+						else
+						 {
+							selectedValObj.sqltype=eachColumn.typeName;	
+						 }					
+						selectedValObj.modelAttributeName=eachColumn.referencedColumn;
+					 }
+				});				
+				
+				valDims.push(selectedValObj);
+			});
+			return valDims;
+		 }
 	</script>
