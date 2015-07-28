@@ -1,3 +1,4 @@
+
 					<!-- content-wrapper -->
 					<div class="col-md-10 content-wrapper expanded">
 						<div class="row">
@@ -141,10 +142,10 @@
 																		</div>
 																		<div class="col-md-8" style="padding-left:0px;">
 																			<div class="form-group">
-																				<label for="xAxisTitlel">X-Axis Title</label><br>
-																				<input type="text" id="xAxisTitlel" class="form-control" placeholder="X-Axis Title"
-																		        	   data-parsley-length="[1,45]" data-parsley-errors-container="#xAxisTitlelError">
-																				<div id="xAxisTitlelError" class="errorMessage"></div>
+																				<label for="xAxisTitle">X-Axis Title</label><br>
+																				<input type="text" id="xAxisTitle" class="form-control" placeholder="X-Axis Title"
+																		        	   data-parsley-length="[1,45]" data-parsley-errors-container="#xAxisTitleError">
+																				<div id="xAxisTitleError" class="errorMessage"></div>
 																			</div>
 																		</div>
 																	</div>
@@ -160,10 +161,10 @@
 																		</div>
 																		<div class="col-md-8" style="padding-left:0px;">
 																			<div class="form-group">
-																				<label for="yAxisTitlel">Y-Axis Title</label><br>
-																				<input type="text" id="yAxisTitlel" class="form-control" placeholder="Y-Axis Title"
-																		        	    data-parsley-length="[1,45]" data-parsley-errors-container="#yAxisTitlelError">
-																				<div id="yAxisTitlelError" class="errorMessage"></div>
+																				<label for="yAxisTitle">Y-Axis Title</label><br>
+																				<input type="text" id="yAxisTitle" class="form-control" placeholder="Y-Axis Title"
+																		        	    data-parsley-length="[1,45]" data-parsley-errors-container="#yAxisTitleError">
+																				<div id="yAxisTitleError" class="errorMessage"></div>
 																			</div>
 																		</div>
 																	</div>
@@ -182,14 +183,28 @@
 																	</div>
 																	
 																	<div class="form-group">
+																		<label for="modelCategoryField">Model Category Field *</label>
+																		<select id="modelCategoryField" class="form-control" onchange="javascript:rebuildDataSeries();"
+																	        required data-parsley-errors-container="#modelCategoryFieldError"></select>
+																		<div id="modelCategoryFieldError" class="errorMessage"></div>
+																	</div>
+																	
+																	<div class="form-group">
 																		<label for="dataSeries">Data Series *</label>
-																		
+																		<div class="series-appendable-wrapper">
+																			<!-- for unique id generation -->
+																			<input type="hidden" id="count" name='count' value='1'>
+																			<div style="margin-bottom: 5px;">
+																				<div class="col-md-5">Series</div>
+																				<div class="col-md-7">Series Label</div>
+																			</div>
+																		</div>
 																	</div>
 																</div>
 																<div class="col-md-6">
 																	<div  style="border-style: dotted; border-width: 1px; margin:1px;">
 																		<div style="text-align:right; margin: 4px 4px;">
-																			<button id="previewButton" type="button" class="btn btn-default" onclick="javascript:plotPiePreview();"><i class="fa fa-eye"></i> Preview</button>
+																			<button id="previewButton" type="button" class="btn btn-default" onclick="javascript:plotChartPreview();"><i class="fa fa-eye"></i> Preview</button>
 																		</div>
 																		<div id="samplePreview" class="divContentCenterAlign" style="width: 90%;">
 																			<div id="samplePieChartPreviewTitle" style="width: 100%; text-align: center; border-style: dotted; border-width: 1px; margin:4px;">
@@ -206,10 +221,10 @@
 																			</div>
 																		</div>
 																		<div id="preview" class="divContentCenterAlign" style="width: 90%; display:none;" >
-																			<div id="pieChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
+																			<div id="cartChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
 																			</div>
 																			
-																			<div id="pieChartPreview" class="divContentCenterAlign" style="width:100%; height: 350px; margin:8px;">
+																			<div id="cartChartPreview" class="divContentCenterAlign" style="width:100%; height: 350px; margin:8px;">
 																			
 																			</div>																	
 																		</div>
@@ -343,6 +358,9 @@
 						setBezelPageParam("model", model);
 						//build the drop down list of model data fields
 						rebuildModelDataFieldOptions(model.attributeBindings);
+						//build the data series section and drop down option
+						resetDataSeries(model.attributeBindings);
+						
 						//reset preview
 						resetPreview();
 					}
@@ -350,16 +368,19 @@
 			});
 		};
 		
-		function plotPiePreview(){
+		function plotChartPreview(){
 			//validate required field
 			var parsleyForm = $('#form3').parsley();
 			parsleyForm.validate();
 		
 			if( !parsleyForm.isValid() )
 				return false;
+			
+			if(!validateDataSeries() )
+				return false;
 
-			$('#pieChartPreview').empty();
-			$('#pieChartPreviewTitle').empty();
+			$('#cartChartPreview').empty();
+			$('#cartChartPreviewTitle').empty();
 			
 			var reportConnector = buildReportConnector();
 			
@@ -377,29 +398,31 @@
 				success: function(response){
 					if(response){
 						console.log('generatePreview success');
-						var report = response.pieChartReport;
+						var report = response.cartesianChartReport;
 						
 						setBezelPageParam('report',report);
 						
 						//chart title
-						$('#pieChartPreviewTitle').append(report.title);
+						$('#cartChartPreviewTitle').append(report.title);
 						
 						//obtain data
-						var pieData = preparePreviewData(report.categoryData);
+						var cartData = preparePreviewData(report.chartDataSeries);
+						
+						console.log('cartData '+JSON.stringify(cartData));
 
 						//prepare configuration
-						var configuration = preparePreviewConfiguration(report);
+						var configuration = preparePreviewConfiguration(report, response.type);
 						
 						//hide sample
 						$('#samplePreview').hide();
 						$('#generatingPreview').show();
 						
 						//plot pie
-						$.plot('#pieChartPreview', pieData, configuration);
+ 						$.plot('#cartChartPreview', cartData, configuration);
 						
 						$('#generatingPreview').hide();
 						//show preview
-						$('#preview').show();
+						$('#preview').show(); 
 					}
 				},
 				complete: function(jqXHR, textStatus){
@@ -432,6 +455,28 @@
 				}
 			});
 		};
+		
+		function retrieveCategoryAndInitDataSeries(modelId, modelCategoryField){
+			console.log('retrieveCategoryAndInitDataSeries :'+modelId+':'+modelCategoryField);
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId+"/uniquedatafield?dataField="+modelCategoryField,
+
+				success: function(response){
+					var uniqueFields = response.columnValueList;
+					console.log(JSON.stringify(response));
+					if(uniqueFields){
+						 $(".series-appendable-wrapper").append(initSeriesGroup(uniqueFields));
+					}
+				},
+
+				error: function(jqXHR, textStatus, ex){
+					displayAjaxError('Failed retrieve unique field with error : '+textStatus+","+ex+","+jqXHR.responseText);
+				}
+			});
+		}
+
 		//End AJAX functions
 		
 		function resetPreview(){
@@ -448,6 +493,8 @@
 			$('#modelDataLabelField').empty();
 			$('#modelDataLabelField').append($('<option></option>'));
 			
+			$('#modelCategoryField').empty();
+			$('#modelCategoryField').append($('<option></option>'));
 			
 			if(modelAttrBindings && $.isArray(modelAttrBindings)){
 				for(var index=0; index < modelAttrBindings.length; index++){
@@ -455,9 +502,188 @@
 						$('#modelDataValueField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
 					}
 					$('#modelDataLabelField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+					$('#modelCategoryField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
 				}
 			}
 		}
+		
+		function resetDataSeries(){
+			$wrapper = $(".series-appendable-wrapper");
+			
+			$wrapper.find(".series-group-appendable").remove();
+
+			$wrapper.find('#count').val(1);
+		}
+
+		function rebuildDataSeries(){
+			
+			console.log('rebuildDataSeries');
+
+			resetDataSeries();
+			
+			var modelId = $("#model").find(":selected").val();
+			var modelCategoryField = $("#modelCategoryField").find(":selected").val();
+			
+			if(modelId && modelCategoryField){
+				retrieveCategoryAndInitDataSeries(modelId, modelCategoryField);
+			}
+		}
+		
+		
+		function initSeriesGroup(uniqueFields){
+
+ 			var seriesGroupAppendableDiv = createElement('div',
+														 {class : "series-group-appendable", 
+												   		  id:"series-group-appendable1"});
+			//1. select drop down field
+			var seriesGroupDiv = createElement('div',
+										 	   {class: "col-md-5",
+												style: "padding-left:0px; margin-bottom: 5px;"});
+			
+			var selectElement = createElement('select',
+										      {id : "seriesGroup1",
+											   name: "seriesGroup1",
+											   class: "form-control",
+											   'data-parsley-errors-container': "#seriesGroup1Error"
+											   });
+
+			if(uniqueFields && $.isArray(uniqueFields)){
+				$(selectElement).append($('<option></option>'));
+				for(var index=0; index < uniqueFields.length; index++){
+					$(selectElement).append($('<option></option>').val(uniqueFields[index]).html(uniqueFields[index]));
+				}
+			}
+
+			$(seriesGroupDiv).append(selectElement);
+			$(seriesGroupDiv).append(createElement('div',
+												   {id:"seriesGroup1Error",
+					 								class:"errorMessage seriesGroupError"}));
+			$(seriesGroupAppendableDiv).append(seriesGroupDiv);
+
+			//2. input field
+			var seriesGroupName = createElement('div',
+				 	   							{class: "col-md-6",
+												 style: "padding-left:0px; margin-bottom: 5px;"
+												 });
+			
+			var inputTextElement = createElement('input',
+												 {type:"text",
+												  id:"seriesGroupName1",
+												  name:"seriesGroupName1",
+												  class:"form-control",
+												  'data-parsley-errors-container': "#seriesGroupName1Error"
+												 });
+			$(seriesGroupName).append(inputTextElement);
+			$(seriesGroupName).append(createElement('div',
+					 								{id:"seriesGroupName1Error",
+				  									 class:"errorMessage seriesGroupNameError"}));
+			$(seriesGroupAppendableDiv).append(seriesGroupName);
+
+			//3. button
+			$(seriesGroupAppendableDiv).append(createAddDataSeriesDiv());
+			
+			return seriesGroupAppendableDiv;
+ 		}
+		
+		function createAddDataSeriesDiv(){
+			
+			var addDataSeriesDiv = createElement('div',
+												 {class:"col-md-1"});
+							
+			var addDataSeriesSpan = createElement('span',
+								  {style:"width: 34px; margin-bottom: 5px;"});
+			$(addDataSeriesDiv).append(addDataSeriesSpan);
+			
+			var addDataSeriesButton = createElement('button',
+									{type:"button",
+									 id:"btn1",
+									 class:"btn btn-primary add-series"});
+			
+			$(addDataSeriesButton).text('+');
+							
+			$(addDataSeriesSpan).append(addDataSeriesButton);
+			
+			$(addDataSeriesButton).click(function(){
+					handleAddDataSeriesEvent($(this));
+			});
+			
+			return addDataSeriesDiv;
+		}
+		
+		function handleAddDataSeriesEvent(refElement){
+			//lookup parent with class "series-appendable-wrapper"
+			$wrapper = $(refElement).parents('.series-appendable-wrapper');
+			
+			//find the last child item with class "series=group-appendable" from wrapper
+			$lastItem = $wrapper.find('.series-group-appendable').last(); 
+			
+			//clone as new item
+			$newInput = $lastItem.clone();
+
+			// change attribute for new item
+			$count = $wrapper.find('#count').val();
+			$count++;
+			
+			// change id of cloned item
+			$newInput.attr('id', 'series-group-appendable' + $count);
+			
+			// change the text input id and name
+			$newInput.find('input[type="text"]').attr({
+				id: "seriesGroupName" + $count,
+				name: "seriesGroupName" + $count,
+				'data-parsley-errors-container': "#seriesGroupName"+ $count+"Error"
+			});
+			$newInput.find('input[type="text"]').removeAttr('data-parsley-id');
+			
+			$newInput.find('.seriesGroupNameError').attr({id: "seriesGroupName"+ $count+"Error"});
+			$newInput.find('.seriesGroupNameError').empty();
+			
+			//change the select id and name
+			$newInput.find('select').attr({
+				id: "seriesGroup" + $count,
+				name: "seriesGroup" + $count,
+				'data-parsley-errors-container': "#seriesGroup"+ $count+"Error",
+			});
+			
+			$newInput.find('select').removeAttr('data-parsley-id');
+			
+			$newInput.find('.seriesGroupError').attr({id: "seriesGroup"+ $count+"Error"});
+			$newInput.find('.seriesGroupError').empty();
+			
+			//clear selected value
+			$newInput.find('select').prop('selectedIndex',0);
+			
+			//update button id
+			$newInput.find('.btn').attr('id', 'btn' + $count);
+			$newInput.appendTo($wrapper);
+			
+			$newInput.find('.btn').click(function(){
+				handleAddDataSeriesEvent($(this));
+			});
+			
+			//change the previous button to remove
+			$lastItem.find('.btn')
+					 .removeClass('add-series btn-primary')
+					 .addClass('btn-danger')
+					 .text('-')
+					 .off()
+					 .on('click', function(){
+						$(this).parents('.series-group-appendable').remove();
+					 });
+			
+			$wrapper.find('#count').val($count);
+		}
+		// create html element by type and attributes
+		function createElement(elementType, attributes){
+			var element = document.createElement(elementType);
+			
+			if(attributes){
+				$(element).attr(attributes);
+			}
+			
+			return element;
+		}
+		
 		
 		function isValidModelDataField(modelFieldType){
 			var isValid = false;
@@ -672,20 +898,26 @@
 			
 		}
 		
-		function preparePreviewData(categoryData){
+		function preparePreviewData(chartDataSeries){
 			
 			var previewData = new Array();
 			
-			for (var key in categoryData) {
-				//only process non prototype
-				if (categoryData.hasOwnProperty(key)) {
-				    var seriesData ={};
-				    previewData.push(seriesData);
-				    
-				    seriesData['label'] = key;
-				    seriesData['data']  = categoryData[key];
-				  }
-			}
+			$.each(chartDataSeries, function(index, dataSeries){
+				var series = {label: dataSeries.seriesName,
+							  data : []};
+				//added each series into preview data
+			    previewData.push(series);
+
+				for (var key in dataSeries.seriesData) {
+					//only process non prototype
+					if (dataSeries.seriesData.hasOwnProperty(key)) {
+					    var data ={};
+
+					    series.data.push([key, dataSeries.seriesData[key]]);
+					  }
+				}
+				
+			})		
 			
 			return previewData; 
 		}
@@ -693,62 +925,130 @@
 		function buildReportConnector(){
 			var connector = {};
 
-			connector['type']='PIE';
-			connector['cartesianChartTemplate'] =undefined;
-			connector['pieChartTemplate'] = buildPieChartConnector();
+			connector['type']= $('input[name="chartType"]:checked', '#form1').val();;
+			connector['cartesianChartTemplate'] = buildCartChartConnector();
+			connector['pieChartTemplate'] = undefined;
 			connector['crossTabTemplate'] = undefined;
 			
 			return connector;
 		}
 		
-		function buildPieChartConnector(){
-			var pieChartConnector = {};
+		function buildCartChartConnector(){
+			var cartChartConnector = {};
 
-			pieChartConnector['id']				   = '0';
-			pieChartConnector['modelId']		   = $("#model").find(":selected").val();
-			pieChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
-			pieChartConnector['reportQuery']	   = undefined;
-			pieChartConnector['templateName']	   = $("#connectorName").val();
-			pieChartConnector['reportTemplateType']= 'SIMPLE';
-			pieChartConnector['title']			   = $('#chartTitle').val();
-			pieChartConnector['showLegend']		   = $('#showLegend').prop('checked');
-			pieChartConnector['showDataLabel']	   = $('#showDataLabel').prop('checked');
-			pieChartConnector['categoryName']	   = undefined;
-			pieChartConnector['modelCategoryField']= $('#modelCategoryField').find(":selected").val();
-			pieChartConnector['modelDataField']	   = $('#modelDataField').find(":selected").val();
-			pieChartConnector['dataTypeFormat']	   = $('input[name="pieChartDataFormat"]:checked', '#form3').val();
+			cartChartConnector['id']			    = '0';
+			cartChartConnector['modelId']		    = $("#model").find(":selected").val();
+			cartChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
+			cartChartConnector['reportQuery']	    = undefined;
+			cartChartConnector['templateName']	    = $("#connectorName").val();
+			cartChartConnector['reportTemplateType']= 'SIMPLE';
+			cartChartConnector['title']			    = $('#chartTitle').val();
+			cartChartConnector['showLegend']		= $('#showLegend').prop('checked');
+			cartChartConnector['showDataLabel']	    = $('#showDataLabel').prop('checked');
+			cartChartConnector['showXAxis']	    	= $('#showXAxis').prop('checked');
+			cartChartConnector['xaxisTitle']	    = $('#xAxisTitle').val();
+			cartChartConnector['showYAxis']	    	= $('#showYAxis').prop('checked');
+			cartChartConnector['yaxisTitle']	    = $('#yAxisTitle').val();
+			cartChartConnector['modelDataValueField']= $('#modelDataValueField').find(":selected").val();
+			cartChartConnector['modelDataLabelField']= $('#modelDataLabelField').find(":selected").val();
+			cartChartConnector['modelSeriesGroupField']= $('#modelCategoryField').find(":selected").val();
+
+			cartChartConnector['dataSeries'] = [];
 			
-			return pieChartConnector;
+			$.each($('.series-appendable-wrapper').find('.series-group-appendable'), function(index, element){
+				var seriesGroup = $(element).find('select :selected').val();
+				var seriesGroupName = $(element).find('input[type="text"]').val();
+				
+				cartChartConnector.dataSeries.push({ id:'0', 
+													 name: seriesGroupName, 
+													 modelSeriesValue: seriesGroup});
+			});
+			
+			return cartChartConnector;
 		}
 		
-		
-		function preparePreviewConfiguration(report){
+		function preparePreviewConfiguration(report, chartType){
 			
-			return {
-				series: {
-					pie: {
-						show: true,
-						stroke: {
-							width: 4,
-							color: "#F9F9F9"
-						},
-						label: {
-							show: report.showDataLabel,
-							radius: 3/4,
-							formatter: labelFormatter
-						}
-					},
-				},
-				legend: {
-					show: report.showLegend
-				},
-				grid: {
-					hoverable: false
-				},
-				colors: ["#d9d9d9", "#5399D6", "#d7ea2b"],
-			};
+			var configuration = {};
+			
+			if(chartType){
+				configuration['xaxis'] = { mode: "categories" };
+				var isArea = false;
+
+				switch(chartType){
+					case 'AREA':
+						isArea = true;
+					case 'LINE':
+						
+						configuration['series'] ={
+							lines: {
+								show: true,
+								lineWidth: 2,
+								fillColor: { colors: [ { opacity: 0.4 }, { opacity: 0.4 } ] },
+								fill : isArea
+							},
+							points: {
+								lineWidth: 3,
+							},
+	
+							shadowSize: 0
+						};
+						
+						break;
+					case 'BAR':
+					case 'COLUMN':
+						configuration['series'] ={
+								bars:{
+										show : true,
+										fill : true,
+										lineWidth: 0,
+										order: true,
+										barWidth: 0.8,
+										align: 'center'
+								}
+							};
+						configuration.xaxis['autoscaleMargin'] = '0.2';
+						break;
+				}
+
+				configuration['grid']= {
+						hoverable: true, 
+						clickable: true,
+						borderWidth: 0,
+						tickColor: "#E4E4E4"
+					};
+				configuration['colors'] = [ "#5399D6", "#d9d9d9", "#d7ea2b"];
+				configuration['tooltip'] = true;
+				
+				
+				configuration['legend'] = {show: report.showLegend};
+				
+				if(report.showXAxis && report.xaxisTitle){
+					configuration['xaxes']=[{axisLabel:report.xaxisTitle, axisLabelPadding: 15}];
+				}
+				
+				if(report.showYAxis && report.yaxisTitle){
+					configuration['yaxes']=[{axisLabel: report.yaxisTitle, position : 'left'}];	
+				}
+				
+				if(report.showDataLabel){
+					configuration.series['valueLabels']= {show: report.showDataLabel};
+					
+					if('COLUMN' == chartType){
+						configuration.series.valueLabels['align']='center';
+					}
+				}
+				
+				if('COLUMN' == chartType){
+					configuration.series.bars['horizontal'] = true;
+					configuration.series.bars.barWidth = 8;
+				}
+			}
+			
+			return configuration;
 			
 		}
+			
 		
 		function labelFormatter(label, series) {
 			
@@ -773,6 +1073,45 @@
 			}
 
 			return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
+		}
+		
+		function validateDataSeries(){
+			
+			var isValid = true;
+			//clear all error message
+			$("#form3").parsley().reset();
+
+			$wrapper = $(".series-appendable-wrapper");
+			
+			$.each($wrapper.find('select'), function(index, element){
+				console.log($(element).attr('id'));
+				var inputTextValue = $(element).find(":selected").val();
+				
+				if(inputTextValue ==undefined || inputTextValue.replace(/^\s+|\s+$/gm,'') == ''){
+					var failedInput = $(element).parsley();
+					
+					isValid = false; 
+					
+					//create custom parsley error message for affected field
+					window.ParsleyUI.addError(failedInput,$(element).attr('id')+'Error', "This field is required");
+				}
+			});
+			//all text fields
+			$.each($wrapper.find('input[type="text"]'), function(index, element){
+				console.log($(element).attr('id'));
+				var inputTextValue = $(element).val();
+				
+				if(inputTextValue ==undefined || inputTextValue.replace(/^\s+|\s+$/gm,'') == ''){
+					var failedInput = $(element).parsley();
+					
+					isValid = false; 
+
+					//create custom parsley error message for affected field
+					window.ParsleyUI.addError(failedInput,$(element).attr('id')+'Error', "This field is required");
+				}
+			});
+			
+			return isValid;
 		}
 		
 		$(document).ready(function(){
@@ -823,19 +1162,26 @@
 						clearRadio();
 						retrieveModel(modelId);
 					}
-					else if(data.step === 3 && data.direction == 'next' && !attributeMaps) {
-						var reportConnector = buildReportConnector();
+					else if(data.step === 3 && data.direction == 'next') {
 						
-						setBezelPageParam("reportConnector", reportConnector);
+						//if failed data series validation
+						if(!validateDataSeries())
+							return false;
+	
+ 						var reportConnector = buildCartChartConnector();
+	
+ 						console.log('passed'+reportConnector);
+/*						setBezelPageParam("reportConnector", reportConnector);
 						updateConfirmationDetail();
-					}
+ */					}
 				}
 	
 			}).on('finished', function(){
 				disableWizardStep();
 				createReportConnector();
 			});
-	
+			
+			//render switch
 			$('.form-group .switch-small').bootstrapSwitch();
 			
 		});
