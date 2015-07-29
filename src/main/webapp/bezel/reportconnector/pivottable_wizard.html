@@ -495,12 +495,25 @@
 			return true;
 	 }
 	
-	$(document).ready(function() {		
+	function adjustDimensionsHeight()
+	 {
+		var availDimHeight = $('#avialDimensionsPanel').height();
+		var valueDimHeight = $('#valueDimensionsPanel').height()
+		if(availDimHeight > valueDimHeight)
+		 {
+			$('#valueDimensionsPanel').height($('#avialDimensionsPanel').height());
+		 }
+		else
+		 {
+			$('#avialDimensionsPanel').height($('#valueDimensionsPanel').height());	
+		 }	
+	 }	
+	$(document).ready(function() {
 		$('#avialDimensionsPanel').resize(function() {
-			if($('#avialDimensionsList li').length > 0)
-			 {
-	        	$('#valueDimensionsPanel').height($('#avialDimensionsPanel').height());
-			 }			
+			adjustDimensionsHeight();	
+	    });		
+		$('#valueDimensionsPanel').resize(function() {
+			adjustDimensionsHeight();					
 	    });
 		
 		//clear page context before start

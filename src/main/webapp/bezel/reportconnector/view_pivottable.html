@@ -1,0 +1,125 @@
+<div>
+	<form id="pivotForm4" data-parsley-validate novalidate>
+		<div class="row">
+			<div class="col-md-6 widget-content">
+				<h4>
+					<i class="fa fa-square"></i> Connector Details
+				</h4>
+				<p class="data-row">
+					<span class="data-name">Template Name : </span> <span
+						id="templateName" class="data-value"></span>
+				</p>
+				<p class="data-row">
+					<span class="data-name">Report Display Name : </span> <span
+						id="reportDisplayName" class="data-value"></span>
+				</p>
+				<p class="data-row">
+					<span class="data-name">Model Name : </span> <span id="modelName"
+						class="data-value"></span>
+				</p>
+			</div>
+			<div class="col-md-6 widget-content">
+				<h4>
+					<i class="fa fa-square"></i> Attribute(s) Information
+				</h4>
+				<p class="data-row">
+					<span class="data-name">Value Dimensions : </span> <span
+						id="valueDimensions" class="data-value"></span>
+				</p>
+				<p class="data-row">
+					<span class="data-name">Row Dimensions : </span> <span
+						id="rowDimensions" class="data-value"></span>
+				</p>
+				<p class="data-row">
+					<span class="data-name">Column Dimensions : </span> <span
+						id="columnDimensions" class="data-value"></span>
+				</p>
+			</div>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var reportConnector = getBezelPageParam("reportConnector");
+		//clear page context before start
+		initBezelParamMap();
+		//put back for current page usage
+		setBezelPageParam("reportConnector", reportConnector);
+		
+		var crossTabTemplate = reportConnector.crossTabTemplate;		
+		resetCrossTabDetails();
+		if(crossTabTemplate)
+		 {			
+			$("#templateName").append(crossTabTemplate.templateName);
+			$("#reportDisplayName").append(crossTabTemplate.reportDisplayName);
+			updateModelName(crossTabTemplate.modelId);
+			
+			var rowAttributes='';
+			var columnAttributes='';
+			var valueAttributes='';
+			
+			$.each(crossTabTemplate.crossTabDetail, function(idx, eachAttribute) {
+				if(eachAttribute.sqlFunction == 'GROUPBY' && eachAttribute.groupOrAggregate == 'GROUPING')
+				 {
+						if(eachAttribute.fieldType == 'ROW')
+					 	 {
+							rowAttributes = getDimensions(rowAttributes,eachAttribute.attributeDisplayName);
+						 }	
+						else if(eachAttribute.fieldType == 'COLUMN')
+					 	 {
+							columnAttributes = getDimensions(columnAttributes,eachAttribute.attributeDisplayName);
+						 }
+						else{}
+				 }
+				else if(eachAttribute.fieldType == 'COLUMN' && eachAttribute.sqlFunction == 'SUM' && eachAttribute.groupOrAggregate == 'SUM')
+				 {
+					valueAttributes = getDimensions(valueAttributes,eachAttribute.attributeDisplayName);
+				 }
+				else{}
+			});	
+			$("#valueDimensions").append(valueAttributes);
+			$("#rowDimensions").append(rowAttributes);
+			$("#columnDimensions").append(columnAttributes);
+		 }		
+	});
+	function getDimensions(allAttributes, attributeDisplayName)
+	{
+		if(allAttributes.length > 0)
+		 {
+			allAttributes += ","; 	
+		 }
+		allAttributes += attributeDisplayName;
+		return allAttributes;
+	}
+	function updateModelName(modelId)
+	 {
+		$.ajax({
+			type: "GET",
+			url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId,
+			success: function(response){
+				if(response){
+					var model = response;					
+					if(model){
+						$("#modelName").append(model.name);	
+					}
+				}
+			},
+			complete: function(jqXHR, textStatus){
+				$('#loading').hide();
+				if("success" != textStatus){
+					displayAjaxError("Failed to retrieve data from remote server");
+				}
+			}
+		});
+		
+	 }
+	function resetCrossTabDetails()
+	 {
+		$("#templateName").empty();
+		$("#reportDisplayName").empty();
+		$("#modelName").empty();
+		$("#valueDimensions").empty();
+		$("#rowDimensions").empty();
+		$("#columnDimensions").empty();
+	 }
+</script>

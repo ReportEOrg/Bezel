@@ -104,18 +104,11 @@
 		var crossTabTemplatedId;
 		$(document).ready(function() {
 			$('#avialDimensionsPanel').resize(function() {
-				if($('#avialDimensionsList li').length > 0)
-				 {
-		        	$('#valueDimensionsPanel').height($('#avialDimensionsPanel').height());
-				 }			
-		    });
+				adjustDimensionsHeight();	
+		    });		
 			$('#valueDimensionsPanel').resize(function() {
-				if($('#valueDimensionsPanel li').length > 0)
-				 {
-		        	$('#avialDimensionsPanel').height($('#valueDimensionsPanel').height());
-				 }			
-		    });			
-			
+				adjustDimensionsHeight();					
+		    });					
 			var reportConnector = getBezelPageParam("reportConnector");
 			//clear page context before start
 			initBezelParamMap();
@@ -164,7 +157,19 @@
 				updateCrossTabReportConnector();
 			});
 		});
-		
+		function adjustDimensionsHeight()
+		 {
+			var availDimHeight = $('#avialDimensionsPanel').height();
+			var valueDimHeight = $('#valueDimensionsPanel').height()
+			if(availDimHeight > valueDimHeight)
+			 {
+				$('#valueDimensionsPanel').height($('#avialDimensionsPanel').height());
+			 }
+			else
+			 {
+				$('#avialDimensionsPanel').height($('#valueDimensionsPanel').height());	
+			 }	
+		 }
 		function previewData()
 		 {
 			var result = validateRequiredAttributeMappings();
