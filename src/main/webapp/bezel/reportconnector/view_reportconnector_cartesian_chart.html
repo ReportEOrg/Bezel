@@ -20,6 +20,15 @@
 																	<span id="cartFinalModel" class="data-value"></span>
 																</p>
 																<p class="data-row">
+																	<span class="data-name">Type</span>
+																	<span id="cartFinalType" class="data-value">
+																		<span id="areaType" style="display:none;"><i></i><span class="fa fa-area-chart"></span>&nbsp;Area</span>
+																		<span id="barType" style="display:none;"><i></i><span class="fa fa-bar-chart"></span>&nbsp;Bar</span>
+																		<span id="columnType" style="display:none;"><i></i><span class="fa fa-bar-chart fa-rotate-90"></span>&nbsp;Column</span>
+																		<span id="lineType" style="display:none;"><i></i><span class="fa fa-line-chart"></span>&nbsp;Line</span>
+																	</span>
+																</p>
+																<p class="data-row">
 																	<br>
 																</p>
 																
@@ -101,11 +110,28 @@
 			});
 		}
 	
-		function updateCartesianReportConnectorViewDetail(cartesianChartTemplate){
+		function updateCartesianReportConnectorViewDetail(cartesianChartTemplate, type){
 			
 			if(cartesianChartTemplate){
 				$("#cartFinalConnectorName").append(cartesianChartTemplate.templateName);
 				$("#cartFinalReportName").append(cartesianChartTemplate.reportDisplayName);
+				
+				if(type){
+					switch(type){
+						case 'AREA':
+							$('#areaType').show();
+							break;
+						case 'BAR':
+							$('#barType').show();
+							break;
+						case 'COLUMN':
+							$('#columnType').show();
+							break;
+						case 'LINE':
+							$('#lineType').show();
+							break;
+					}
+				}
 				
 				//chart configuration
 				$("#cartFinalChartTitle").append(cartesianChartTemplate.title);
@@ -195,7 +221,7 @@
 			setBezelPageParam("reportConnector",reportConnector);
 			
 			if(reportConnector){
-				updateCartesianReportConnectorViewDetail(reportConnector.cartesianChartTemplate);	
+				updateCartesianReportConnectorViewDetail(reportConnector.cartesianChartTemplate, reportConnector.type);	
 			}
 		});
 	</script>
