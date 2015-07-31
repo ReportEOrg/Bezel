@@ -1,0 +1,1104 @@
+										<div id="cartesian-rptconnector-edit-detail" style="display:none;" >
+											<form role="form" id="cartReportConnectorDetailForm">
+												<!-- Basic Info -->
+												<fieldset>
+													<legend>Basic Information</legend>
+													<div class="form-group">
+														<label for="reportConnectorName">Name *</label>
+														<input type="text" id="reportConnectorName" style="width:50%;" maxlength="45" placeholder="Report Connector Name"
+															   class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#reportConnectorNameError">
+														<div id="reportConnectorNameError" class="errorMessage"></div>
+													</div>
+													<div class="form-group">
+														<label for="reportDisplayName">Report Name *</label>
+														<input type="text" id="reportDisplayName" placeholder="Report Display Name"
+															    class="form-control" data-parsley-length="[5,255]" required data-parsley-errors-container="#reportDisplayNameError">
+														<div id="reportDisplayNameError" class="errorMessage"></div>
+													</div>
+													<div class="form-group">
+														<label for="reportDisplayName">Type *</label>
+														<label class="fancy-radio">
+															<input type="radio" name="chartType" value="AREA" required
+																   data-parsley-errors-container="#chartTypeError">
+															<span><i></i><span class="fa fa-area-chart"></span>&nbsp;Area</span>
+														</label>
+														<label class="fancy-radio">
+															<input type="radio" name="chartType" value="BAR" required
+																   data-parsley-errors-container="#chartTypeError">
+															<span><i></i><span  class="fa fa-bar-chart"></span>&nbsp;Bar</span>
+														</label>
+														<label class="fancy-radio">
+															<input type="radio" name="chartType" value="COLUMN" required
+																   data-parsley-errors-container="#chartTypeError">
+															<span><i></i><span  class="fa fa-bar-chart fa-rotate-90"></span>&nbsp;Column</span>
+														</label>
+														<label class="fancy-radio">
+															<input type="radio" name="chartType" value="LINE" required
+																   data-parsley-errors-container="#chartTypeError">
+															<span><i></i><span  class="fa fa-line-chart"></span>&nbsp;Line</span>
+														</label>
+														<div id="chartTypeError" class="errorMessage"></div>
+													</div>
+													<div class="form-group">
+														<label for="model">Model *</label>
+														<select id="model" class="form-control" onchange="javascript:resetConfiguration();"
+														        required data-parsley-errors-container="#modelError"></select>
+														<div id="modelError" class="errorMessage"></div>
+													</div>
+												</fieldset>
+												
+												<!-- Configuration -->
+												<fieldset>
+													<legend>Configuration</legend>
+													<div class="row">
+														<div class="col-md-6">
+															<div class="form-group">
+																<label for="chartTitle">Chart Title</label>
+																<input type="text" id="chartTitle" class="form-control" placeholder="Chart Title"
+																        data-parsley-errors-container="#chartTitleError">
+																<div id="chartTitleError" class="errorMessage"></div>
+															</div>
+															<div class="form-group">
+																<div class="col-md-4" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="showLegend">Show Legend</label><br>
+																		<input id="showLegend" type="checkbox" checked 
+																			   class="switch-reportbay switch-small" data-on="success" data-off="danger"
+																			   data-parsley-errors-container="#showLegendError">
+																		<div id="showLegendError" class="errorMessage"></div>
+																	</div>
+																</div>
+																<div class="col-md-8" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="showDataLabel">Show Data Label</label><br>
+																		<input id="showDataLabel" type="checkbox" checked 
+																			   class="switch-reportbay switch-small" data-on="success" data-off="danger"
+																			   data-parsley-errors-container="#showDataLabelError">
+																		<div id="showDataLabelError" class="errorMessage"></div>
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<div class="col-md-4" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="showXAxis">Show X-Axis</label><br>
+																		<input id="showXAxis" type="checkbox" checked 
+																			   class="switch-reportbay switch-small" data-on="success" data-off="danger"
+																			   data-parsley-errors-container="#showXAxisError">
+																		<div id="showXAxisError" class="errorMessage"></div>
+																	</div>
+																</div>
+																<div class="col-md-8" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="xAxisTitle">X-Axis Title</label><br>
+																		<input type="text" id="xAxisTitle" class="form-control" placeholder="X-Axis Title"
+																        	   data-parsley-length="[1,45]" data-parsley-errors-container="#xAxisTitleError">
+																		<div id="xAxisTitleError" class="errorMessage"></div>
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<div class="col-md-4" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="showYAxis">Show Y-Axis</label><br>
+																		<input id="showYAxis" type="checkbox" checked 
+																			   class="switch-reportbay switch-small" data-on="success" data-off="danger"
+																			   data-parsley-errors-container="#showYAxisError">
+																		<div id="showYAxisError" class="errorMessage"></div>
+																	</div>
+																</div>
+																<div class="col-md-8" style="padding-left:0px;">
+																	<div class="form-group">
+																		<label for="yAxisTitle">Y-Axis Title</label><br>
+																		<input type="text" id="yAxisTitle" class="form-control" placeholder="Y-Axis Title"
+																        	    data-parsley-length="[1,45]" data-parsley-errors-container="#yAxisTitleError">
+																		<div id="yAxisTitleError" class="errorMessage"></div>
+																	</div>
+																</div>
+															</div>
+															<div class="form-group">
+																<label for="modelDataValueField">Model Data Value Field *</label>
+																<select id="modelDataValueField" class="form-control"  
+															        required data-parsley-errors-container="#modelDataValueFieldError"></select>
+																<div id="modelDataValueFieldError" class="errorMessage"></div>
+															</div>
+															
+															<div class="form-group">
+																<label for="modelDataLabelField">Model Data Label Field *</label>
+																<select id="modelDataLabelField" class="form-control"  
+															        required data-parsley-errors-container="#modelDataLabelFieldError"></select>
+																<div id="modelDataLabelFieldError" class="errorMessage"></div>
+															</div>
+															
+															<div class="form-group">
+																<label for="modelSeriesGroupField">Model Series Group Field *</label>
+																<select id="modelSeriesGroupField" class="form-control" onchange="javascript:rebuildDataSeries();"
+															        required data-parsley-errors-container="#modelSeriesGroupFieldError"></select>
+																<div id="modelSeriesGroupFieldError" class="errorMessage"></div>
+															</div>
+															
+															<div class="form-group">
+																<label for="dataSeries">Data Series *</label>
+																<div class="series-appendable-wrapper">
+																	<!-- for unique id generation -->
+																	<input type="hidden" id="count" name='count' value='1'>
+																	<div style="margin-bottom: 5px;">
+																		<div class="col-md-5">Series</div>
+																		<div class="col-md-7">Series Label</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div  style="border-style: dotted; border-width: 1px; margin:1px;">
+																<div style="text-align:right; margin: 4px 4px;">
+																	<button id="previewButton" type="button" class="btn btn-default" onclick="javascript:plotChartPreview();"><i class="fa fa-eye"></i> Preview</button>
+																</div>
+																<div id="samplePreview" class="divContentCenterAlign" style="width: 90%;">
+																	<div id="samplePieChartPreviewTitle" style="width: 100%; text-align: center; border-style: dotted; border-width: 1px; margin:4px;">
+																		Chart Title
+																	</div>
+																	
+																	<div id="sampleChartPreview" class="divContentCenterAlign" style="width:100%; height: 350px; margin:8px;">
+																	
+																	</div>																	
+																</div>
+																<div id="generatingPreview" class="divContentCenterAlign" style="width: 90%;display:none;" >
+																	<div  style="width: 100%; text-align: center; height: 350px; position:relative">
+																		<i class="fa fa-spinner fa-pulse fa-5x" style="position:absolute; top: 35%;"></i>
+																	</div>
+																</div>
+																<div id="preview" class="divContentCenterAlign" style="width: 90%; display:none;" >
+																	<div id="cartChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
+																	</div>
+																	
+																	<div id="cartChartPreview" class="divContentCenterAlign" style="width:100%; height: 350px; margin:8px;">
+																	
+																	</div>																	
+																</div>
+															</div>
+														</div>
+													</div>	
+												</fieldset>
+											</form>			
+										</div>
+												
+		<script type="text/javascript">
+		
+		function buildModelOptions(selectedModeId, modelDataLabelField, modelDataValueField, modelSeriesGroupField, dataSeries){
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models",
+				
+				success: function(response){
+					if(response){
+						var models = response.models;
+						
+						setBezelPageParam("models", models);
+						
+						var selectedModel = undefined;
+						
+						if(models){
+							$("#model").empty();
+							$("#model").append($('<option></option>'));
+							var index;
+							for(index = 0; index<models.length; index++){
+								var model = models[index];
+								
+								$("#model").append($('<option></option>').val(model.id).html(model.name));
+								
+								if(selectedModeId && selectedModeId == model.id ){
+									selectedModel = model;
+								}
+							}
+						}
+						
+						if(selectedModel){
+							rebuildModelDataFieldOptions(selectedModel.attributeBindings);
+						}
+						
+						$("#model").val(selectedModeId);
+						$("#modelDataLabelField").val(modelDataLabelField);
+						$("#modelDataValueField").val(modelDataValueField);
+
+						$("#modelSeriesGroupField").val(modelSeriesGroupField);
+						
+						reinitBootstrapSwitch();
+						
+						retrieveCategoryAndInitDataSeries(selectedModeId, modelSeriesGroupField, dataSeries);
+					}
+				},
+				complete: function(jqXHR, textStatus){
+
+					if("success" != textStatus){
+						//set value for not success case
+						$("#model").val(selectedModeId);
+						$("#modelDataLabelField").val(modelDataLabelField);
+						$("#modelDataValueField").val(modelDataValueField);
+
+						$("#modelSeriesGroupField").val(modelSeriesGroupField);
+
+						$('#loading').hide();
+						$('#cartesian-rptconnector-edit-detail').show();
+						displayAjaxError("Failed to retrieve data from remote server");
+					}
+				}
+			});
+		};
+		
+		
+		function retrieveCategoryAndInitDataSeries(modelId, modelSeriesGroupField, dataSeries){
+			console.log('retrieveCategoryAndInitDataSeries :'+modelId+':'+modelSeriesGroupField);
+			//jquery ajax
+			$.ajax({
+				type: "GET",
+				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId+"/uniquedatafield?dataField="+modelSeriesGroupField,
+
+				success: function(response){
+					var uniqueFields = response.columnValueList;
+					console.log(JSON.stringify(response));
+					
+					if(uniqueFields){
+						
+						buildDataSeries(dataSeries, uniqueFields);
+					}
+					
+					//plot cartesian chart preview with hide loading handling
+					plotChartPreview(true);
+					
+				},
+
+				error: function(jqXHR, textStatus, ex){
+					displayAjaxError('Failed retrieve unique field with error : '+textStatus+","+ex+","+jqXHR.responseText);
+				},
+				complete: function(jqXHR, textStatus){
+					$('#loading').hide();
+					$('#cartesian-rptconnector-edit-detail').show();
+				}
+			});
+		}
+		
+		function updateCartChartReportConnectorChanges(){
+			
+			var reportConnector = getBezelPageParam("reportConnector");
+			
+			updateCartChartReportConnectorFields(reportConnector);
+			
+			var content = JSON.stringify(reportConnector); 
+			
+			console.log(content);
+
+			//jquery ajax
+			$.ajax({
+				type: "PUT",
+				url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors",
+				data: content,
+				contentType: "application/json",
+				crossDomain: true,
+
+				success: function(response){
+					alert('Report connector change has been updated.');
+					loadContent("reportconnector_content.html");
+				},
+				complete: function(jqXHR, textStatus){
+					if("success" != textStatus){
+						displayAjaxError("Failed to update report connector changes to remote server");
+						restoreBlockedItem();
+					}
+				}
+			});
+		}
+		
+		// END ajax function
+		
+		function updateCartChartReportConnectorFields(reportConnector){
+			if(reportConnector){
+				
+				var cartChartConnector = reportConnector.cartesianChartTemplate;
+				
+				if(cartChartConnector){
+
+					cartChartConnector['modelId']		   	= $("#model").find(":selected").val();
+					cartChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
+					cartChartConnector['templateName']	   	= $("#reportConnectorName").val();
+					cartChartConnector['title']			   	= $('#chartTitle').val();
+					cartChartConnector['showLegend']		= $('#showLegend').prop('checked');
+					cartChartConnector['showDataLabel']	   	= $('#showDataLabel').prop('checked');
+					cartChartConnector['showXAxis']	    	= $('#showXAxis').prop('checked');
+					cartChartConnector['xaxisTitle']	    = $('#xAxisTitle').val();
+					cartChartConnector['showYAxis']	    	= $('#showYAxis').prop('checked');
+					cartChartConnector['yaxisTitle']	    = $('#yAxisTitle').val();
+					cartChartConnector['modelDataValueField']= $('#modelDataValueField').find(":selected").val();
+					cartChartConnector['modelDataLabelField']= $('#modelDataLabelField').find(":selected").val();
+					cartChartConnector['modelSeriesGroupField']= $('#modelSeriesGroupField').find(":selected").val();
+					
+					var existChartDataSeries = cartChartConnector.dataSeries;
+					
+					var existChartDataSeriesCount = -1;
+					
+					if(existChartDataSeries){
+						existChartDataSeriesCount = existChartDataSeries.length;
+					}
+
+					var dataSeriesChanges = [];
+					
+					$.each($('.series-appendable-wrapper').find('.series-group-appendable'), function(index, element){
+						var seriesGroup = $(element).find('select :selected').val();
+						var seriesGroupName = $(element).find('input[type="text"]').val();
+						var refDataSeries;
+						
+						//existing data series present
+						if(existChartDataSeriesCount >0 && index < existChartDataSeriesCount){
+							refDataSeries = existChartDataSeries[index];
+							
+							refDataSeries.name=seriesGroupName;
+							refDataSeries.modelSeriesValue = seriesGroup;
+						}
+						else{
+							refDataSeries = { id:'0', 
+									 		  name: seriesGroupName, 
+									 		  modelSeriesValue: seriesGroup};
+						}
+						
+						dataSeriesChanges.push(refDataSeries);
+					});
+					
+					cartChartConnector.dataSeries = dataSeriesChanges;
+
+					console.log('updateCartChartReportConnectorFields completed');
+				}
+			}
+		}
+	
+		function rebuildModelDataFieldOptions(modelAttrBindings){
+			
+			$('#modelDataField').empty();
+			$('#modelDataLabelField').append($('<option></option>'));
+			
+			$('#modelDataValueField').empty();
+			$('#modelDataValueField').append($('<option></option>'));
+			
+			$('#modelSeriesGroupField').empty();
+			$('#modelSeriesGroupField').append($('<option></option>'));
+			
+			
+			if(modelAttrBindings && $.isArray(modelAttrBindings)){
+				for(var index=0; index < modelAttrBindings.length; index++){
+					if(isValidModelDataValueField(modelAttrBindings[index].typeName)){
+						$('#modelDataValueField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+					}
+					$('#modelDataLabelField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+					$('#modelSeriesGroupField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+				}
+			}
+		}
+		
+		function isValidModelDataValueField(modelFieldType){
+			var isValid = false;
+			
+			if(modelFieldType){
+				switch(modelFieldType){
+					case 'BIGINT':
+					case 'DECIMAL':
+					case 'DOUBLE':
+					case 'FLOAT':
+					case 'INTEGER' :
+					case 'NUMERIC' :
+					case 'REAL' :
+					case 'SMALLINT' :
+					case 'TINYINT' :
+						isValid = true;
+						break;
+				}
+			}
+			return isValid;
+		}
+		
+		function reinitBootstrapSwitch(){
+			//*******************************************
+			/*	SWITCH INIT Rendering
+			/********************************************/
+			$('.switch-reportbay').bootstrapSwitch();
+		}
+
+		function plotSampleChart(chartType){
+			
+			$('#sampleChartPreview').empty();
+			
+			var seriesData = getSampleSeriesByChartType(chartType);
+			
+			var configuration = getSampleConfigByChartType(chartType);
+			
+			console.log("ploting sample chart "+chartType);
+
+			$.plot('#sampleChartPreview', seriesData, configuration);
+		}
+		
+		function getSampleSeriesByChartType(chartType){
+			var seriesData = new Array();
+			
+			if(chartType){
+				switch(chartType){
+					case 'AREA':
+					case 'LINE':
+						seriesData = [
+										{
+											data: [[1,10],[2,50],[3,40],[4,80]],
+											label: "Series 1",
+											lines: {
+												show: true,
+												lineWidth: 2,
+												fill: true,
+											},
+											points: {
+												show: true, 
+												lineWidth: 3,
+												fill: true,
+												fillColor: '#adadad'
+											}
+										}
+									];
+						break;
+					case 'BAR':
+						seriesData = [
+										{
+											data: [[1,10],[2,50],[3,40],[4,80]],
+											label: "Series 1"
+										}
+									];
+						break;
+					case 'COLUMN':
+						seriesData = [
+										{
+											data: [[5,10],[2,20],[1,30],[4,40]],
+											label: "Series 1"
+										}
+									];
+						break;
+				}
+				
+				if('LINE' == chartType){
+					seriesData[0].lines.fill = false;
+				}
+			}
+			
+			
+			return seriesData;
+		}
+		
+		function getSampleConfigByChartType(chartType){
+			
+			var configuration = {};
+			
+			if(chartType){
+				switch(chartType){
+					case 'AREA':
+					case 'LINE':
+						configuration['series'] ={
+							lines: {
+								lineWidth: 2,
+								fillColor: { colors: [ { opacity: 0.4 }, { opacity: 0.4 } ] }
+							},
+							points: {
+								lineWidth: 3,
+							},
+	
+							shadowSize: 0
+						};
+						
+						break;
+					case 'BAR':
+					case 'COLUMN':
+						configuration['series'] ={
+								bars:{
+										show : true,
+										fill : true,
+										lineWidth: 0,
+										order: true,
+										barWidth: 0.8,
+										align: 'center'
+								}
+							};
+						configuration['xaxis'] = {autoscaleMargin: '0.2'};
+						break;
+				}
+
+				configuration['grid']= {
+						hoverable: true, 
+						clickable: true,
+						borderWidth: 0,
+						tickColor: "#E4E4E4"
+					};
+				configuration['colors'] = ["#adadad"];
+				configuration['tooltip'] = {show: true, content: "%s | X: %x | Y: %y"};
+				configuration['xaxes']=[{axisLabel: 'X-Axis Title', axisLabelPadding: 15}];
+				configuration['yaxes']=[{position : 'left', axisLabel: 'Y-Axis Title'}];
+				configuration.series['valueLabels']= {show: true};
+				
+				if('COLUMN' == chartType){
+					configuration.series.bars['horizontal'] = true;
+					configuration.series.bars.barWidth = 8;
+					configuration.series.valueLabels['align']='center';
+				}
+			}
+			
+			return configuration;
+			
+		}
+		
+		function populateCartesianConnectorDetails(cartChartTemplate, type){
+			
+			if(cartChartTemplate){
+				$("#reportConnectorName").val(cartChartTemplate.templateName);
+				$("#reportDisplayName").val(cartChartTemplate.reportDisplayName);
+				
+				//chart configuration
+				$("#chartTitle").val(cartChartTemplate.title);
+				
+				$("#showLegend").prop('checked', cartChartTemplate.showLegend);
+				$("#showDataLabel").prop('checked', cartChartTemplate.showDataLabel);
+				
+				$("#showXAxis").prop('checked', cartChartTemplate.showXAxis);
+				$('#xAxisTitle').val(cartChartTemplate.xaxisTitle);
+				$("#showYAxis").prop('checked', cartChartTemplate.showYAxis);
+				$('#yAxisTitle').val(cartChartTemplate.yaxisTitle);
+				
+				$('input:radio[name=chartType][value="'+type+'"]').prop('checked', true);
+				
+				//ajax call to build model drop down + other dependent drop down 
+				buildModelOptions(cartChartTemplate.modelId, 
+								  cartChartTemplate.modelDataLabelField, 
+								  cartChartTemplate.modelDataValueField, 
+								  cartChartTemplate.modelSeriesGroupField,
+								  cartChartTemplate.dataSeries);
+			}
+		}
+		
+		
+		function buildDataSeries(dataSeries, uniqueFields){
+			
+			if(dataSeries && $.isArray(dataSeries)){
+
+				var lastIndex = (dataSeries.length - 1);
+				
+				$.each(dataSeries, function(index, series){
+					$(".series-appendable-wrapper").append(buildSeriesData(series, uniqueFields, (index == lastIndex), (index+1)));
+				});
+				
+				$(".series-appendable-wrapper #count").val(dataSeries.length);
+			}
+		}
+
+		function buildSeriesData(series, uniqueFields, isAddButton, count){
+			var seriesGroupAppendableDiv = createElement('div',
+					 									 {class : "series-group-appendable col-md-12", 
+			   		  									  id:"series-group-appendable"+count});
+			//1. select drop down field
+			var seriesGroupDiv = createElement('div',
+				 	   						   {class: "col-md-5",
+												style: "padding-left:0px; margin-bottom: 5px;"});
+			
+			var selectElement = createElement('select',
+				      						  {id : "seriesGroup"+count,
+					   						   name: "seriesGroup"+count,
+					   						   class: "form-control",
+					   						   'data-parsley-errors-container': "#seriesGroup"+count+"Error"
+					   						  });
+
+			$(selectElement).append($('<option></option>'));
+			
+			for(var index=0; index < uniqueFields.length; index++){
+				$(selectElement).append($('<option></option>').val(uniqueFields[index]).html(uniqueFields[index]));
+			}
+
+			$(selectElement).val(series.modelSeriesValue);
+			
+			$(seriesGroupDiv).append(selectElement);
+			$(seriesGroupDiv).append(createElement('div',
+						   						   {id:"seriesGroup"+count+"Error",
+													class:"errorMessage seriesGroupError"}));
+			$(seriesGroupAppendableDiv).append(seriesGroupDiv);
+			
+			//2. input field
+			var seriesGroupName = createElement('div',
+												{class: "col-md-6",
+						 						 style: "padding-left:0px; margin-bottom: 5px;"
+						 						});
+			
+			var inputTextElement = createElement('input',
+						 						 {type:"text",
+						  						  id:"seriesGroupName"+count,
+						  						  name:"seriesGroupName"+count,
+						  						  class:"form-control",
+						  						  'data-parsley-errors-container': "#seriesGroupName"+count+"Error"
+						 						});
+			
+			$(inputTextElement).val(series.name);
+			$(seriesGroupName).append(inputTextElement);
+			$(seriesGroupName).append(createElement('div',
+													{id:"seriesGroupName"+count+"Error",
+								 					 class:"errorMessage seriesGroupNameError"}));
+			$(seriesGroupAppendableDiv).append(seriesGroupName);
+			
+			//3. button
+			if(isAddButton===true){
+				$(seriesGroupAppendableDiv).append(createAddDataSeriesDiv(count));	
+			}
+			else if(isAddButton===false){
+				$(seriesGroupAppendableDiv).append(createRemoveDataSeriesDiv(count));
+			}
+			
+			return seriesGroupAppendableDiv;
+		}
+		
+		function createRemoveDataSeriesDiv(count){
+			var removeDataSeriesDiv = createElement('div',
+					 							     {class:"col-md-1"});
+
+			var removeDataSeriesSpan = createElement('span',
+				  									 {style:"width: 34px; margin-bottom: 5px;"});
+			$(removeDataSeriesDiv).append(removeDataSeriesSpan);
+			
+			var removeDataSeriesButton = createElement('button',
+													   {type:"button",
+					 								    id:"btn"+count,
+					 									class:"btn btn-danger"});
+			
+			//register click and remove event handling
+			$(removeDataSeriesButton).text('-') 
+									 .off()
+			 						 .on('click', function(){
+											$(this).parents('.series-group-appendable').remove();
+				 					 });;
+			
+			$(removeDataSeriesSpan).append(removeDataSeriesButton);
+			
+			return removeDataSeriesDiv;
+		}
+		
+		
+		
+		function createAddDataSeriesDiv(count){
+			
+			var addDataSeriesDiv = createElement('div',
+												 {class:"col-md-1"});
+							
+			var addDataSeriesSpan = createElement('span',
+								  				 {style:"width: 34px; margin-bottom: 5px;"});
+			$(addDataSeriesDiv).append(addDataSeriesSpan);
+			
+			var addDataSeriesButton = createElement('button',
+													{type:"button",
+									 				 id:"btn"+count,
+									 				 class:"btn btn-primary add-series"});
+			
+			$(addDataSeriesButton).text('+');
+							
+			$(addDataSeriesSpan).append(addDataSeriesButton);
+			
+			$(addDataSeriesButton).click(function(){
+					handleAddDataSeriesEvent($(this));
+			});
+			
+			return addDataSeriesDiv;
+		}
+		
+		function handleAddDataSeriesEvent(refElement){
+			//lookup parent with class "series-appendable-wrapper"
+			$wrapper = $(refElement).parents('.series-appendable-wrapper');
+			
+			//find the last child item with class "series=group-appendable" from wrapper
+			$lastItem = $wrapper.find('.series-group-appendable').last(); 
+			
+			//clone as new item
+			$newInput = $lastItem.clone();
+
+			// change attribute for new item
+			$count = $wrapper.find('#count').val();
+			$count++;
+			
+			// change id of cloned item
+			$newInput.attr('id', 'series-group-appendable' + $count);
+			
+			// change the text input id and name
+			$newInput.find('input[type="text"]').attr({
+				id: "seriesGroupName" + $count,
+				name: "seriesGroupName" + $count,
+				'data-parsley-errors-container': "#seriesGroupName"+ $count+"Error"
+			});
+			$newInput.find('input[type="text"]').removeAttr('data-parsley-id');
+			$newInput.find('input[type="text"]').val('');
+			
+			$newInput.find('.seriesGroupNameError').attr({id: "seriesGroupName"+ $count+"Error"});
+			$newInput.find('.seriesGroupNameError').empty();
+			
+			//change the select id and name
+			$newInput.find('select').attr({
+				id: "seriesGroup" + $count,
+				name: "seriesGroup" + $count,
+				'data-parsley-errors-container': "#seriesGroup"+ $count+"Error",
+			});
+			
+			$newInput.find('select').removeAttr('data-parsley-id');
+			
+			$newInput.find('.seriesGroupError').attr({id: "seriesGroup"+ $count+"Error"});
+			$newInput.find('.seriesGroupError').empty();
+			
+			//clear selected value
+			$newInput.find('select').prop('selectedIndex',0);
+			
+			//update button id
+			$newInput.find('.btn').attr('id', 'btn' + $count);
+			$newInput.appendTo($wrapper);
+			
+			$newInput.find('.btn').click(function(){
+				handleAddDataSeriesEvent($(this));
+			});
+			
+			//change the previous button to remove
+			$lastItem.find('.btn')
+					 .removeClass('add-series btn-primary')
+					 .addClass('btn-danger')
+					 .text('-')
+					 .off()
+					 .on('click', function(){
+						$(this).parents('.series-group-appendable').remove();
+					 });
+			
+			$wrapper.find('#count').val($count);
+		}
+
+		// create html element by type and attributes
+		function createElement(elementType, attributes){
+			var element = document.createElement(elementType);
+			
+			if(attributes){
+				$(element).attr(attributes);
+			}
+			
+			return element;
+		}
+		
+		function validDataSeries(){
+			var isValid = true;
+
+			$wrapper = $(".series-appendable-wrapper");
+			
+			$.each($wrapper.find('select'), function(index, element){
+				console.log($(element).attr('id'));
+				var inputTextValue = $(element).find(":selected").val();
+				
+				if(inputTextValue ==undefined || inputTextValue.replace(/^\s+|\s+$/gm,'') == ''){
+					var failedInput = $(element).parsley();
+					
+					isValid = false; 
+					
+					//create custom parsley error message for affected field
+					window.ParsleyUI.addError(failedInput,$(element).attr('id')+'Error', "This field is required");
+				}
+			});
+			//all text fields
+			$.each($wrapper.find('input[type="text"]'), function(index, element){
+				console.log($(element).attr('id'));
+				var inputTextValue = $(element).val();
+				
+				if(inputTextValue ==undefined || inputTextValue.replace(/^\s+|\s+$/gm,'') == ''){
+					var failedInput = $(element).parsley();
+					
+					isValid = false; 
+
+					//create custom parsley error message for affected field
+					window.ParsleyUI.addError(failedInput,$(element).attr('id')+'Error', "This field is required");
+				}
+			});
+			
+			return isValid;
+		}
+		
+		function updateCartesianChartReportConnector(){
+			//validate required field
+			var parsleyForm = $('#cartReportConnectorDetailForm').parsley();
+			
+			parsleyForm.reset();
+			parsleyForm.validate();
+			
+			var isDataSeriesValid = validDataSeries();
+		
+			if(parsleyForm.isValid() && isDataSeriesValid){
+				blockItems();
+				updateCartChartReportConnectorChanges();
+			}
+			else{
+				return false;
+			}
+		}
+		
+		function blockItems(){
+			$('button').attr('disabled','disabled');
+			$('input').attr('disabled','disabled');
+			$('select').attr('disabled','disabled');
+		}
+		
+		function restoreBlockedItem(){
+			
+			console.log('restoreBlockedItem');
+			
+			$('button').removeAttr('disabled');
+			$('input').removeAttr('disabled');
+			$('select').removeAttr('disabled');
+		}
+		
+		function buildReportConnector(){
+			var connector = {};
+
+			connector['type']= $('input[name="chartType"]:checked', '#cartReportConnectorDetailForm').val();;
+			connector['cartesianChartTemplate'] = buildCartChartConnector();
+			connector['pieChartTemplate'] = undefined;
+			connector['crossTabTemplate'] = undefined;
+			
+			return connector;
+		}
+		
+		function buildCartChartConnector(){
+			var cartChartConnector = {};
+
+			cartChartConnector['id']			    = '0';
+			cartChartConnector['modelId']		    = $("#model").find(":selected").val();
+			cartChartConnector['reportDisplayName'] = $("#reportDisplayName").val();
+			cartChartConnector['reportQuery']	    = undefined;
+			cartChartConnector['templateName']	    = $("#connectorName").val();
+			cartChartConnector['reportTemplateType']= 'SIMPLE';
+			cartChartConnector['title']			    = $('#chartTitle').val();
+			cartChartConnector['showLegend']		= $('#showLegend').prop('checked');
+			cartChartConnector['showDataLabel']	    = $('#showDataLabel').prop('checked');
+			cartChartConnector['showXAxis']	    	= $('#showXAxis').prop('checked');
+			cartChartConnector['xaxisTitle']	    = $('#xAxisTitle').val();
+			cartChartConnector['showYAxis']	    	= $('#showYAxis').prop('checked');
+			cartChartConnector['yaxisTitle']	    = $('#yAxisTitle').val();
+			cartChartConnector['modelDataValueField']= $('#modelDataValueField').find(":selected").val();
+			cartChartConnector['modelDataLabelField']= $('#modelDataLabelField').find(":selected").val();
+			cartChartConnector['modelSeriesGroupField']= $('#modelSeriesGroupField').find(":selected").val();
+
+			cartChartConnector['dataSeries'] = [];
+			
+			$.each($('.series-appendable-wrapper').find('.series-group-appendable'), function(index, element){
+				var seriesGroup = $(element).find('select :selected').val();
+				var seriesGroupName = $(element).find('input[type="text"]').val();
+				
+				cartChartConnector.dataSeries.push({ id:'0', 
+													 name: seriesGroupName, 
+													 modelSeriesValue: seriesGroup});
+			});
+			
+			return cartChartConnector;
+		}
+		
+		function plotChartPreview(hideLoading){
+			
+			if(!hideLoading){
+				//validate required field
+				var parsleyForm = $('#cartReportConnectorDetailForm').parsley();
+				parsleyForm.validate();
+			
+				if( !parsleyForm.isValid() )
+					return false;
+			}
+
+			$('#cartChartPreview').empty();
+			$('#cartChartPreviewTitle').empty();
+			
+			var reportConnector = buildReportConnector();
+			
+			console.log('generatePreview '+JSON.stringify(reportConnector));
+			
+			$("#previewButton").attr('disabled','disabled');
+			//jquery ajax
+			$.ajax({
+				type: "POST",
+				url: getRestServerUrl()+"/reportbay-rest/api/reports/preview",
+				data: JSON.stringify(reportConnector),
+				contentType: "application/json",
+				crossDomain: true,
+				
+				success: function(response){
+					if(response){
+						console.log('generatePreview success');
+						var report = response.cartesianChartReport;
+						
+						setBezelPageParam('report',report);
+						
+						//chart title
+						$('#cartChartPreviewTitle').append(report.title);
+						
+						//obtain data
+						var cartData = preparePreviewData(report.chartDataSeries, reportConnector.cartesianChartTemplate.dataSeries);
+						
+						console.log('cartData '+JSON.stringify(cartData));
+
+						//prepare configuration
+						var configuration = preparePreviewConfiguration(report, response.type);
+						
+						//hide sample
+						$('#samplePreview').hide();
+						$('#generatingPreview').show();
+						
+						//plot cartesian chart
+						$.plot('#cartChartPreview', cartData, configuration);
+						
+						$('#generatingPreview').hide();
+						//show preview
+						$('#preview').show();
+					}
+				},
+				complete: function(jqXHR, textStatus){
+					$("#previewButton").removeAttr('disabled');
+					
+					if(hideLoading){
+						$('#loading').hide();
+						$('#cartesian-rptconnector-edit-detail').show();
+					}
+				}
+			});
+		}
+
+		function preparePreviewData(chartDataSeries, connectorSeries){
+			
+			var previewData = new Array();
+			
+			$.each(connectorSeries, function(index, conSeries){
+				var series = {label: conSeries.name,
+						 	  data : []};
+				//added each series into preview data
+			    previewData.push(series);
+				
+				for(var dIndex=0; dIndex < chartDataSeries.length; dIndex++){
+					var chartSeries = chartDataSeries[dIndex];
+					console.log(chartSeries.seriesName+":"+conSeries.name);
+					if(chartSeries.seriesName == conSeries.name){
+						
+						var refSeries = chartDataSeries.splice(dIndex,1)[0];
+						
+						console.log(JSON.stringify(refSeries));
+						
+						for (var key in refSeries.seriesData) {
+							//only process non prototype
+							if (refSeries.seriesData.hasOwnProperty(key)) {
+
+							    series.data.push([key, refSeries.seriesData[key]]);
+							}
+						}
+
+						break;
+					}
+				}
+			});
+			
+			return previewData; 
+		}
+
+		function preparePreviewConfiguration(report, chartType){
+			
+			var configuration = {};
+			
+			if(chartType){
+				configuration['xaxis'] = { mode: "categories" };
+				var isArea = false;
+
+				switch(chartType){
+					case 'AREA':
+						isArea = true;
+					case 'LINE':
+						
+						configuration['series'] ={
+							lines: {
+								show: true,
+								lineWidth: 2,
+								fillColor: { colors: [ { opacity: 0.4 }, { opacity: 0.4 } ] },
+								fill : isArea
+							},
+							points: {
+								lineWidth: 3,
+							},
+	
+							shadowSize: 0
+						};
+						
+						break;
+					case 'BAR':
+					case 'COLUMN':
+						configuration['series'] ={
+								bars:{
+										show : true,
+										fill : true,
+										lineWidth: 0,
+										order: true,
+										barWidth: 0.8,
+										align: 'center'
+								}
+							};
+						configuration.xaxis['autoscaleMargin'] = '0.2';
+						break;
+				}
+
+				configuration['grid']= {
+						hoverable: true, 
+						clickable: true,
+						borderWidth: 0,
+						tickColor: "#E4E4E4"
+					};
+				configuration['colors'] = [ "#5399D6", "#d9d9d9", "#d7ea2b"];
+				configuration['tooltip'] = {show: true};
+				
+				configuration['legend'] = {show: report.showLegend};
+				
+				if(report.showXAxis && report.xaxisTitle){
+					configuration['xaxes']=[{axisLabel:report.xaxisTitle, axisLabelPadding: 15}];
+				}
+				
+				if(report.showYAxis && report.yaxisTitle){
+					configuration['yaxes']=[{axisLabel: report.yaxisTitle, position : 'left'}];	
+				}
+				
+				if(report.showDataLabel){
+					configuration.series['valueLabels']= {show: report.showDataLabel};
+					
+					if('COLUMN' == chartType){
+						configuration.series.valueLabels['align']='center';
+					}
+				}
+				
+				if('COLUMN' == chartType){
+					configuration.series.bars['horizontal'] = true;
+					configuration.series.bars.barWidth = 8;
+				}
+			}
+			
+			return configuration;
+			
+		}
+			
+		/***** initialization *****/
+		$(document).ready(function(){
+
+			var reportConnector = getBezelPageParam("reportConnector");
+			
+			//clear page context before start
+			initBezelParamMap();
+			
+			//put back for current page usage
+			setBezelPageParam("reportConnector",reportConnector);
+			plotSampleChart(reportConnector.type);
+			
+			populateCartesianConnectorDetails(reportConnector.cartesianChartTemplate, reportConnector.type);
+			
+			$("#updateButton").on('click', function(){
+				//update cartesian chart report connector
+				console.log('update cartesian chart report connector');
+				
+				updateCartesianChartReportConnector();
+			});
+
+		});
+		
+		</script>
