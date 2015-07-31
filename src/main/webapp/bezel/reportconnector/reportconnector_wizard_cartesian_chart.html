@@ -183,10 +183,10 @@
 																	</div>
 																	
 																	<div class="form-group">
-																		<label for="modelCategoryField">Model Category Field *</label>
-																		<select id="modelCategoryField" class="form-control" onchange="javascript:rebuildDataSeries();"
-																	        required data-parsley-errors-container="#modelCategoryFieldError"></select>
-																		<div id="modelCategoryFieldError" class="errorMessage"></div>
+																		<label for="modelSeriesGroupField">Model Series Group Field *</label>
+																		<select id="modelSeriesGroupField" class="form-control" onchange="javascript:rebuildDataSeries();"
+																	        required data-parsley-errors-container="#modelSeriesGroupFieldError"></select>
+																		<div id="modelSeriesGroupFieldError" class="errorMessage"></div>
 																	</div>
 																	
 																	<div class="form-group">
@@ -255,8 +255,10 @@
 																		<span class="data-name">Model</span>
 																		<span id="finalModel" class="data-value"></span>
 																	</p>
-																</div>
-																<div class="col-md-6 widget-content">												
+																	<p class="data-row">
+																		<br>
+																	</p>
+																	
 																	<h4>
 																		<i class="fa fa-square"></i>
 																		Chart Configuration Information
@@ -274,18 +276,40 @@
 																		<span id="finalShowLegend" class="data-value"></span>
 																	</p>
 																	<p class="data-row">
-																		<span class="data-name">Pie Chart Data Format</span>
-																		<span id="finalPieChartDataFormat" class="data-value"></span>
+																		<span class="data-name">Show X-Axis</span>
+																		<span id="finalShowXAxis" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">X-Axis Title</span>
+																		<span id="finalXAxisTitle" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Show Y-Axis</span>
+																		<span id="finalShowYAxis" class="data-value"></span>
+																	</p>
+																	<p class="data-row">
+																		<span class="data-name">Y-Axis Title</span>
+																		<span id="finalYAxisTitle" class="data-value"></span>
 																	</p>
 																	<p class="data-row">
 																		<span class="data-name">Model Data Field</span>
 																		<span id="finalModelDataField" class="data-value"></span>
 																	</p>
 																	<p class="data-row">
-																		<span class="data-name">Model Category Field</span>
-																		<span id="finalModelCategoryField" class="data-value"></span>
+																		<span class="data-name">Model Data Label Field</span>
+																		<span id="finalModelDataLabelField" class="data-value"></span>
 																	</p>
 																</div>
+																<div class="col-md-6 widget-content">												
+																<h4>
+																	<i class="fa fa-square"></i>
+																	Series
+																</h4>
+																<p class="data-row">
+																	<table id="finalSeriesTable" class="table table-bordered table-striped">
+																	</table>
+																</p>
+															</div>
 															</div>
 														</form>
 													</div>
@@ -406,7 +430,7 @@
 						$('#cartChartPreviewTitle').append(report.title);
 						
 						//obtain data
-						var cartData = preparePreviewData(report.chartDataSeries);
+						var cartData = preparePreviewData(report.chartDataSeries, reportConnector.cartesianChartTemplate.dataSeries);
 						
 						console.log('cartData '+JSON.stringify(cartData));
 
@@ -456,12 +480,12 @@
 			});
 		};
 		
-		function retrieveCategoryAndInitDataSeries(modelId, modelCategoryField){
-			console.log('retrieveCategoryAndInitDataSeries :'+modelId+':'+modelCategoryField);
+		function retrieveCategoryAndInitDataSeries(modelId, modelSeriesGroupField){
+			console.log('retrieveCategoryAndInitDataSeries :'+modelId+':'+modelSeriesGroupField);
 			//jquery ajax
 			$.ajax({
 				type: "GET",
-				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId+"/uniquedatafield?dataField="+modelCategoryField,
+				url: getRestServerUrl()+"/reportbay-rest/api/models/"+modelId+"/uniquedatafield?dataField="+modelSeriesGroupField,
 
 				success: function(response){
 					var uniqueFields = response.columnValueList;
@@ -493,8 +517,8 @@
 			$('#modelDataLabelField').empty();
 			$('#modelDataLabelField').append($('<option></option>'));
 			
-			$('#modelCategoryField').empty();
-			$('#modelCategoryField').append($('<option></option>'));
+			$('#modelSeriesGroupField').empty();
+			$('#modelSeriesGroupField').append($('<option></option>'));
 			
 			if(modelAttrBindings && $.isArray(modelAttrBindings)){
 				for(var index=0; index < modelAttrBindings.length; index++){
@@ -502,7 +526,7 @@
 						$('#modelDataValueField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
 					}
 					$('#modelDataLabelField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
-					$('#modelCategoryField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
+					$('#modelSeriesGroupField').append($('<option></option>').val(modelAttrBindings[index].alias).html(modelAttrBindings[index].alias));
 				}
 			}
 		}
@@ -522,10 +546,10 @@
 			resetDataSeries();
 			
 			var modelId = $("#model").find(":selected").val();
-			var modelCategoryField = $("#modelCategoryField").find(":selected").val();
+			var modelSeriesGroupField = $("#modelSeriesGroupField").find(":selected").val();
 			
-			if(modelId && modelCategoryField){
-				retrieveCategoryAndInitDataSeries(modelId, modelCategoryField);
+			if(modelId && modelSeriesGroupField){
+				retrieveCategoryAndInitDataSeries(modelId, modelSeriesGroupField);
 			}
 		}
 		
@@ -533,7 +557,7 @@
 		function initSeriesGroup(uniqueFields){
 
  			var seriesGroupAppendableDiv = createElement('div',
-														 {class : "series-group-appendable", 
+														 {class : "series-group-appendable col-md-12", 
 												   		  id:"series-group-appendable1"});
 			//1. select drop down field
 			var seriesGroupDiv = createElement('div',
@@ -634,6 +658,7 @@
 				'data-parsley-errors-container': "#seriesGroupName"+ $count+"Error"
 			});
 			$newInput.find('input[type="text"]').removeAttr('data-parsley-id');
+			$newInput.find('input[type="text"]').val('');
 			
 			$newInput.find('.seriesGroupNameError').attr({id: "seriesGroupName"+ $count+"Error"});
 			$newInput.find('.seriesGroupNameError').empty();
@@ -721,42 +746,89 @@
 			
 			var reportConnector = getBezelPageParam('reportConnector');
 			
-			if(reportConnector && reportConnector.pieChartTemplate){
-				$("#finalConnectorName").append(reportConnector.pieChartTemplate.templateName);
-				$("#finalReportName").append(reportConnector.pieChartTemplate.reportDisplayName);
+			if(reportConnector && reportConnector.cartesianChartTemplate){
+				
+				var cartesianChartTemplate = reportConnector.cartesianChartTemplate;
+				
+				console.log(JSON.stringify(cartesianChartTemplate));
+				
+				$("#finalConnectorName").append(cartesianChartTemplate.templateName);
+				$("#finalReportName").append(cartesianChartTemplate.reportDisplayName);
 				$("#finalModel").append($("#model").find(":selected").text());
 				
 				//chart configuration
-				$("#finalChartTitle").append(reportConnector.pieChartTemplate.title);
+				$("#finalChartTitle").append(cartesianChartTemplate.title);
 				
 				var showDataLabel = "No";
 				
-				if(reportConnector.pieChartTemplate.showDataLabel){
+				if(cartesianChartTemplate.showDataLabel){
 					showDataLabel = "Yes";
 				}
 				$("#finalShowDataLabel").append(showDataLabel);
 				
 				var showLegend = "No";
 				
-				if(reportConnector.pieChartTemplate.showLegend){
+				if(cartesianChartTemplate.showLegend){
 					showLegend = "Yes";
 				}
 				$("#finalShowLegend").append(showLegend);
-				
-				var dataFormat ='-';
-				if('PERCENT' == reportConnector.pieChartTemplate.dataTypeFormat){
-					dataFormat = 'Percentage';
-				}
-				else if ('VALUE' == reportConnector.pieChartTemplate.dataTypeFormat){
-					dataFormat = 'Value';
-				}
 
-				$("#finalPieChartDataFormat").append(dataFormat);
+				var showXAxis = "No";
 				
-				$("#finalModelDataField").append($('#modelDataField').find(":selected").text());
+				if(cartesianChartTemplate.showXAxis){
+					showXAxis = "Yes";
+				}
+				$("#finalShowXAxis").append(showXAxis);
+				
+				$("#finalXAxisTitle").append(cartesianChartTemplate.xaxisTitle);
+				
+				var showYAxis = "No";
+				
+				if(cartesianChartTemplate.showYAxis){
+					showYAxis = "Yes";
+				}
+				$("#finalShowYAxis").append(showYAxis);
+				
+				$("#finalYAxisTitle").append(cartesianChartTemplate.yaxisTitle);
+				
+				$("#finalModelDataField").append(cartesianChartTemplate.modelDataValueField);
+				$("#finalModelDataLabelField").append(cartesianChartTemplate.modelDataLabelField);
+				
+				$('#finalSeriesTable').empty();
+			
+				var seriesTab = $('#finalSeriesTable').DataTable({
+					"destroy": true,
+					paging : false,
+					searching : false,
+					ordering: false,
+					info:false,
+					"columns" : [
+									{"title":"Model Series Name", data:null, render: "modelSeriesName"},
+									{"title":"Series Display Name", data:null, render: "seriesDisplayName"}]
+				});
+				
+				var dataSeries = cartesianChartTemplate.dataSeries;
 
-				$("#finalModelCategoryField").append($('#modelCategoryField').find(":selected").text());
+				if(dataSeries){
+					for(index = 0; index<dataSeries.length; index++){
+						seriesTab.row.add(new SeriesRow(dataSeries[index].modelSeriesValue,dataSeries[index].name));
+					}
+					
+					seriesTab.draw();
+				}
 			}
+		}
+		
+		function SeriesRow(modelSeriesName, seriesDisplayName){
+			this._modelSeriesName = modelSeriesName;
+			this._seriesDisplayName = seriesDisplayName;
+			
+			this.modelSeriesName = function(){
+				return this._modelSeriesName;
+			};
+			this.seriesDisplayName = function(){
+				return this._seriesDisplayName;
+			};
 		}
 		
 		function clearConfirmationDetail(){
@@ -881,7 +953,7 @@
 						tickColor: "#E4E4E4"
 					};
 				configuration['colors'] = ["#adadad"];
-				configuration['tooltip'] = true;
+				configuration['tooltip'] = {show: true, content: "%s | X: %x | Y: %y"};
 				configuration['xaxes']=[{axisLabel: 'X-Axis Title', axisLabelPadding: 15}];
 				configuration['yaxes']=[{position : 'left', axisLabel: 'Y-Axis Title'}];
 				configuration.series['valueLabels']= {show: true};
@@ -898,26 +970,37 @@
 			
 		}
 		
-		function preparePreviewData(chartDataSeries){
+		function preparePreviewData(chartDataSeries, connectorSeries){
 			
 			var previewData = new Array();
 			
-			$.each(chartDataSeries, function(index, dataSeries){
-				var series = {label: dataSeries.seriesName,
-							  data : []};
+			$.each(connectorSeries, function(index, conSeries){
+				var series = {label: conSeries.name,
+						 	  data : []};
 				//added each series into preview data
 			    previewData.push(series);
-
-				for (var key in dataSeries.seriesData) {
-					//only process non prototype
-					if (dataSeries.seriesData.hasOwnProperty(key)) {
-					    var data ={};
-
-					    series.data.push([key, dataSeries.seriesData[key]]);
-					  }
-				}
 				
-			})		
+				for(var dIndex=0; dIndex < chartDataSeries.length; dIndex++){
+					var chartSeries = chartDataSeries[dIndex];
+					console.log(chartSeries.seriesName+":"+conSeries.name);
+					if(chartSeries.seriesName == conSeries.name){
+						
+						var refSeries = chartDataSeries.splice(dIndex,1)[0];
+						
+						console.log(JSON.stringify(refSeries));
+						
+						for (var key in refSeries.seriesData) {
+							//only process non prototype
+							if (refSeries.seriesData.hasOwnProperty(key)) {
+
+							    series.data.push([key, refSeries.seriesData[key]]);
+							}
+						}
+
+						break;
+					}
+				}
+			});
 			
 			return previewData; 
 		}
@@ -951,7 +1034,7 @@
 			cartChartConnector['yaxisTitle']	    = $('#yAxisTitle').val();
 			cartChartConnector['modelDataValueField']= $('#modelDataValueField').find(":selected").val();
 			cartChartConnector['modelDataLabelField']= $('#modelDataLabelField').find(":selected").val();
-			cartChartConnector['modelSeriesGroupField']= $('#modelCategoryField').find(":selected").val();
+			cartChartConnector['modelSeriesGroupField']= $('#modelSeriesGroupField').find(":selected").val();
 
 			cartChartConnector['dataSeries'] = [];
 			
@@ -1018,7 +1101,7 @@
 						tickColor: "#E4E4E4"
 					};
 				configuration['colors'] = [ "#5399D6", "#d9d9d9", "#d7ea2b"];
-				configuration['tooltip'] = true;
+				configuration['tooltip'] = {show: true, content: "%s | X: %x | Y: %y"};
 				
 				
 				configuration['legend'] = {show: report.showLegend};
@@ -1047,32 +1130,6 @@
 			
 			return configuration;
 			
-		}
-			
-		
-		function labelFormatter(label, series) {
-			
-			var report = getBezelPageParam('report');
-			var labelFormat = report.dataTypeFormat;
-			
-			console.log(series.data[0][1]);
-			console.log(series.percent);
-			
-			var labelPlaceHolder = '';
-			var valuePlaceHolder = '';
-			
-			if(report.showDataLabel){
-				labelPlaceHolder =  label + "<br/>";
-			
-				if('PERCENT' == labelFormat && series.percent){
-					valuePlaceHolder = Math.round(series.percent)+'%';
-				}
-				else if ('VALUE' == labelFormat && series.data[0][1]){
-					valuePlaceHolder = Math.round(series.data[0][1])
-				}
-			}
-
-			return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
 		}
 		
 		function validateDataSeries(){
@@ -1140,6 +1197,7 @@
 					var attributeMaps = getBezelPageParam("attributeMaps");
 					var model = getBezelPageParam("model");
 					
+					//when next at step 1, based on type select prepare the sample chart
 					if(data.step === 1 && data.direction == 'next'){
 						var chartType= $('input[name="chartType"]:checked', '#form1').val();
 						
@@ -1168,12 +1226,11 @@
 						if(!validateDataSeries())
 							return false;
 	
- 						var reportConnector = buildCartChartConnector();
+ 						var reportConnector = buildReportConnector();
 	
- 						console.log('passed'+reportConnector);
-/*						setBezelPageParam("reportConnector", reportConnector);
+						setBezelPageParam("reportConnector", reportConnector);
 						updateConfirmationDetail();
- */					}
+ 					}
 				}
 	
 			}).on('finished', function(){
