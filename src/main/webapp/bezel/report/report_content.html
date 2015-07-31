@@ -46,6 +46,10 @@
 
 									</div>
 								</div>
+								<div style="float:right;">
+									<button type='button' id="backButton" class='btn widget widget-header' onclick="javascript:loadContent('reportconnector_content.html')"> Back </button>
+									<button type='button' id="updateButton" class='btn widget widget-header' > Update </button>
+								</div>
 								<!-- END ROW -->
 							</div>
 							<!-- /main-content -->
@@ -68,6 +72,8 @@
 									if(response){
 										var liteReports = response.liteReports;
 										
+										setBezelPageParam("liteReports", liteReports);
+										
 										if(liteReports){
 											
 											var index;
@@ -76,7 +82,7 @@
 											
 											for(index =0; index < liteReports.length; index++){
 												//for each of report create elements
-												tableDataSet.push(createReportRow(liteReports[index]));
+												tableDataSet.push(createReportRow(liteReports[index],index));
 											}
 											
 											renderTable(tableDataSet);
@@ -97,14 +103,14 @@
 							
 						}
 						
-						function createReportRow(report){
+						function createReportRow(report, index){
 							
 							var rowDataSet = [];
 							
 							rowDataSet.push(report.reportName);
 							rowDataSet.push(getReportType(report));
-							rowDataSet.push(getFormatDate(report.creationDate));
-				
+							rowDataSet.push(getFormatDate(report.creationDate));							
+							rowDataSet.push("<button type='button' class='widget main-header viewActionButton' data-action='view' data-reference='"+index+"' style='border:none;margin-bottom: 0px;'><em><i class='fa fa-eye'></i></em></button>");
 							return rowDataSet;
 						}
 						
@@ -135,17 +141,58 @@
 							return reportType;
 						}
 						
-						function renderTable(tableDataSet){
-							$('#report-table').dataTable({
-								"data": tableDataSet,
-								"destroy": true,
-								"columns" : [
-									{"title":"Name"},
-									{"title":"Template Type"},
-									{"title":"Creation Date"}
-								]
-							});
+						function getLiteReportByIndex(index){
+							
+							var liteReport = undefined;
+							
+							if(!isNaN(index)){
+								var liteReports = getBezelPageParam("liteReports")
+								if(liteReports)
+								 {
+									liteReport = liteReports[index];
+								 }
+								
+							}							
+							return liteReport;
 						}
 						
+						function registerButtonEventHandler(){
+							console.log("registerButtonEventHandler");
+							jQuery.each($("#report-table").find('button'), 
+									  function(index, item){
+								var ev = $._data(item, 'events');
+								
+								if(ev && ev.click){
+									console.log('has click event handler');
+								}
+								//not yet have click event handler, create clcik event handler
+								else{
+									$(item).on('click', function(){
+										var action = $(this).data('action');
+										var reference = $(this).data('reference');
+										var refIdx = parseInt(reference);
+										var liteReport = getLiteReportByIndex(refIdx);										
+										if(liteReport)
+										 {				
+											setBezelPageParam("liteReport", liteReport);
+											loadContent("view_report.html");											
+										 }
+									});
+								}
+							});
+						}
+						function renderTable(tableDataSet){
+							$('#report-table').on('draw.dt', function(){registerButtonEventHandler();})
+											  .dataTable({
+													"data": tableDataSet,
+													"destroy": true,
+													"columns" : [
+													{"title":"Name"},
+													{"title":"Template Type"},
+													{"title":"Creation Date"},
+													{"title":"Action","orderable":false, "width":"15%"}
+												]
+											});
+						 }						
 						reportListRequest();
 					</script>

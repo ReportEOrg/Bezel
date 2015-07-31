@@ -17,7 +17,7 @@ multifactTableRenderer = function() {
 				tr.append($("<th>").attr("colspan", rowAttrs.length).attr("rowspan", colAttrs.length));
 			}
 
-			tr.append($("<th class='pvtAxisLabel'>").text(c));
+			tr.append($("<th class='pvtAxisLabel pvtAxisLabelColumn'>").text(c));
 
 			tmpAggregator = pivotData.getAggregator([], []);
 			if (tmpAggregator.multivalue) {
@@ -45,7 +45,7 @@ multifactTableRenderer = function() {
 			tr = $("<tr>");
 			for (i in rowAttrs) {
 				r = rowAttrs[i];
-				tr.append($("<th class='pvtAxisLabel'>").text(r));
+				tr.append($("<th class='pvtAxisLabel pvtAxisLabelRow'>").text(r));
 			}
 
 			tmpAggregator = pivotData.getAggregator([], []);
