@@ -237,6 +237,8 @@
 										window.ParsleyUI.addError(joinedQueryError,"joinedQueryError", "Unable to validate joined query");
 										
 										restoreBlockedItem();
+										
+										$('#validate-joined-query').removeAttr('disabled');
 									}
 									//susccess, continue to generate preview
 									else{
@@ -659,7 +661,7 @@
 							
 							//change wording
 							$('#validate-joined-query').html('Validate Query');
-							$('#validate-joined-query').attr('disabled','disabled')
+							$('#validate-joined-query').attr('disabled','disabled');
 						}
 
 						/** enable validate Query button if attribute map is cleared **/
