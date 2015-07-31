@@ -23,7 +23,7 @@
 					<div class="widget widget-table">
 						<div class="widget-header">
 							<h3>
-								<i class="fa fa-pencil"></i> View Report
+								View Report
 							</h3>
 							<div class="btn-group widget-header-toolbar"></div>
 						</div>
@@ -61,9 +61,10 @@
 		
 		if(liteReport){
 			var title = $(".widget-header h3").html();			
-			$(".widget-header h3").html((title+" - "+liteReport.reportName));
+			
 			if ('X' == liteReport.templateType){
 				loadViewContent("view_crosstab_report.html");
+				$(".widget-header h3").html(("<i class='fa fa-table'></i> "+title+" - "+liteReport.reportName));
 			}
 		}
 	});
