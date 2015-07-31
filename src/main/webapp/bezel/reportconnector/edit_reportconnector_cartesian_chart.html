@@ -18,26 +18,12 @@
 													<div class="form-group">
 														<label for="reportDisplayName">Type *</label>
 														<label class="fancy-radio">
-															<input type="radio" name="chartType" value="AREA" required
-																   data-parsley-errors-container="#chartTypeError">
-															<span><i></i><span class="fa fa-area-chart"></span>&nbsp;Area</span>
+															<input type='hidden' id='chartType'>
+															<span id="areaChartType" style="display:none;"><i class="fa fa-area-chart"></i>&nbsp;Area</span>
+															<span id="barChartType" style="display:none;"><i class="fa fa-area-chart"></i>&nbsp;Bar</span>
+															<span id="columnChartType" style="display:none;"><i class="fa fa-area-chart"></i>&nbsp;Column</span>
+															<span id="lineChartType" style="display:none;"><i class="fa fa-area-chart"></i>&nbsp;Line</span>
 														</label>
-														<label class="fancy-radio">
-															<input type="radio" name="chartType" value="BAR" required
-																   data-parsley-errors-container="#chartTypeError">
-															<span><i></i><span  class="fa fa-bar-chart"></span>&nbsp;Bar</span>
-														</label>
-														<label class="fancy-radio">
-															<input type="radio" name="chartType" value="COLUMN" required
-																   data-parsley-errors-container="#chartTypeError">
-															<span><i></i><span  class="fa fa-bar-chart fa-rotate-90"></span>&nbsp;Column</span>
-														</label>
-														<label class="fancy-radio">
-															<input type="radio" name="chartType" value="LINE" required
-																   data-parsley-errors-container="#chartTypeError">
-															<span><i></i><span  class="fa fa-line-chart"></span>&nbsp;Line</span>
-														</label>
-														<div id="chartTypeError" class="errorMessage"></div>
 													</div>
 													<div class="form-group">
 														<label for="model">Model *</label>
@@ -373,7 +359,7 @@
 	
 		function rebuildModelDataFieldOptions(modelAttrBindings){
 			
-			$('#modelDataField').empty();
+			$('#modelDataLabelField').empty();
 			$('#modelDataLabelField').append($('<option></option>'));
 			
 			$('#modelDataValueField').empty();
@@ -564,7 +550,25 @@
 				$("#showYAxis").prop('checked', cartChartTemplate.showYAxis);
 				$('#yAxisTitle').val(cartChartTemplate.yaxisTitle);
 				
-				$('input:radio[name=chartType][value="'+type+'"]').prop('checked', true);
+				
+				$('#chartType').val(type);
+				
+				if(type){
+					switch(type){
+						case 'AREA' :
+							$('#areaChartType').show();
+							break;
+						case 'BAR' :
+							$('#barChartType').show();
+							break;
+						case 'COLUMN' :
+							$('#columnChartType').show();
+							break;
+						case 'LINE' :
+							$('#lineChartType').show();
+							break;
+					}
+				}
 				
 				//ajax call to build model drop down + other dependent drop down 
 				buildModelOptions(cartChartTemplate.modelId, 
@@ -852,7 +856,7 @@
 		function buildReportConnector(){
 			var connector = {};
 
-			connector['type']= $('input[name="chartType"]:checked', '#cartReportConnectorDetailForm').val();;
+			connector['type']= $('#chartType').val();;
 			connector['cartesianChartTemplate'] = buildCartChartConnector();
 			connector['pieChartTemplate'] = undefined;
 			connector['crossTabTemplate'] = undefined;
@@ -1075,7 +1079,83 @@
 			}
 			
 			return configuration;
+		}
+		
+		function resetConfiguration(){
 			
+			//reset to default
+			$("#showLegend").prop('checked', true);
+			$("#showDataLabel").prop('checked', true);
+			$("#showXAxis").prop('checked', true);
+			$("#showYAxis").prop('checked', true);
+			
+
+			$("#xAxisTitle").val('');
+			$("#yAxisTitle").val('');
+			$("#modelDataValueField").val('');
+			$("#modelDataLabelField").val('');
+			$("#modelSeriesGroupField").val('');
+			
+			resetPreview();
+			
+			var selectedModel = getSelectedModel($("#model").find(":selected").val());
+
+			if(selectedModel){
+				rebuildModelDataFieldOptions(selectedModel.attributeBindings);
+			}
+			
+			resetDataSeries();
+			
+			$('.switch-reportbay').bootstrapSwitch("setState", true);
+		}
+		
+		function resetDataSeries(){
+			$wrapper = $(".series-appendable-wrapper");
+			
+			$wrapper.find(".series-group-appendable").remove();
+
+			$wrapper.find('#count').val(1);
+		}
+		
+		function resetPreview(){
+			$('#samplePreview').show();
+			$('#generatingPreview').hide();
+			$('#preview').hide();
+		}
+		
+		function getSelectedModel(selectedModelId){
+			
+			var selectedModel = undefined;
+			
+			var models = getBezelPageParam("models");
+
+			if(models){
+				
+				for(var index=0; index<models.length; index++){
+					var model = models[index];
+					
+					if(model && model.id == selectedModelId){
+						selectedModel = model;
+						break;
+					}
+				}
+			}
+			
+			return selectedModel;
+		}
+		
+		function rebuildDataSeries(){
+			
+			console.log('rebuildDataSeries');
+
+			resetDataSeries();
+			
+			var modelId = $("#model").find(":selected").val();
+			var modelSeriesGroupField = $("#modelSeriesGroupField").find(":selected").val();
+			
+			if(modelId && modelSeriesGroupField){
+				retrieveCategoryAndInitDataSeries(modelId, modelSeriesGroupField,[{modelSeriesValue:'',name:''}]);
+			}
 		}
 			
 		/***** initialization *****/
