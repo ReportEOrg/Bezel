@@ -56,11 +56,11 @@
 			viewCrossTabReport(liteReport.templateId);
 		}
 		else{
-			viewReport(liteReport);
+			viewOtherReport(liteReport);
 		}
 	}
 
-	function viewReport(liteReport){
+	function viewOtherReport(liteReport){
 		console.log(liteReport.templateId);
 		$.ajax({
 			type: "GET",
