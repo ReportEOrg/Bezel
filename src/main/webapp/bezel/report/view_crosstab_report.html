@@ -1,0 +1,102 @@
+<div class="row">
+	<div class='viewOuterDiv' style="overflow: auto;">
+		<div id="viewPvtTable" class="panel-body"></div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var liteReport = getBezelPageParam("liteReport");
+
+		//clear page context before start
+		initBezelParamMap();
+
+		//put back for current page usage
+		setBezelPageParam("liteReport", liteReport);
+		viewCrossTabReport(liteReport.templateId);
+	});
+	function viewCrossTabReport(reportConnectorId)
+	 {
+		$.ajax({
+			type: "GET",
+			url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors/"+reportConnectorId,
+			
+			success: function(response){
+				if(response){
+					createAndPopulateCrossTabDetails(response.crossTabTemplate);
+				}
+			},
+			complete: function(jqXHR, textStatus){									
+													
+				if("success" != textStatus){										
+					displayAjaxError("Failed to retrieve data from remote server");
+				}
+			} 
+		});	
+	 }
+	function createAndPopulateCrossTabDetails(crossTabTemplate)
+	 {
+		var rowAttributes=[];
+		var columnAttributes=[];
+		var valueAttributes=[];
+		var selectedModelId = crossTabTemplate.modelId;
+		$.each(crossTabTemplate.crossTabDetail, function(idx, eachAttribute) {
+			if(eachAttribute.sqlFunction == 'GROUPBY' && eachAttribute.groupOrAggregate == 'GROUPING')
+			 {
+					if(eachAttribute.fieldType == 'ROW')
+				 	 {
+						rowAttributes.push(eachAttribute.attributeDisplayName);
+					 }	
+					else if(eachAttribute.fieldType == 'COLUMN')
+				 	 {
+						columnAttributes.push(eachAttribute.attributeDisplayName);
+					 }
+					else{}
+			 }
+			else if(eachAttribute.fieldType == 'COLUMN' && eachAttribute.sqlFunction == 'SUM' && eachAttribute.groupOrAggregate == 'SUM')
+			 {
+				valueAttributes.push(eachAttribute.attributeDisplayName);
+			 }
+			else{}
+		});	
+		sortByAttributeDisplaySequence(rowAttributes);
+		sortByAttributeDisplaySequence(columnAttributes);
+		sortByAttributeDisplaySequence(valueAttributes);
+		
+		var custom_renderers = {
+				"Multifact Table" : multifactTableRenderer()
+	 	};
+
+		var custom_aggregators = {
+				"Multifact aggregator" : multifactSumAggregator()
+	 	};
+		
+		$.ajax({
+			type : 'GET',
+			url : getRestServerUrl()+"/reportbay-rest/api/models/" + selectedModelId + "/previewdata?maxRow=100",
+			dataType : 'JSON',
+			success : function(data) {
+				var modelActData = data;				
+				$("#viewPvtTable").pivotUI(modelActData, {
+					aggregators : $.extend(custom_aggregators, $.pivotUtilities.aggregators),
+					renderers : $.extend(custom_renderers, $.pivotUtilities.renderers, $.pivotUtilities.gchart_renderers),
+					rows : rowAttributes,
+					cols : columnAttributes,
+					vals : valueAttributes,
+					hiddenAttributes : [ "id" ]
+				}, true);
+			},
+			complete: function(jqXHR, textStatus){									
+				$('#loading').hide();											
+				if("success" != textStatus){										
+					alert("Error while fetching model Data: " + JSON.stringify(e));
+				}
+			}			
+		});
+	 } 
+	function sortByAttributeDisplaySequence(attributeMappings)
+	{
+		attributeMappings.sort(function(attr1, attr2) {
+		    return parseInt (attr1.attributeDisplaySequence) - parseInt (attr2.attributeDisplaySequence);
+		});
+	}
+</script>

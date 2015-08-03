@@ -144,3 +144,36 @@ a.applyChanges:active {
 	/* border: 1px solid transparent;
 	border-color: #ddd; */
 }
+
+.pvtAxisLabelColumn, .pvtAxisLabelRow {
+	background-color: rgb(10, 95, 106);
+	color: white;
+}
+
+.pvtColLabel, .pvtRowLabel {
+	background-color: rgb(12, 116, 130);
+	color: white;
+}
+
+.colTotal, .rowTotal {
+	background-color: rgb(10, 95, 106);
+	color: white;
+	text-align: right;
+}
+
+.pvtTotalLabel {
+	background-color: rgb(10, 95, 106);
+	color: white;
+}
+
+.pvtGrandTotal {
+	font-weight: bold;
+	font-size: 16px;
+	color: white;
+	background-color: rgb(6,57,64);
+	text-align: right;
+}
+.pvtVal
+{
+	text-align: right;
+}

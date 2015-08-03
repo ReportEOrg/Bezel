@@ -1,0 +1,76 @@
+<div class="col-md-10 content-wrapper expanded">
+	<div class="row">
+		<div class="col-md-4 ">
+			<ul class="breadcrumb">
+				<li><i class="fa fa-home"></i><a href="#">Home</a></li>
+				<li class="active">Report</li>
+				<li class="active">Browse Report</li>
+			</ul>
+		</div>
+	</div>
+	<!-- main -->
+	<div class="content">
+		<div class="main-header">
+			<h2>Browse Report</h2>
+			<em>View on demand or snap shot of report(s)</em>
+		</div>
+		<div class="main-content">
+
+			<!-- ROW -->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- WIDGET TABLE -->
+					<div class="widget widget-table">
+						<div class="widget-header">
+							<h3>
+								View Report
+							</h3>
+							<div class="btn-group widget-header-toolbar"></div>
+						</div>
+						<div class="widget-content">
+							<div class="alert alert-danger" id="ajaxErrorMsg"
+								style="display: none;"></div>
+							<div id="loading" style="text-align: center;">
+								<i class="fa fa-spinner fa-pulse fa-2x"></i>
+							</div>
+							<div id="view-content-include-div"></div>
+							<div style="float: right;">
+								<button type='button' id="backButton"
+									class='btn widget widget-header'
+									onclick="javascript:loadContent('report_content.html')">
+									Back</button>								
+							</div>
+						</div>
+					</div>
+					<!-- END WIDGET TABLE -->
+				</div>
+			</div>
+			<!-- END ROW -->
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var liteReport = getBezelPageParam("liteReport");
+
+		//clear page context before start
+		initBezelParamMap();
+
+		//put back for current page usage
+		setBezelPageParam("liteReport", liteReport);
+		
+		if(liteReport){
+			var title = $(".widget-header h3").html();			
+			
+			if ('X' == liteReport.templateType){
+				loadViewContent("view_crosstab_report.html");
+				$(".widget-header h3").html(("<i class='fa fa-table'></i> "+title+" - "+liteReport.reportName));
+			}
+		}
+	});
+	function loadViewContent(pageContent){
+		var contentIncludeDiv = document.getElementById("view-content-include-div");		
+		$(contentIncludeDiv).empty();		
+		$(contentIncludeDiv).load(pageContent);
+	}
+</script>
