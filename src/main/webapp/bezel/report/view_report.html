@@ -50,6 +50,76 @@
 	</div>
 </div>
 <script type="text/javascript">
+	function viewReport(liteReport){
+
+		if ('X' == liteReport.templateType){
+			viewCrossTabReport(liteReport.templateId);
+		}
+		else{
+			viewReport(liteReport);
+		}
+	}
+
+	function viewReport(liteReport){
+		console.log(liteReport.templateId);
+		$.ajax({
+			type: "GET",
+			url: getRestServerUrl()+"/reportbay-rest/api/reports/previewconnector/"+liteReport.templateId,
+			
+			success: function(response){
+				if(response){
+					console.log(JSON.stringify(response));
+					setBezelPageParam('reportWrapper', response);
+
+					if('A' == liteReport.templateType ||
+					   'B' == liteReport.templateType ||
+					   'C' == liteReport.templateType ||
+					   'L' == liteReport.templateType){
+						loadViewContent("view_report_cartesian_chart.html");
+					}
+					else if ('P' == liteReport.templateType){
+						loadViewContent("view_report_pie_chart.html");
+					}
+				}
+			},
+			complete: function(jqXHR, textStatus){									
+													
+				if("success" != textStatus){
+					//hide loading for error case, it is responsibility of individual page to handle success case
+					$('#loading').hide();
+					displayAjaxError("Failed to retrieve data from remote server");
+				}
+			} 
+		});	
+	}
+	
+	function viewCrossTabReport(reportConnectorId){
+		$.ajax({
+			type: "GET",
+			url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors/"+reportConnectorId,
+			
+			success: function(response){
+				if(response){
+
+					setBezelPageParam('reportWrapper', response);
+
+					loadViewContent("view_crosstab_report.html");
+				}
+			},
+			complete: function(jqXHR, textStatus){									
+													
+				if("success" != textStatus){
+					//hide loading for error case, it is responsibility of individual page to handle success case
+					$('#loading').hide();
+					displayAjaxError("Failed to retrieve data from remote server");
+				}
+			} 
+		});	
+	}
+	
+	//End AJAX function
+
+
 	$(document).ready(function() {
 		var liteReport = getBezelPageParam("liteReport");
 
@@ -57,15 +127,13 @@
 		initBezelParamMap();
 
 		//put back for current page usage
-		setBezelPageParam("liteReport", liteReport);
+//		setBezelPageParam("liteReport", liteReport);
 		
 		if(liteReport){
 			var title = $(".widget-header h3").html();			
-			
-			if ('X' == liteReport.templateType){
-				loadViewContent("view_crosstab_report.html");
-				$(".widget-header h3").html(("<i class='fa fa-table'></i> "+title+" - "+liteReport.reportName));
-			}
+			$(".widget-header h3").html(("<i class='fa fa-eye'></i> "+title+" - "+liteReport.reportName));
+
+			viewReport(liteReport);
 		}
 	});
 	function loadViewContent(pageContent){

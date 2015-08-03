@@ -5,36 +5,18 @@
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
-		var liteReport = getBezelPageParam("liteReport");
+		var reportWrapper = getBezelPageParam("reportWrapper");
 
 		//clear page context before start
 		initBezelParamMap();
 
 		//put back for current page usage
-		setBezelPageParam("liteReport", liteReport);
-		viewCrossTabReport(liteReport.templateId);
+		setBezelPageParam("reportWrapper", reportWrapper);
+		
+		createAndPopulateCrossTabDetails(reportWrapper.crossTabTemplate);
 	});
-	function viewCrossTabReport(reportConnectorId)
-	 {
-		$.ajax({
-			type: "GET",
-			url: getRestServerUrl()+"/reportbay-rest/api/reportconnectors/"+reportConnectorId,
-			
-			success: function(response){
-				if(response){
-					createAndPopulateCrossTabDetails(response.crossTabTemplate);
-				}
-			},
-			complete: function(jqXHR, textStatus){									
-													
-				if("success" != textStatus){										
-					displayAjaxError("Failed to retrieve data from remote server");
-				}
-			} 
-		});	
-	 }
-	function createAndPopulateCrossTabDetails(crossTabTemplate)
-	 {
+
+	function createAndPopulateCrossTabDetails(crossTabTemplate){
 		var rowAttributes=[];
 		var columnAttributes=[];
 		var valueAttributes=[];

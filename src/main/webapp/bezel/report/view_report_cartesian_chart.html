@@ -1,0 +1,150 @@
+							<div id="preview" class="divContentCenterAlign" style="width: 90%; display:none;" >
+								<div id="cartChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
+								</div>
+								
+								<div id="cartChartPreview" class="divContentCenterAlign" style="width:100%; height: 350px; margin:8px;">
+								
+								</div>																	
+							</div>
+
+	<script type="text/javascript">
+	function preparePreviewData(chartDataSeries){
+		
+		var previewData = new Array();
+			
+		for(var dIndex= (chartDataSeries.length-1); dIndex >=0 ; dIndex--){
+			var chartSeries = chartDataSeries[dIndex];
+			
+			var series = {label: chartSeries.seriesName,
+			 	  	  	  data : []};
+			//added each series into preview data
+	    	previewData.push(series);
+
+			for (var key in chartSeries.seriesData) {
+				
+				//only process non prototype
+				if (chartSeries.seriesData.hasOwnProperty(key)) {
+				    series.data.push([key, chartSeries.seriesData[key]]);
+				}
+			}
+		}
+		
+		return previewData; 
+	}
+
+	function preparePreviewConfiguration(report, chartType){
+		
+		var configuration = {};
+		
+		if(chartType){
+			configuration['xaxis'] = { mode: "categories" };
+			var isArea = false;
+
+			switch(chartType){
+				case 'AREA':
+					isArea = true;
+				case 'LINE':
+					
+					configuration['series'] ={
+						lines: {
+							show: true,
+							lineWidth: 2,
+							fillColor: { colors: [ { opacity: 0.4 }, { opacity: 0.4 } ] },
+							fill : isArea
+						},
+						points: {
+							lineWidth: 3,
+						},
+
+						shadowSize: 0
+					};
+					
+					break;
+				case 'BAR':
+				case 'COLUMN':
+					configuration['series'] ={
+							bars:{
+									show : true,
+									fill : true,
+									lineWidth: 0,
+									order: true,
+									barWidth: 0.8,
+									align: 'center'
+							}
+						};
+					configuration.xaxis['autoscaleMargin'] = '0.2';
+					break;
+			}
+
+			configuration['grid']= {
+					hoverable: true, 
+					clickable: true,
+					borderWidth: 0,
+					tickColor: "#E4E4E4"
+				};
+			configuration['colors'] = [ "#5399D6", "#d9d9d9", "#d7ea2b"];
+			configuration['tooltip'] = {show: true};
+			
+			configuration['legend'] = {show: report.showLegend};
+			
+			if(report.showXAxis && report.xaxisTitle){
+				configuration['xaxes']=[{axisLabel:report.xaxisTitle, axisLabelPadding: 15}];
+			}
+			
+			if(report.showYAxis && report.yaxisTitle){
+				configuration['yaxes']=[{axisLabel: report.yaxisTitle, position : 'left'}];	
+			}
+			
+			if(report.showDataLabel){
+				configuration.series['valueLabels']= {show: report.showDataLabel};
+				
+				if('COLUMN' == chartType){
+					configuration.series.valueLabels['align']='center';
+				}
+			}
+			
+			if('COLUMN' == chartType){
+				configuration.series.bars['horizontal'] = true;
+				configuration.series.bars.barWidth = 8;
+			}
+		}
+		
+		return configuration;
+	}
+	
+	$(document).ready(function() {
+		
+		console.log('view cartesian chart');
+		$('#cartChartPreviewTitle').empty();
+		$('#cartChartPreview').empty();
+		
+		var reportWrapper = getBezelPageParam('reportWrapper');
+		
+		var report = reportWrapper.cartesianChartReport;
+		
+		//clear page context before start
+		initBezelParamMap();
+
+		setBezelPageParam('report',report);
+		
+		//chart title
+		$('#cartChartPreviewTitle').append(report.title);
+
+		//obtain data
+		var cartData = preparePreviewData(report.chartDataSeries);
+		
+		console.log(JSON.stringify(cartData));
+
+		//prepare configuration
+		var configuration = preparePreviewConfiguration(report, reportWrapper.type);
+
+		//plot pie
+		$.plot('#cartChartPreview', cartData, configuration);
+		
+		//show preview
+		$('#preview').show();
+		
+		$('#loading').hide();
+	});
+	
+	</script>

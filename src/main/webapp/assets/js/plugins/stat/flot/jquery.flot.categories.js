@@ -103,6 +103,11 @@ as "categories" on the axis object, e.g. plot.getAxes().xaxis.categories.
 
         return index + 1;
     }
+    
+    function categoriesTickGenerator(v, axis) {
+    	console.log('--->'+v);
+    	return v; //So flot.tooltip works properly with categories
+    }
 
     function categoriesTickGenerator(axis) {
         var res = [];
@@ -139,6 +144,9 @@ as "categories" on the axis object, e.g. plot.getAxes().xaxis.categories.
         // fix ticks
         if (!series[axis].options.ticks)
             series[axis].options.ticks = categoriesTickGenerator;
+        
+        if(!series[axis].options.tickFormatter)
+        	series[axis].options.tickFormatter = categoriesTickGenerator;
 
         transformPointsOnAxis(datapoints, axis, series[axis].categories);
     }

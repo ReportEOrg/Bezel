@@ -1,0 +1,114 @@
+							<div id="preview" class="divContentCenterAlign" style="width: 80%; display:none;" >
+								<div id="pieChartPreviewTitle" style="width: 100%; text-align: center; margin:4px;">
+								</div>
+								
+								<div id="pieChartPreview" class="divContentCenterAlign" style="width:100%; height: 300px; margin:8px;">
+								
+								</div>																	
+							</div>
+
+	<script type="text/javascript">
+	function preparePreviewData(categoryData){
+		
+		var previewData = new Array();
+		
+		for (var key in categoryData) {
+			//only process non prototype
+			if (categoryData.hasOwnProperty(key)) {
+			    var seriesData ={};
+			    previewData.push(seriesData);
+			    
+			    seriesData['label'] = key;
+			    seriesData['data']  = categoryData[key];
+			  }
+		}
+		
+		return previewData; 
+	}
+	function preparePreviewConfiguration(report){
+		
+		return {
+			series: {
+				pie: {
+					show: true,
+					stroke: {
+						width: 4,
+						color: "#F9F9F9"
+					},
+					label: {
+						show: report.showDataLabel,
+						radius: 3/4,
+						formatter: labelFormatter
+					}
+				},
+			},
+			legend: {
+				show: report.showLegend
+			},
+			grid: {
+				hoverable: false
+			},
+			colors: ["#d9d9d9", "#5399D6", "#d7ea2b"],
+		};
+		
+	}
+	
+	function labelFormatter(label, series) {
+		
+		var report = getBezelPageParam('report');
+		
+		console.log('labelFormatter:'+report);
+		
+		var labelFormat = report.dataTypeFormat;
+		
+		var labelPlaceHolder = '';
+		var valuePlaceHolder = '';
+		
+		if(report.showDataLabel){
+			labelPlaceHolder =  label + "<br/>";
+		
+			if('PERCENT' == labelFormat && series.percent){
+				valuePlaceHolder = Math.round(series.percent)+'%';
+			}
+			else if ('VALUE' == labelFormat && series.data[0][1]){
+				valuePlaceHolder = Math.round(series.data[0][1])
+			}
+		}
+
+		return "<div class=\"donut-label\">" + labelPlaceHolder + valuePlaceHolder + "</div>";
+	}
+	
+	$(document).ready(function() {
+		
+		console.log('view pie');
+		$('#pieChartPreview').empty();
+		$('#pieChartPreviewTitle').empty();
+		
+		var reportWrapper = getBezelPageParam('reportWrapper');
+		
+		var report = reportWrapper.pieChartReport;
+		
+		//clear page context before start
+		initBezelParamMap();
+
+		setBezelPageParam('report',report);
+		
+		//chart title
+		$('#pieChartPreviewTitle').append(report.title);
+		
+		//obtain data
+		var pieData = preparePreviewData(report.categoryData);
+
+		//prepare configuration
+		var configuration = preparePreviewConfiguration(report);
+		
+		//plot pie
+		$.plot('#pieChartPreview', pieData, configuration);
+		
+		//show preview
+		$('#preview').show();
+		
+		$('#loading').hide();
+	});
+	
+	</script>
